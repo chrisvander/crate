@@ -1,8 +1,8 @@
 .DS_Store
 node_modules
+.crate-data
 dist
 tmp
 logs
 stats.html
 *.tsbuildinfo
-firebase.json

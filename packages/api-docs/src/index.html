@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Crate Network API</title>
+    <title>Crate API</title>
     <style type="text/css">
       body {
         font-family:
@@ -180,106 +180,158 @@
     </style>
   </head>
   <body>
-    <h1>Crate Network API</h1>
+    <h1>Crate API</h1>
     <div class="app-desc">
-      <h2>About this spec</h2>
-      <p>
-        The Crate API exposes several endpoints which allows the Crate macOS, iOS, iPadOS and web
-        clients to interact with Crate's IPFS cluster without the clients needing to run IPFS
-        clients of their own. Crate Network implements the IPFS Pinning API specification at the
-        <code>/pins</code> endpoint, as described by the spec found
-        <a
-          href="https://github.com/ipfs/pinning-services-api-spec/blob/3196b0b466752a3626b716969703cbd48cb9bcf7/ipfs-pinning-service.yaml"
-          >on GitHub</a
-        >. The pinning API accepts a Bearer authorization token retrieved from your Crate account.
-        This identifies your user and adds the pinned content to your files on Crate. This version
-        of the API is modified to include metadata, all of which is optional so that Crate continues
-        to conform to the IPFS spec.
-      </p>
-      <p>
-        The Filecoin replication service is handled via the pinning API. Instead of using untrusted
-        centralized cloud storage as the backend, Crate safely replicates content onto other
-        decentralized networks. When a request comes to the pinning service to retrieve the content,
-        Crate will prioritize cached content, otherwise falling back to the Filecoin network to
-        retrieve your files.
-      </p>
+      Authenticate with ATProto and manage files stored as ATProto records and blobs.
     </div>
     <div class="app-desc">
-      More information:
-      <a href="https://openapi-generator.tech">https://openapi-generator.tech</a>
+      More information: <a href="https://openapi-generator.tech">https://openapi-generator.tech</a>
     </div>
     <div class="app-desc">
       Contact Info: <a href="team@openapitools.org">team@openapitools.org</a>
     </div>
     <div class="app-desc">Version: 1.0.0</div>
-    <div class="app-desc">BasePath:/api/v1</div>
+    <div class="app-desc">BasePath:</div>
     <div class="license-info">All rights reserved</div>
     <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
     <h2>Access</h2>
-    <ol>
-      <li>HTTP Basic Authentication</li>
-    </ol>
 
     <h2><a name="__Methods">Methods</a></h2>
     [ Jump to <a href="#__Models">Models</a> ]
 
     <h3>Table of Contents</h3>
     <div class="method-summary"></div>
-    <h4><a href="#Files">Files</a></h4>
+    <h4><a href="#Default">Default</a></h4>
     <ul>
       <li>
-        <a href="#fileGet"
-          ><code><span class="http-method">get</span> /file</code></a
+        <a href="#apiV1DirPost"
+          ><code><span class="http-method">post</span> /api/v1/dir</code></a
         >
       </li>
       <li>
-        <a href="#filePost"
-          ><code><span class="http-method">post</span> /file</code></a
-        >
-      </li>
-    </ul>
-    <h4><a href="#Pins">Pins</a></h4>
-    <ul>
-      <li>
-        <a href="#pinsGet"
-          ><code><span class="http-method">get</span> /pins</code></a
+        <a href="#apiV1FileDelete"
+          ><code><span class="http-method">delete</span> /api/v1/file</code></a
         >
       </li>
       <li>
-        <a href="#pinsPost"
-          ><code><span class="http-method">post</span> /pins</code></a
+        <a href="#apiV1FileGet"
+          ><code><span class="http-method">get</span> /api/v1/file</code></a
         >
       </li>
       <li>
-        <a href="#pinsRequestidDelete"
-          ><code><span class="http-method">delete</span> /pins/{requestid}</code></a
+        <a href="#apiV1FilePost"
+          ><code><span class="http-method">post</span> /api/v1/file</code></a
         >
       </li>
       <li>
-        <a href="#pinsRequestidGet"
-          ><code><span class="http-method">get</span> /pins/{requestid}</code></a
+        <a href="#apiV1LogoutPost"
+          ><code><span class="http-method">post</span> /api/v1/logout</code></a
         >
       </li>
       <li>
-        <a href="#pinsRequestidPost"
-          ><code><span class="http-method">post</span> /pins/{requestid}</code></a
+        <a href="#apiV1SessionGet"
+          ><code><span class="http-method">get</span> /api/v1/session</code></a
+        >
+      </li>
+      <li>
+        <a href="#oauthCallbackGet"
+          ><code><span class="http-method">get</span> /oauth/callback</code></a
+        >
+      </li>
+      <li>
+        <a href="#oauthLoginPost"
+          ><code><span class="http-method">post</span> /oauth/login</code></a
         >
       </li>
     </ul>
 
-    <h1><a name="Files">Files</a></h1>
+    <h1><a name="Default">Default</a></h1>
     <div class="method">
-      <a name="fileGet" />
+      <a name="apiV1DirPost" />
       <div class="method-path">
         <a class="up" href="#__Methods">Up</a>
-        <pre class="get"><code class="huge"><span class="http-method">get</span> /file</code></pre>
+        <pre
+          class="post"
+        ><code class="huge"><span class="http-method">post</span> /api/v1/dir</code></pre>
       </div>
-      <div class="method-summary">(<span class="nickname">fileGet</span>)</div>
-      <div class="method-notes">
-        Get FileDescriptor object a file/directory specified by either a CID or the path from the
-        root of the user's filesystem. If neither are specified, we return the FileDescriptor for
-        the root directory.
+      <div class="method-summary">
+        Create an empty file or directory record (<span class="nickname">apiV1DirPost</span>)
       </div>
+      <div class="method-notes"></div>
+
+      <h3 class="field-label">Query parameters</h3>
+      <div class="field-items">
+        <div class="param">path (required)</div>
+
+        <div class="param-desc">
+          <span class="param-type">Query Parameter</span> &mdash; default: null
+        </div>
+        <div class="param">name (required)</div>
+
+        <div class="param-desc">
+          <span class="param-type">Query Parameter</span> &mdash; default: null
+        </div>
+        <div class="param">type (required)</div>
+
+        <div class="param-desc">
+          <span class="param-type">Query Parameter</span> &mdash; default: null
+        </div>
+      </div>
+      <!-- field-items -->
+
+      <!--Todo: process Response Object and its headers, schema, examples -->
+
+      <h3 class="field-label">Responses</h3>
+      <h4 class="field-label">200</h4>
+      Created record
+      <a href="#"></a>
+    </div>
+    <!-- method -->
+    <hr />
+    <div class="method">
+      <a name="apiV1FileDelete" />
+      <div class="method-path">
+        <a class="up" href="#__Methods">Up</a>
+        <pre
+          class="delete"
+        ><code class="huge"><span class="http-method">delete</span> /api/v1/file</code></pre>
+      </div>
+      <div class="method-summary">
+        Delete a file or directory record tree (<span class="nickname">apiV1FileDelete</span>)
+      </div>
+      <div class="method-notes"></div>
+
+      <h3 class="field-label">Query parameters</h3>
+      <div class="field-items">
+        <div class="param">path (required)</div>
+
+        <div class="param-desc">
+          <span class="param-type">Query Parameter</span> &mdash; default: null
+        </div>
+      </div>
+      <!-- field-items -->
+
+      <!--Todo: process Response Object and its headers, schema, examples -->
+
+      <h3 class="field-label">Responses</h3>
+      <h4 class="field-label">200</h4>
+      Parent path
+      <a href="#"></a>
+    </div>
+    <!-- method -->
+    <hr />
+    <div class="method">
+      <a name="apiV1FileGet" />
+      <div class="method-path">
+        <a class="up" href="#__Methods">Up</a>
+        <pre
+          class="get"
+        ><code class="huge"><span class="http-method">get</span> /api/v1/file</code></pre>
+      </div>
+      <div class="method-summary">
+        Read file metadata or blob content (<span class="nickname">apiV1FileGet</span>)
+      </div>
+      <div class="method-notes"></div>
 
       <h3 class="field-label">Query parameters</h3>
       <div class="field-items">
@@ -293,65 +345,35 @@
         <div class="param-desc">
           <span class="param-type">Query Parameter</span> &mdash; default: null
         </div>
+        <div class="param">content (optional)</div>
+
+        <div class="param-desc">
+          <span class="param-type">Query Parameter</span> &mdash; default: null
+        </div>
       </div>
       <!-- field-items -->
 
-      <h3 class="field-label">Return type</h3>
-      <div class="return-type">
-        <a href="#FileDescriptor">FileDescriptor</a>
-      </div>
-
       <!--Todo: process Response Object and its headers, schema, examples -->
-
-      <h3 class="field-label">Example data</h3>
-      <div class="example-data-content-type">Content-Type: application/json</div>
-      <pre class="example"><code>{
-  "date" : "date",
-  "mode" : 1.4658129805029452,
-  "size" : 0.8008281904610115,
-  "cumulativeSize" : 6.027456183070403,
-  "links" : [ {
-    "size" : 145,
-    "name" : "file.txt",
-    "cid" : "Qm..."
-  }, {
-    "size" : 145,
-    "name" : "file.txt",
-    "cid" : "Qm..."
-  } ],
-  "type" : "directory",
-  "cid" : "Qm...",
-  "signedEncryptionKey" : "signedEncryptionKey"
-}</code></pre>
-
-      <h3 class="field-label">Produces</h3>
-      This API call produces the following media types according to the
-      <span class="header">Accept</span> request header; the media type will be conveyed by the
-      <span class="header">Content-Type</span> response header.
-      <ul>
-        <li><code>application/json</code></li>
-      </ul>
 
       <h3 class="field-label">Responses</h3>
       <h4 class="field-label">200</h4>
-      Successful response (FileDescriptor object)
-      <a href="#FileDescriptor">FileDescriptor</a>
+      File metadata or content
+      <a href="#"></a>
     </div>
     <!-- method -->
     <hr />
     <div class="method">
-      <a name="filePost" />
+      <a name="apiV1FilePost" />
       <div class="method-path">
         <a class="up" href="#__Methods">Up</a>
         <pre
           class="post"
-        ><code class="huge"><span class="http-method">post</span> /file</code></pre>
+        ><code class="huge"><span class="http-method">post</span> /api/v1/file</code></pre>
       </div>
-      <div class="method-summary">(<span class="nickname">filePost</span>)</div>
-      <div class="method-notes">
-        Upload one or many files/directories to a path specified in the query parameters. If
-        ignored, this will save the files to the root directory.
+      <div class="method-summary">
+        Upload files as ATProto blobs and records (<span class="nickname">apiV1FilePost</span>)
       </div>
+      <div class="method-notes"></div>
 
       <h3 class="field-label">Consumes</h3>
       This API call consumes the following media types via the
@@ -359,16 +381,6 @@
       <ul>
         <li><code>multipart/form-data</code></li>
       </ul>
-
-      <h3 class="field-label">Query parameters</h3>
-      <div class="field-items">
-        <div class="param">path (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; default: null
-        </div>
-      </div>
-      <!-- field-items -->
 
       <h3 class="field-label">Form parameters</h3>
       <div class="field-items">
@@ -380,493 +392,96 @@
       </div>
       <!-- field-items -->
 
-      <h3 class="field-label">Return type</h3>
-      <div class="return-type">
-        <a href="#FileDescriptor">FileDescriptor</a>
-      </div>
-
       <!--Todo: process Response Object and its headers, schema, examples -->
-
-      <h3 class="field-label">Example data</h3>
-      <div class="example-data-content-type">Content-Type: application/json</div>
-      <pre class="example"><code>{
-  "date" : "date",
-  "mode" : 1.4658129805029452,
-  "size" : 0.8008281904610115,
-  "cumulativeSize" : 6.027456183070403,
-  "links" : [ {
-    "size" : 145,
-    "name" : "file.txt",
-    "cid" : "Qm..."
-  }, {
-    "size" : 145,
-    "name" : "file.txt",
-    "cid" : "Qm..."
-  } ],
-  "type" : "directory",
-  "cid" : "Qm...",
-  "signedEncryptionKey" : "signedEncryptionKey"
-}</code></pre>
-
-      <h3 class="field-label">Produces</h3>
-      This API call produces the following media types according to the
-      <span class="header">Accept</span> request header; the media type will be conveyed by the
-      <span class="header">Content-Type</span> response header.
-      <ul>
-        <li><code>application/json</code></li>
-      </ul>
 
       <h3 class="field-label">Responses</h3>
       <h4 class="field-label">200</h4>
-      Successful response (FileDescriptor object)
-      <a href="#FileDescriptor">FileDescriptor</a>
-    </div>
-    <!-- method -->
-    <hr />
-    <h1><a name="Pins">Pins</a></h1>
-    <div class="method">
-      <a name="pinsGet" />
-      <div class="method-path">
-        <a class="up" href="#__Methods">Up</a>
-        <pre class="get"><code class="huge"><span class="http-method">get</span> /pins</code></pre>
-      </div>
-      <div class="method-summary">List pin objects (<span class="nickname">pinsGet</span>)</div>
-      <div class="method-notes">
-        List all the pin objects, matching optional filters; when no filter is provided, only
-        successful pins are returned.
-      </div>
-
-      <h3 class="field-label">Query parameters</h3>
-      <div class="field-items">
-        <div class="param">cid (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; Return pin objects responsible for
-          pinning the specified CID(s); be aware that using longer hash functions introduces further
-          constraints on the number of CIDs that will fit under the limit of 2000 characters per URL
-          in browser contexts default: null
-        </div>
-        <div class="param">name (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; Return pin objects with specified
-          name (by default a case-sensitive, exact match) default: null
-        </div>
-        <div class="param">match (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; Customize the text matching
-          strategy applied when the name filter is present; exact (the default) is a case-sensitive
-          exact match, partial matches anywhere in the name, iexact and ipartial are
-          case-insensitive versions of the exact and partial strategies default: null
-        </div>
-        <div class="param">status (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; Return pin objects for pins with
-          the specified status default: null
-        </div>
-        <div class="param">before (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; Return results created (queued)
-          before provided timestamp default: null format: date-time
-        </div>
-        <div class="param">after (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; Return results created (queued)
-          after provided timestamp default: null format: date-time
-        </div>
-        <div class="param">limit (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; Max records to return default: 10
-          format: int32
-        </div>
-        <div class="param">meta (optional)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Query Parameter</span> &mdash; Return pin objects that match
-          specified metadata keys passed as a string representation of a JSON object; when
-          implementing a client library, make sure the parameter is URL-encoded to ensure safe
-          transport default: null
-        </div>
-      </div>
-      <!-- field-items -->
-
-      <h3 class="field-label">Return type</h3>
-      <div class="return-type">
-        <a href="#PinResults">PinResults</a>
-      </div>
-
-      <!--Todo: process Response Object and its headers, schema, examples -->
-
-      <h3 class="field-label">Example data</h3>
-      <div class="example-data-content-type">Content-Type: application/json</div>
-      <pre class="example"><code>{
-  "count" : 1,
-  "results" : [ {
-    "pin" : {
-      "meta" : {
-        "app_id" : "99986338-1113-4706-8302-4420da6158aa"
-      },
-      "name" : "PreciousData.pdf",
-      "origins" : [ "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId", "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId" ],
-      "cid" : "Qm..."
-    },
-    "requestid" : "UniqueIdOfPinRequest",
-    "created" : "2020-07-27T17:32:28Z",
-    "delegates" : [ "/ip4/203.0.113.1/tcp/4001/p2p/QmServicePeerId" ],
-    "info" : {
-      "status_details" : "Queue position: 7 of 9"
-    }
-  }, {
-    "pin" : {
-      "meta" : {
-        "app_id" : "99986338-1113-4706-8302-4420da6158aa"
-      },
-      "name" : "PreciousData.pdf",
-      "origins" : [ "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId", "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId" ],
-      "cid" : "Qm..."
-    },
-    "requestid" : "UniqueIdOfPinRequest",
-    "created" : "2020-07-27T17:32:28Z",
-    "delegates" : [ "/ip4/203.0.113.1/tcp/4001/p2p/QmServicePeerId" ],
-    "info" : {
-      "status_details" : "Queue position: 7 of 9"
-    }
-  }, {
-    "pin" : {
-      "meta" : {
-        "app_id" : "99986338-1113-4706-8302-4420da6158aa"
-      },
-      "name" : "PreciousData.pdf",
-      "origins" : [ "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId", "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId" ],
-      "cid" : "Qm..."
-    },
-    "requestid" : "UniqueIdOfPinRequest",
-    "created" : "2020-07-27T17:32:28Z",
-    "delegates" : [ "/ip4/203.0.113.1/tcp/4001/p2p/QmServicePeerId" ],
-    "info" : {
-      "status_details" : "Queue position: 7 of 9"
-    }
-  }, {
-    "pin" : {
-      "meta" : {
-        "app_id" : "99986338-1113-4706-8302-4420da6158aa"
-      },
-      "name" : "PreciousData.pdf",
-      "origins" : [ "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId", "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId" ],
-      "cid" : "Qm..."
-    },
-    "requestid" : "UniqueIdOfPinRequest",
-    "created" : "2020-07-27T17:32:28Z",
-    "delegates" : [ "/ip4/203.0.113.1/tcp/4001/p2p/QmServicePeerId" ],
-    "info" : {
-      "status_details" : "Queue position: 7 of 9"
-    }
-  }, {
-    "pin" : {
-      "meta" : {
-        "app_id" : "99986338-1113-4706-8302-4420da6158aa"
-      },
-      "name" : "PreciousData.pdf",
-      "origins" : [ "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId", "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId" ],
-      "cid" : "Qm..."
-    },
-    "requestid" : "UniqueIdOfPinRequest",
-    "created" : "2020-07-27T17:32:28Z",
-    "delegates" : [ "/ip4/203.0.113.1/tcp/4001/p2p/QmServicePeerId" ],
-    "info" : {
-      "status_details" : "Queue position: 7 of 9"
-    }
-  } ]
-}</code></pre>
-
-      <h3 class="field-label">Produces</h3>
-      This API call produces the following media types according to the
-      <span class="header">Accept</span> request header; the media type will be conveyed by the
-      <span class="header">Content-Type</span> response header.
-      <ul>
-        <li><code>application/json</code></li>
-      </ul>
-
-      <h3 class="field-label">Responses</h3>
-      <h4 class="field-label">200</h4>
-      Successful response (PinResults object)
-      <a href="#PinResults">PinResults</a>
-      <h4 class="field-label">400</h4>
-      Error response (Bad request)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">401</h4>
-      Error response (Unauthorized; access token is missing or invalid)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">404</h4>
-      Error response (The specified resource was not found)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">409</h4>
-      Error response (Insufficient funds)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">4XX</h4>
-      Error response (Custom service error)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">5XX</h4>
-      Error response (Unexpected internal server error)
-      <a href="#Failure">Failure</a>
+      Created records
+      <a href="#"></a>
     </div>
     <!-- method -->
     <hr />
     <div class="method">
-      <a name="pinsPost" />
+      <a name="apiV1LogoutPost" />
       <div class="method-path">
         <a class="up" href="#__Methods">Up</a>
         <pre
           class="post"
-        ><code class="huge"><span class="http-method">post</span> /pins</code></pre>
-      </div>
-      <div class="method-summary">Add pin object (<span class="nickname">pinsPost</span>)</div>
-      <div class="method-notes">Add a new pin object for the current access token</div>
-
-      <h3 class="field-label">Consumes</h3>
-      This API call consumes the following media types via the
-      <span class="header">Content-Type</span> request header:
-      <ul>
-        <li><code>application/json</code></li>
-      </ul>
-
-      <h3 class="field-label">Request body</h3>
-      <div class="field-items">
-        <div class="param">Pin <a href="#Pin">Pin</a> (required)</div>
-
-        <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;</div>
-      </div>
-      <!-- field-items -->
-
-      <h3 class="field-label">Return type</h3>
-      <div class="return-type">
-        <a href="#PinStatus">PinStatus</a>
-      </div>
-
-      <!--Todo: process Response Object and its headers, schema, examples -->
-
-      <h3 class="field-label">Example data</h3>
-      <div class="example-data-content-type">Content-Type: application/json</div>
-      <pre class="example"><code>{
-  "pin" : {
-    "meta" : {
-      "app_id" : "99986338-1113-4706-8302-4420da6158aa"
-    },
-    "name" : "PreciousData.pdf",
-    "origins" : [ "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId", "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId" ],
-    "cid" : "Qm..."
-  },
-  "requestid" : "UniqueIdOfPinRequest",
-  "created" : "2020-07-27T17:32:28Z",
-  "delegates" : [ "/ip4/203.0.113.1/tcp/4001/p2p/QmServicePeerId" ],
-  "info" : {
-    "status_details" : "Queue position: 7 of 9"
-  }
-}</code></pre>
-
-      <h3 class="field-label">Produces</h3>
-      This API call produces the following media types according to the
-      <span class="header">Accept</span> request header; the media type will be conveyed by the
-      <span class="header">Content-Type</span> response header.
-      <ul>
-        <li><code>application/json</code></li>
-      </ul>
-
-      <h3 class="field-label">Responses</h3>
-      <h4 class="field-label">202</h4>
-      Successful response (PinStatus object)
-      <a href="#PinStatus">PinStatus</a>
-      <h4 class="field-label">400</h4>
-      Error response (Bad request)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">401</h4>
-      Error response (Unauthorized; access token is missing or invalid)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">404</h4>
-      Error response (The specified resource was not found)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">409</h4>
-      Error response (Insufficient funds)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">4XX</h4>
-      Error response (Custom service error)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">5XX</h4>
-      Error response (Unexpected internal server error)
-      <a href="#Failure">Failure</a>
-    </div>
-    <!-- method -->
-    <hr />
-    <div class="method">
-      <a name="pinsRequestidDelete" />
-      <div class="method-path">
-        <a class="up" href="#__Methods">Up</a>
-        <pre
-          class="delete"
-        ><code class="huge"><span class="http-method">delete</span> /pins/{requestid}</code></pre>
+        ><code class="huge"><span class="http-method">post</span> /api/v1/logout</code></pre>
       </div>
       <div class="method-summary">
-        Remove pin object (<span class="nickname">pinsRequestidDelete</span>)
+        Revoke the current ATProto OAuth session (<span class="nickname">apiV1LogoutPost</span>)
       </div>
-      <div class="method-notes">Remove a pin object</div>
-
-      <h3 class="field-label">Path parameters</h3>
-      <div class="field-items">
-        <div class="param">requestid (required)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Path Parameter</span> &mdash; default: null
-        </div>
-      </div>
-      <!-- field-items -->
+      <div class="method-notes"></div>
 
       <!--Todo: process Response Object and its headers, schema, examples -->
 
-      <h3 class="field-label">Produces</h3>
-      This API call produces the following media types according to the
-      <span class="header">Accept</span> request header; the media type will be conveyed by the
-      <span class="header">Content-Type</span> response header.
-      <ul>
-        <li><code>application/json</code></li>
-      </ul>
-
       <h3 class="field-label">Responses</h3>
-      <h4 class="field-label">202</h4>
-      Successful response (no body, pin removed)
+      <h4 class="field-label">204</h4>
+      Signed out
       <a href="#"></a>
-      <h4 class="field-label">400</h4>
-      Error response (Bad request)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">401</h4>
-      Error response (Unauthorized; access token is missing or invalid)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">404</h4>
-      Error response (The specified resource was not found)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">409</h4>
-      Error response (Insufficient funds)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">4XX</h4>
-      Error response (Custom service error)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">5XX</h4>
-      Error response (Unexpected internal server error)
-      <a href="#Failure">Failure</a>
     </div>
     <!-- method -->
     <hr />
     <div class="method">
-      <a name="pinsRequestidGet" />
+      <a name="apiV1SessionGet" />
       <div class="method-path">
         <a class="up" href="#__Methods">Up</a>
         <pre
           class="get"
-        ><code class="huge"><span class="http-method">get</span> /pins/{requestid}</code></pre>
+        ><code class="huge"><span class="http-method">get</span> /api/v1/session</code></pre>
       </div>
       <div class="method-summary">
-        Get pin object (<span class="nickname">pinsRequestidGet</span>)
+        Read the current Crate session (<span class="nickname">apiV1SessionGet</span>)
       </div>
-      <div class="method-notes">Get a pin object and its status</div>
-
-      <h3 class="field-label">Path parameters</h3>
-      <div class="field-items">
-        <div class="param">requestid (required)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Path Parameter</span> &mdash; default: null
-        </div>
-      </div>
-      <!-- field-items -->
-
-      <h3 class="field-label">Return type</h3>
-      <div class="return-type">
-        <a href="#PinStatus">PinStatus</a>
-      </div>
+      <div class="method-notes"></div>
 
       <!--Todo: process Response Object and its headers, schema, examples -->
 
-      <h3 class="field-label">Example data</h3>
-      <div class="example-data-content-type">Content-Type: application/json</div>
-      <pre class="example"><code>{
-  "pin" : {
-    "meta" : {
-      "app_id" : "99986338-1113-4706-8302-4420da6158aa"
-    },
-    "name" : "PreciousData.pdf",
-    "origins" : [ "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId", "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId" ],
-    "cid" : "Qm..."
-  },
-  "requestid" : "UniqueIdOfPinRequest",
-  "created" : "2020-07-27T17:32:28Z",
-  "delegates" : [ "/ip4/203.0.113.1/tcp/4001/p2p/QmServicePeerId" ],
-  "info" : {
-    "status_details" : "Queue position: 7 of 9"
-  }
-}</code></pre>
-
-      <h3 class="field-label">Produces</h3>
-      This API call produces the following media types according to the
-      <span class="header">Accept</span> request header; the media type will be conveyed by the
-      <span class="header">Content-Type</span> response header.
-      <ul>
-        <li><code>application/json</code></li>
-      </ul>
-
       <h3 class="field-label">Responses</h3>
       <h4 class="field-label">200</h4>
-      Successful response (PinStatus object)
-      <a href="#PinStatus">PinStatus</a>
-      <h4 class="field-label">400</h4>
-      Error response (Bad request)
-      <a href="#Failure">Failure</a>
+      Authenticated user and Crate profile
+      <a href="#"></a>
       <h4 class="field-label">401</h4>
-      Error response (Unauthorized; access token is missing or invalid)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">404</h4>
-      Error response (The specified resource was not found)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">409</h4>
-      Error response (Insufficient funds)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">4XX</h4>
-      Error response (Custom service error)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">5XX</h4>
-      Error response (Unexpected internal server error)
-      <a href="#Failure">Failure</a>
+      Not authenticated
+      <a href="#"></a>
     </div>
     <!-- method -->
     <hr />
     <div class="method">
-      <a name="pinsRequestidPost" />
+      <a name="oauthCallbackGet" />
+      <div class="method-path">
+        <a class="up" href="#__Methods">Up</a>
+        <pre
+          class="get"
+        ><code class="huge"><span class="http-method">get</span> /oauth/callback</code></pre>
+      </div>
+      <div class="method-summary">
+        Complete ATProto OAuth authentication (<span class="nickname">oauthCallbackGet</span>)
+      </div>
+      <div class="method-notes"></div>
+
+      <!--Todo: process Response Object and its headers, schema, examples -->
+
+      <h3 class="field-label">Responses</h3>
+      <h4 class="field-label">302</h4>
+      Browser session created
+      <a href="#"></a>
+    </div>
+    <!-- method -->
+    <hr />
+    <div class="method">
+      <a name="oauthLoginPost" />
       <div class="method-path">
         <a class="up" href="#__Methods">Up</a>
         <pre
           class="post"
-        ><code class="huge"><span class="http-method">post</span> /pins/{requestid}</code></pre>
+        ><code class="huge"><span class="http-method">post</span> /oauth/login</code></pre>
       </div>
       <div class="method-summary">
-        Replace pin object (<span class="nickname">pinsRequestidPost</span>)
+        Begin ATProto OAuth authentication (<span class="nickname">oauthLoginPost</span>)
       </div>
-      <div class="method-notes">
-        Replace an existing pin object (shortcut for executing remove and add operations in one step
-        to avoid unnecessary garbage collection of blocks present in both recursive pins)
-      </div>
-
-      <h3 class="field-label">Path parameters</h3>
-      <div class="field-items">
-        <div class="param">requestid (required)</div>
-
-        <div class="param-desc">
-          <span class="param-type">Path Parameter</span> &mdash; default: null
-        </div>
-      </div>
-      <!-- field-items -->
+      <div class="method-notes"></div>
 
       <h3 class="field-label">Consumes</h3>
       This API call consumes the following media types via the
@@ -877,68 +492,21 @@
 
       <h3 class="field-label">Request body</h3>
       <div class="field-items">
-        <div class="param">Pin <a href="#Pin">Pin</a> (required)</div>
+        <div class="param">
+          _oauth_login_post_request
+          <a href="#_oauth_login_post_request">_oauth_login_post_request</a> (required)
+        </div>
 
         <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;</div>
       </div>
       <!-- field-items -->
 
-      <h3 class="field-label">Return type</h3>
-      <div class="return-type">
-        <a href="#PinStatus">PinStatus</a>
-      </div>
-
       <!--Todo: process Response Object and its headers, schema, examples -->
 
-      <h3 class="field-label">Example data</h3>
-      <div class="example-data-content-type">Content-Type: application/json</div>
-      <pre class="example"><code>{
-  "pin" : {
-    "meta" : {
-      "app_id" : "99986338-1113-4706-8302-4420da6158aa"
-    },
-    "name" : "PreciousData.pdf",
-    "origins" : [ "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId", "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId" ],
-    "cid" : "Qm..."
-  },
-  "requestid" : "UniqueIdOfPinRequest",
-  "created" : "2020-07-27T17:32:28Z",
-  "delegates" : [ "/ip4/203.0.113.1/tcp/4001/p2p/QmServicePeerId" ],
-  "info" : {
-    "status_details" : "Queue position: 7 of 9"
-  }
-}</code></pre>
-
-      <h3 class="field-label">Produces</h3>
-      This API call produces the following media types according to the
-      <span class="header">Accept</span> request header; the media type will be conveyed by the
-      <span class="header">Content-Type</span> response header.
-      <ul>
-        <li><code>application/json</code></li>
-      </ul>
-
       <h3 class="field-label">Responses</h3>
-      <h4 class="field-label">202</h4>
-      Successful response (PinStatus object)
-      <a href="#PinStatus">PinStatus</a>
-      <h4 class="field-label">400</h4>
-      Error response (Bad request)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">401</h4>
-      Error response (Unauthorized; access token is missing or invalid)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">404</h4>
-      Error response (The specified resource was not found)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">409</h4>
-      Error response (Insufficient funds)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">4XX</h4>
-      Error response (Custom service error)
-      <a href="#Failure">Failure</a>
-      <h4 class="field-label">5XX</h4>
-      Error response (Unexpected internal server error)
-      <a href="#Failure">Failure</a>
+      <h4 class="field-label">200</h4>
+      Authorization redirect URL
+      <a href="#"></a>
     </div>
     <!-- method -->
     <hr />
@@ -949,251 +517,22 @@
     <h3>Table of Contents</h3>
     <ol>
       <li>
-        <a href="#Failure"><code>Failure</code> - </a>
-      </li>
-      <li>
-        <a href="#Failure_error"><code>Failure_error</code> - </a>
-      </li>
-      <li>
-        <a href="#FileDescriptor"><code>FileDescriptor</code> - </a>
-      </li>
-      <li>
-        <a href="#FileDescriptor_links_inner"><code>FileDescriptor_links_inner</code> - </a>
-      </li>
-      <li>
-        <a href="#Pin"><code>Pin</code> - </a>
-      </li>
-      <li>
-        <a href="#PinResults"><code>PinResults</code> - </a>
-      </li>
-      <li>
-        <a href="#PinStatus"><code>PinStatus</code> - </a>
-      </li>
-      <li>
-        <a href="#Status"><code>Status</code> - </a>
-      </li>
-      <li>
-        <a href="#TextMatchingStrategy"><code>TextMatchingStrategy</code> - </a>
+        <a href="#_oauth_login_post_request"><code>_oauth_login_post_request</code> - </a>
       </li>
     </ol>
 
     <div class="model">
       <h3>
-        <a name="Failure"><code>Failure</code> - </a>
-        <a class="up" href="#__Models">Up</a>
-      </h3>
-      <div class="model-description">Response for a failed request</div>
-      <div class="field-items">
-        <div class="param">error</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#Failure_error">Failure_error</a></span>
-        </div>
-      </div>
-      <!-- field-items -->
-    </div>
-    <div class="model">
-      <h3>
-        <a name="Failure_error"><code>Failure_error</code> - </a>
+        <a name="_oauth_login_post_request"><code>_oauth_login_post_request</code> - </a>
         <a class="up" href="#__Models">Up</a>
       </h3>
       <div class="model-description"></div>
       <div class="field-items">
-        <div class="param">reason</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Mandatory string identifying
-          the type of error
-        </div>
-        <div class="param">details (optional)</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Optional, longer description
-          of the error; may include UUID of transaction for support, links to documentation etc
-        </div>
-      </div>
-      <!-- field-items -->
-    </div>
-    <div class="model">
-      <h3>
-        <a name="FileDescriptor"><code>FileDescriptor</code> - </a>
-        <a class="up" href="#__Models">Up</a>
-      </h3>
-      <div class="model-description">A file object as represented on @crate/web</div>
-      <div class="field-items">
-        <div class="param">cid</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Content Identifier (CID)
-        </div>
-        <div class="param">type</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Whether this is a file or
-          directory
-        </div>
-        <div class="param-enum-header">Enum:</div>
-        <div class="param-enum">directory</div>
-        <div class="param-enum">file</div>
-        <div class="param">signedEncryptionKey (optional)</div>
+        <div class="param">handle</div>
         <div class="param-desc">
           <span class="param-type"><a href="#string">String</a></span>
-          Encryption key for the file in string format, parsed from binary representation in UTF-8.
-          This key has been encrypted by the user's data key.
-        </div>
-        <div class="param">size</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#number">BigDecimal</a></span> The size of the file.
-        </div>
-        <div class="param">date</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> The date that this file was
-          last modified in ISO-8601.
-        </div>
-        <div class="param">links (optional)</div>
-        <div class="param-desc">
-          <span class="param-type"
-            ><a href="#FileDescriptor_links_inner">array[FileDescriptor_links_inner]</a></span
-          >
-          The CIDs linked to from this directory.
-        </div>
-        <div class="param">cumulativeSize (optional)</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#number">BigDecimal</a></span> The size of the directory
-          and all contained files.
-        </div>
-        <div class="param">mode (optional)</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#number">BigDecimal</a></span>
-          Permissions for file.
         </div>
       </div>
-      <!-- field-items -->
-    </div>
-    <div class="model">
-      <h3>
-        <a name="FileDescriptor_links_inner"><code>FileDescriptor_links_inner</code> - </a>
-        <a class="up" href="#__Models">Up</a>
-      </h3>
-      <div class="model-description">
-        Structure for linked items in a directory. Name can vary from directory to directory.
-      </div>
-      <div class="field-items">
-        <div class="param">cid</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Content Identifier (CID)
-        </div>
-        <div class="param">name</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Name of linked file.
-        </div>
-        <div class="param">size</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#number">BigDecimal</a></span> Size of linked file.
-        </div>
-      </div>
-      <!-- field-items -->
-    </div>
-    <div class="model">
-      <h3>
-        <a name="Pin"><code>Pin</code> - </a>
-        <a class="up" href="#__Models">Up</a>
-      </h3>
-      <div class="model-description">Pin object</div>
-      <div class="field-items">
-        <div class="param">cid</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Content Identifier (CID)
-        </div>
-        <div class="param">name (optional)</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Optional name for pinned
-          data; can be used for lookups later
-        </div>
-        <div class="param">origins (optional)</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">set[String]</a></span>
-          Optional list of multiaddrs known to provide the data; see Provider Hints in the docs
-        </div>
-        <div class="param">meta (optional)</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">map[String, String]</a></span>
-          Optional metadata for pin object
-        </div>
-      </div>
-      <!-- field-items -->
-    </div>
-    <div class="model">
-      <h3>
-        <a name="PinResults"><code>PinResults</code> - </a>
-        <a class="up" href="#__Models">Up</a>
-      </h3>
-      <div class="model-description">Response used for listing pin objects matching request</div>
-      <div class="field-items">
-        <div class="param">count</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#integer">Integer</a></span> The total number of pin
-          objects that exist for passed query filters format: int32
-        </div>
-        <div class="param">results</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#PinStatus">set[PinStatus]</a></span>
-          An array of PinStatus results
-        </div>
-      </div>
-      <!-- field-items -->
-    </div>
-    <div class="model">
-      <h3>
-        <a name="PinStatus"><code>PinStatus</code> - </a>
-        <a class="up" href="#__Models">Up</a>
-      </h3>
-      <div class="model-description">Pin object with status</div>
-      <div class="field-items">
-        <div class="param">requestid</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">String</a></span> Globally unique identifier of
-          the pin request; can be used to check the status of ongoing pinning, or pin removal
-        </div>
-        <div class="param">status</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#Status">Status</a></span>
-        </div>
-        <div class="param">created</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#DateTime">Date</a></span> Immutable timestamp
-          indicating when a pin request entered a pinning service; can be used for filtering results
-          and pagination format: date-time
-        </div>
-        <div class="param">pin</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#Pin">Pin</a></span>
-        </div>
-        <div class="param">delegates</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">set[String]</a></span> List of multiaddrs
-          designated by pinning service that will receive the pin data; see Provider Hints in the
-          docs
-        </div>
-        <div class="param">info (optional)</div>
-        <div class="param-desc">
-          <span class="param-type"><a href="#string">map[String, String]</a></span>
-          Optional info for PinStatus response
-        </div>
-      </div>
-      <!-- field-items -->
-    </div>
-    <div class="model">
-      <h3>
-        <a name="Status"><code>Status</code> - </a>
-        <a class="up" href="#__Models">Up</a>
-      </h3>
-      <div class="model-description">Status a pin object can have at a pinning service</div>
-      <div class="field-items"></div>
-      <!-- field-items -->
-    </div>
-    <div class="model">
-      <h3>
-        <a name="TextMatchingStrategy"><code>TextMatchingStrategy</code> - </a>
-        <a class="up" href="#__Models">Up</a>
-      </h3>
-      <div class="model-description">Alternative text matching strategy</div>
-      <div class="field-items"></div>
       <!-- field-items -->
     </div>
   </body>
