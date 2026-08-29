@@ -8,12 +8,10 @@ import {
   useStore as useFVStore,
   Provider as FVProvider,
 } from "../store/FileViewStore"
-import { useUserStore } from "../store/UserStore"
 import { useEffect, useState } from "preact/hooks"
 import { joinPath, splitPath } from "@crate/utils"
 import { useFileStore } from "../store/FileStore"
 import { NamedFileModel } from "@crate/types"
-import DirectoryLoading from "../components/files/DirectoryLoading"
 
 function Breadcrumbs() {
   const { path, setPath } = useFVStore()
@@ -22,45 +20,32 @@ function Breadcrumbs() {
       <button
         className="cursor-pointer hover:underline"
         onClick={() => {
-          setPath(joinPath("ipfs", splitPath(path)[0]))
+          setPath("/")
         }}
       >
         Files
       </button>
       <span className="text-sm font-bold lg:text-lg text-neutral-700 dark:text-neutral-200">
-        {splitPath(path)
-          .slice(1)
-          .map((el, idx) => (
-            <span key={el}>
-              <span className="inline-block mx-3 font-light text-neutral-500">&gt;</span>
-              <button
-                className="cursor-pointer hover:text-neutral-400 hover:underline"
-                onClick={() => {
-                  setPath(joinPath("ipfs", ...splitPath(path).slice(0, idx + 2)))
-                }}
-              >
-                {el}
-              </button>
-            </span>
-          ))}
+        {splitPath(path).map((el, idx) => (
+          <span key={el}>
+            <span className="inline-block mx-3 font-light text-neutral-500">&gt;</span>
+            <button
+              className="cursor-pointer hover:text-neutral-400 hover:underline"
+              onClick={() => {
+                setPath(joinPath(...splitPath(path).slice(0, idx + 1)))
+              }}
+            >
+              {el}
+            </button>
+          </span>
+        ))}
       </span>
     </>
   )
 }
 
 function FilesChild() {
-  const { inspectorVisible, hideInspector, path, setPath, setLoading } = useFVStore()
-  const rootCID = useUserStore((state) => state.userDoc.rootCID)
-
-  useEffect(() => {
-    const pathArr = splitPath(path)
-    const currentRootCID = pathArr[0]
-    if (rootCID !== currentRootCID) {
-      pathArr[0] = rootCID
-      setPath(`/ipfs/${pathArr.join("/")}/`)
-    }
-  }, [path, rootCID, setPath])
-
+  const { inspectorVisible, hideInspector, path, setLoading } = useFVStore()
   const { getChildren } = useFileStore()
   const [files, setFiles] = useState<Record<string, NamedFileModel>>({})
 
@@ -126,10 +111,8 @@ function FilesChild() {
 }
 
 export default function Files() {
-  const userRootCID = useUserStore((state) => state.userDoc?.rootCID)
-  if (!userRootCID) return <DirectoryLoading />
   return (
-    <FVProvider createStore={createFVStore(userRootCID)}>
+    <FVProvider createStore={createFVStore()}>
       <FilesChild />
     </FVProvider>
   )

@@ -5,6 +5,7 @@ import Anchor from "../../models/Anchor"
 import shallow from "zustand/shallow"
 import { useStore as useFVStore } from "../../store/FileViewStore"
 import { duplicateFile, joinPath, splitPath } from "@crate/utils"
+import FileAPI from "../../api/FileAPI"
 
 type RightClickMenuProps = {
   close?: (e: MouseEvent) => void
@@ -28,19 +29,17 @@ export default function RightClickMenu({
   const deleteFiles = async () => {
     let nextPath = path
     for (const { name } of selection) {
-      nextPath = await deleteFile(joinPath("ipfs", ...splitPath(nextPath), name))
+      nextPath = await deleteFile(joinPath(...splitPath(nextPath), name))
       console.log(nextPath)
     }
   }
 
   const openFile = () =>
-    selection.forEach(({ cid, name }) =>
-      window.open(`https://crate.network/ipfs/${cid}?filename=${name}`, "_blank"),
-    )
+    selection.forEach(({ cid }) => window.open(FileAPI.contentUrl(cid), "_blank"))
 
   const downloadFile = () =>
     selection.forEach(({ cid, name }) =>
-      window.open(`https://crate.network/ipfs/${cid}?filename=${name}&download=true`, "_blank"),
+      window.open(`${FileAPI.contentUrl(cid)}&download=${encodeURIComponent(name)}`, "_blank"),
     )
 
   const copyCID = () => navigator.clipboard.writeText(selection.map(({ cid }) => cid).join(","))

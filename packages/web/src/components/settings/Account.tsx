@@ -5,17 +5,11 @@ import { useUserStore } from "../../store/UserStore"
 import shallow from "zustand/shallow"
 
 export default function Profile() {
-  const [user, userDoc] = useUserStore((state) => [state.user, state.userDoc], shallow)
+  const [userDoc, updateUser] = useUserStore((state) => [state.userDoc, state.updateUser], shallow)
 
   const updateUserDoc = useCallback(
-    async (newDoc: Partial<UserModel>) => {
-      const { doc, setDoc } = await import("firebase/firestore")
-      const { db } = await import("../../vendor/firebase")
-
-      const userDocRef = doc(db, "users", user.uid.toString())
-      setDoc(userDocRef, { ...userDoc, ...newDoc })
-    },
-    [user.uid, userDoc],
+    (newDoc: Partial<UserModel>) => updateUser(newDoc),
+    [updateUser],
   )
 
   const loaded = !!userDoc

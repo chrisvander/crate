@@ -11,6 +11,7 @@ import { FileType, NamedFileModel } from "@crate/types"
 import { joinPath } from "@crate/utils"
 import DirectoryLoading from "./DirectoryLoading"
 import DirectoryEmpty from "./DirectoryEmpty"
+import FileAPI from "../../api/FileAPI"
 
 type IconState = "empty" | "selected" | "hovered"
 const getIconState = (selected: boolean, hovered: boolean): IconState => {
@@ -119,7 +120,7 @@ function FileIcon({ file }: { file: { name: string; cid: string; type?: FileType
         onClick={(e) => select(file, !e.ctrlKey && !e.metaKey)}
         onDblClick={() => {
           if (file.type === "file" && !editingName)
-            window.open(`https://crate.network/ipfs/${file.cid}`, "_blank")
+            window.open(FileAPI.contentUrl(file.cid), "_blank")
           else if (file.type === "directory") {
             setPath(joinPath(path, file.name))
           }

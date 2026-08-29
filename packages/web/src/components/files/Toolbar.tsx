@@ -74,7 +74,6 @@ export function AddBox() {
   enum PopoverWindow {
     NEW_FILE,
     NEW_FOLDER,
-    ADD_IPFS,
   }
   const [popover, setPopover] = useState<PopoverWindow | null>(null)
 
@@ -92,14 +91,12 @@ export function AddBox() {
   const dropdownOptions: FuncInput[] = [
     mOpt("New File", () => setPopover(PopoverWindow.NEW_FILE)),
     mOpt("New Folder", () => setPopover(PopoverWindow.NEW_FOLDER)),
-    "divider",
     mOpt("Upload", () => {
       if (inputEl) {
         inputEl.click()
         setIsSelectingFile(true)
       }
     }),
-    mOpt("Add from IPFS", () => setPopover(PopoverWindow.ADD_IPFS)),
   ]
 
   return (

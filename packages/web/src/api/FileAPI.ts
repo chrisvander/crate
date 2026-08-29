@@ -1,31 +1,12 @@
 import { FileModel } from "@crate/types"
-import { FileError, FileErrorType, Node } from "@crate/utils"
+import { FileError, FileErrorType } from "@crate/utils"
 import { useErrorStore } from "../store/ErrorStore"
-import { useUserStore } from "../store/UserStore"
 
 const apiPath = "/api/v1"
-
-async function authHeader() {
-  const idToken = !useUserStore.getState().user.getIdToken
-    ? await new Promise((resolve) => {
-        useUserStore.subscribe(
-          (state) => state.user,
-          (user) => {
-            if (user.getIdToken) resolve(user.getIdToken())
-          },
-        )
-      })
-    : await useUserStore.getState().user.getIdToken()
-
-  return {
-    Authorization: `Bearer ${idToken}`,
-  }
-}
 
 async function crFetch(url, params = {}): Promise<Response | null> {
   const res = await fetch(url, {
     method: "GET",
-    headers: await authHeader(),
     ...params,
   })
   if (res.status !== 200) {
@@ -35,13 +16,6 @@ async function crFetch(url, params = {}): Promise<Response | null> {
     return null
   }
   return res
-}
-
-async function update(fileModel: FileModel) {
-  return await crFetch(`${apiPath}/block`, {
-    method: "POST",
-    body: Node.toRawBlock(Node.fromFile(fileModel)),
-  })
 }
 
 async function upload(files: FileList, path: string) {
@@ -90,18 +64,20 @@ async function fetchFileByPath(path: string): Promise<FileModel | null> {
 }
 
 async function fetchFileByCID(cid: string): Promise<FileModel | null> {
-  const url = `${apiPath}/file?path=${encodeURIComponent(`/ipfs/${cid}`)}`
+  const url = `${apiPath}/file?cid=${encodeURIComponent(cid)}`
   const res = await crFetch(url)
   return res?.json()
 }
 
+const contentUrl = (cid: string) => `${apiPath}/file?content=${encodeURIComponent(cid)}`
+
 export default {
   apiPath,
-  update,
   upload,
   deleteFile,
   fetchFileByPath,
   fetchFileByCID,
+  contentUrl,
   makeDir,
   makeFile,
 }

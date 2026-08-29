@@ -29,12 +29,11 @@ type FileViewState = {
 const { Provider, useStore } = createContext<StoreApi<FileViewState>>()
 
 const fileViewStore =
-  (rootCID: string): StateCreator<FileViewState, [["zustand/immer", never]]> =>
-  (set, get) => ({
+  (): StateCreator<FileViewState, [["zustand/immer", never]]> => (set, get) => ({
     selectedFiles: [],
     loading: true,
     setLoading: (v: boolean) => set({ loading: v }),
-    path: `/ipfs/${rootCID}`,
+    path: "/",
     select: (info: SelectionInfo | SelectionInfo[], replace = false) =>
       set((state) => {
         const infoArr = Array.isArray(info) ? info : [info]
@@ -62,5 +61,5 @@ const fileViewStore =
       }),
   })
 
-const createStore = (userRootCID: string) => () => create(immer(fileViewStore(userRootCID)))
+const createStore = () => () => create(immer(fileViewStore()))
 export { createStore, useStore, Provider }

@@ -10,6 +10,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      "/oauth": {
+        target: "http://localhost:3030",
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
   oxc: {

@@ -104,7 +104,7 @@ export default function Settings() {
       <h1 className="mb-3 text-4xl font-bold font-iaQuattro lg:text-5xl lg:mb-8">Settings</h1>
       <div className="flex overflow-hidden bg-white border rounded-lg border-neutral-200 dark:border-neutral-700 dark:bg-stone-800 shadow-sm">
         <div className="w-56 p-3 border-r lg:w-fit lg:max-w-sm dark:border-neutral-700">
-          {user.email !== "" && (
+          {user.handle !== "" && (
             <div className="flex items-center p-2 mb-5 lg:space-x-4">
               <div className="items-center justify-center flex-shrink-0 hidden w-12 h-12 rounded-full bg-neutral-200 dark:bg-stone-700 lg:flex">
                 <FontAwesomeIcon icon={faUser} />
@@ -113,7 +113,7 @@ export default function Settings() {
                 <h4 className="w-full overflow-hidden font-semibold tracking-wide text-gray-700 overflow-ellipsis whitespace-nowrap text-md dark:text-gray-100 font-poppins">
                   {userDoc && userDoc.firstName !== ""
                     ? `${userDoc.firstName} ${userDoc.lastName}`
-                    : user.email}
+                    : user.handle}
                 </h4>
                 {userDoc && userDoc.organization !== "" && (
                   <span className="flex items-center overflow-hidden text-sm tracking-wide overflow-ellipsis whitespace-nowrap space-x-1">

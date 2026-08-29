@@ -10,7 +10,7 @@ export function FileInspectorFileBody({ file }: { file: FileModel }) {
   const { name, cid } = file
   const rows: [string, string, string?, boolean?][] = []
   if (name) rows.push(["Name", name])
-  rows.push(["Path", joinPath(...splitPath(path).slice(1), name ? name : "")])
+  rows.push(["Path", joinPath(...splitPath(path), name ? name : "")])
   if (file.size) rows.push(["Size", formatFileSize(file.size)])
   if (file.cumulativeSize) rows.push(["Size", formatFileSize(file.cumulativeSize)])
   if (name && name.includes(".")) rows.push(["Extension", name.split(".", 2)[1]])
