@@ -6,6 +6,8 @@
   "author": "Christian van der Loo",
   "scripts": {
     "build": "bun build src/init.ts --target=node --outfile=../../dist/packages/server/main.js",
+    "dev:build": "bun build src/init.ts --target=node --outfile=../../dist/packages/server/main.js --watch",
+    "dev:run": "node --watch ../../dist/packages/server/main.js",
     "start": "node ../../dist/packages/server/main.js"
   },
   "devDependencies": {
