@@ -78,15 +78,19 @@ export function PopoverMenu({
       onContextMenu={close}
       {...props}
     >
-      {opts.map((e) => {
+      {opts.map((e, index) => {
         if (e === "divider") {
           return (
-            <span className="mx-1 bg-neutral-500 dark:bg-neutral-300 h-px my-1 bg-opacity-20 rounded-sm" />
+            <span
+              key={`divider-${index}`}
+              className="mx-1 bg-neutral-500 dark:bg-neutral-300 h-px my-1 bg-opacity-20 rounded-sm"
+            />
           )
         } else if (e !== "none") {
           const { name, func } = e
           return (
             <span
+              key={name}
               className="px-3 py-1 hover:bg-orange-400 hover:text-white rounded-md cursor-pointer"
               onClick={func}
             >

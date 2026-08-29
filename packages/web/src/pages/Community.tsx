@@ -84,6 +84,7 @@ export default function Community() {
                 if (!children)
                   return (
                     <SidebarButton
+                      key={name}
                       icon={icon}
                       text={name}
                       selected={key === pane}

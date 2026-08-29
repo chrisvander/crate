@@ -1,6 +1,5 @@
 import { Link } from "preact-router"
 import { ReactComponent as CopyrightNotice } from "../content/copyright-notice.md"
-import DarkGlyph from "../assets/dark-crate-glyph.svg"
 
 type Breadcrumb = {
   name: string

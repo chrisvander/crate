@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": [
+    ".yarn/**",
+    "**/*.d.ts",
+    "dist/**",
+    "packages/app/**",
+    "packages/k8s/**",
+    "tmp/**"
+  ],
+  "plugins": ["import", "react", "typescript", "unicorn"],
+  "rules": {
+    "eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+    "react/refs": "off"
+  }
+}

@@ -62,10 +62,9 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "executor": "nx:run-commands",
       "options": {
-        "lintFilePatterns": ["packages/web/**/*.{ts,js,tsx,jsx}"]
+        "command": "oxlint packages/web --deny-warnings"
       }
     },
     "test": {

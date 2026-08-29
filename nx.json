@@ -18,7 +18,7 @@
       "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
     },
     "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+      "inputs": ["default", "{workspaceRoot}/.oxlintrc.json"]
     }
   },
   "workspaceLayout": {
@@ -35,10 +35,10 @@
   "generators": {
     "@nxext/vite": {
       "application": {
-        "linter": "eslint"
+        "linter": "none"
       },
       "library": {
-        "linter": "eslint"
+        "linter": "none"
       }
     }
   },
