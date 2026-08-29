@@ -1,6 +1,4 @@
 import { defineConfig } from "vite"
-import preact from "@preact/preset-vite"
-import mdPlugin, { Mode } from "vite-plugin-markdown"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,10 +21,4 @@ export default defineConfig({
       this: "window",
     },
   },
-  plugins: [
-    preact(),
-    mdPlugin({
-      mode: [Mode.HTML, Mode.REACT],
-    }),
-  ],
 })

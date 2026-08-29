@@ -12,8 +12,9 @@ import NotFound from "./pages/NotFound"
 import { useErrorStore } from "./store/ErrorStore"
 import { useUserStore } from "./store/UserStore"
 import Markdown from "./pages/Markdown"
-import { html as PrivacyPolicy } from "./content/privacy-policy.md"
-import { html as TermsOfUse } from "./content/terms-of-use.md"
+import PrivacyPolicyMarkdown from "./content/privacy-policy.md?raw"
+import TermsOfUseMarkdown from "./content/terms-of-use.md?raw"
+import { marked } from "marked"
 import { JSXInternal } from "preact/src/jsx"
 import Community from "./pages/Community"
 
@@ -100,10 +101,10 @@ export function App() {
         <Community />
       </Page>
       <Page path="/privacy-policy" title={"Crate - Privacy Policy"}>
-        <Markdown html={PrivacyPolicy} />
+        <Markdown html={marked.parse(PrivacyPolicyMarkdown)} />
       </Page>
       <Page path="/terms-of-use" title={"Crate - Terms of Use"}>
-        <Markdown html={TermsOfUse} />
+        <Markdown html={marked.parse(TermsOfUseMarkdown)} />
       </Page>
       <Page path="/login" title={"Crate - Login"}>
         <Authenticate type={AuthenticateType.LOGIN} />

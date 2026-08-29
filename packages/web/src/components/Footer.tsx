@@ -1,5 +1,5 @@
 import { Link } from "preact-router"
-import { ReactComponent as CopyrightNotice } from "../content/copyright-notice.md"
+import copyrightNotice from "../content/copyright-notice.md?raw"
 
 type Breadcrumb = {
   name: string
@@ -28,9 +28,7 @@ export default function Footer({ breadcrumbs }: FooterProps) {
       </div>
       <span className="block h-px bg-slate-500 mb-2 mt-2" />
       <div className="flex justify-between">
-        <span>
-          <CopyrightNotice />
-        </span>
+        <span>{copyrightNotice.trim()}</span>
         <span className="space-x-4">
           <Link href="/terms-of-use" className="hover:underline">
             Terms of Use
