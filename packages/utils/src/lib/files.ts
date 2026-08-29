@@ -1,13 +1,4 @@
-import { CID, Node } from "./ipfs"
-import { FileModel, FileType } from "@crate/types"
-
-export async function createFile(type: FileType, name = ""): Promise<FileModel> {
-  const content = type === "file" ? new Uint8Array() : undefined
-  const node = Node.fromFile({ type }, content)
-  const file = await Node.toFile(node)
-  file.name = name
-  return file
-}
+import { FileModel } from "@crate/types"
 
 export function renameFile(file: FileModel, newName: string): FileModel {
   return {
@@ -44,21 +35,10 @@ export function joinPath(...elements: string[]): string {
 
 // splits a path into segments
 export function splitPath(path: string) {
-  return path
-    .split("/")
-    .filter((e) => e !== "" && e !== null)
-    .slice(1)
+  return path.split("/").filter(Boolean)
 }
 
 // verify path format
 export function validPath(path: string) {
-  if (!path.startsWith("/")) return false
-  const segments = splitPath(path)
-  if (segments.length < 1) return false
-  try {
-    CID.parse(segments[0])
-  } catch (_e) {
-    return false
-  }
-  return true
+  return path.startsWith("/") && !splitPath(path).includes("..")
 }

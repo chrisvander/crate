@@ -64,23 +64,14 @@ export type UserSecurity = {
   dataKey: string | null
 }
 
-/**
- * Tracking data for the user's files
- * @export
- * @interface UserFiles
- */
-export type UserFiles = {
-  /**
-   * The root CID of the user's directory tree.
-   * @type {string | null}
-   * @memberof UserFiles
-   */
-  rootCID: string | null
+export type AtprotoUser = {
+  did: string
+  handle: string
 }
 
 /**
- * The overall user model to store in Firestore
+ * The overall Crate user model.
  * @export
  * @interface UserModel
  */
-export type UserModel = UserInfo & UserSecurity & UserFiles
+export type UserModel = UserInfo & UserSecurity

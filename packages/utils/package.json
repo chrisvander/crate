@@ -9,9 +9,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@crate/types": "workspace:*",
-    "@ipld/dag-pb": "^2.1.17",
-    "ipfs-unixfs": "^6.0.9",
-    "multiformats": "^9.7.0"
+    "@crate/types": "workspace:*"
   }
 }

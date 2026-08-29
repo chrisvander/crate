@@ -6,7 +6,7 @@ node_modules
 
 # environment
 .env*
-firebase.json
+.crate-data
 
 # build
 dist

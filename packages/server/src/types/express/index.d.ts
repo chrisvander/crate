@@ -1,10 +1,11 @@
-import type { DecodedIdToken } from "firebase-admin/auth"
+import type { AtprotoUser } from "@crate/types"
+import type { OAuthSession } from "@atproto/oauth-client-node"
 
 declare global {
   namespace Express {
     interface Request {
-      token?: DecodedIdToken
-      user: string
+      oauthSession: OAuthSession
+      user: AtprotoUser
     }
   }
 }

@@ -9,6 +9,7 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "allowJs": true,
+    "resolvePackageJsonExports": true,
     "types": ["node"]
   },
   "include": ["src", "../types/src", "../utils/src"]

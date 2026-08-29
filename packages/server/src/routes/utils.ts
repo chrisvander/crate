@@ -1,4 +1,3 @@
-import { getRootCID } from "../user/user-model"
 import { RequestHandler, Request, Response, NextFunction } from "express"
 import logger from "../logger"
 
@@ -9,5 +8,3 @@ export const asyncHandler =
       next(err)
     })
   }
-
-export const defaultPath = async (uid: string) => `/ipfs/${await getRootCID(uid)}`

@@ -60,7 +60,6 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### Features
 
-- bootstrapped ipfs on server ([5dd8b2b](https://github.com/Crate-Network/crate/commit/5dd8b2b3c86a56590bd6c066bae91122bd849a16))
 - updated User to include rootCID ([315fd2e](https://github.com/Crate-Network/crate/commit/315fd2e4116c14d8edaa3602fc04d055d434b80a))
 - use CID object instead of string ([59b934b](https://github.com/Crate-Network/crate/commit/59b934be6b3f6d3f124f9724fc8e7c9bc89121dd))
 

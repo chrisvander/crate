@@ -1,16 +1,13 @@
 import { RequestHandler, Router } from "express"
-import logger from "../logger"
-import * as fs from "fs"
-import fileClient from "../clients/ipfs"
-import { asyncHandler, defaultPath } from "./utils"
-import { joinPath, splitPath } from "@crate/utils"
-
-const { getFile, addFile, rmFile } = fileClient
+import { getContent } from "../files/content"
+import { getFile } from "../files/read"
+import { deleteFile, uploadFile } from "../files/write"
+import { asyncHandler } from "./utils"
 
 const router: Router = Router()
 
 const post: RequestHandler = async (req, res) => {
-  if (!req.token) throw new Error("Token expected to exist.")
+  if (!req.user) throw new Error("User expected to exist.")
   if (!req.files || Object.keys(req.files).length === 0) {
     res.status(400).send({
       error: { reason: "BAD_REQUEST", details: "No files were uploaded." },
@@ -18,53 +15,40 @@ const post: RequestHandler = async (req, res) => {
     return
   }
 
-  const { uid } = req.token
-  const { path } = {
-    path: await defaultPath(uid),
-    ...req.query,
-  }
+  const path = typeof req.query["path"] === "string" ? req.query["path"] : "/"
 
   const { files } = req.files
   const fileArr = Array.isArray(files) ? files : [files]
 
-  let nextPath = path
-  const models = []
-  for (const file of fileArr) {
-    const buffer = fs.createReadStream(file.tempFilePath)
-    const [model, newPath] = await addFile({
-      path: nextPath,
-      uid,
-      filename: file.name,
-      file: buffer,
-    })
-    models.push(model)
-    nextPath = joinPath("ipfs", ...splitPath(newPath).slice(0, -1))
-  }
-
-  logger.info(JSON.stringify(models))
+  const models = await Promise.all(fileArr.map((file) => uploadFile(req.oauthSession, path, file)))
   res.send(models)
 }
 
 const get: RequestHandler = async (req, res) => {
-  if (!req.token) throw new Error("Token expected to exist.")
-  const { path } = {
-    path: `/ipfs/${req.token.uid}`,
-    ...req.query,
+  if (!req.user) throw new Error("User expected to exist.")
+  if (typeof req.query["content"] === "string") {
+    const content = await getContent(req.oauthSession, req.query["content"])
+    res.type(content.mimeType).send(Buffer.from(content.bytes))
+    return
   }
 
-  const model = await getFile({ path })
-  res.send(model)
+  const target =
+    typeof req.query["cid"] === "string"
+      ? req.query["cid"]
+      : typeof req.query["path"] === "string"
+        ? req.query["path"]
+        : "/"
+  res.send(await getFile(req.oauthSession, target))
 }
 
 const del: RequestHandler = async (req, res) => {
-  if (!req.token) throw new Error("Token expected to exist.")
-  const { path } = {
-    path: `/ipfs/${req.token.uid}`,
-    ...req.query,
+  if (!req.user) throw new Error("User expected to exist.")
+  if (typeof req.query["path"] !== "string") {
+    res.status(400).send("Path is required.")
+    return
   }
 
-  const newPath = await rmFile({ path, uid: req.token.uid })
-  res.send(newPath)
+  res.send(await deleteFile(req.oauthSession, req.query["path"]))
 }
 
 router.get("/", asyncHandler(get))

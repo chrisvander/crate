@@ -1,20 +1,31 @@
-import { CID } from "@crate/utils"
 import { UserModel } from "@crate/types"
-import { firestore } from "./firebase"
+import { JsonStore } from "../storage/json-store"
+import { dataPath } from "../storage/paths"
 
-export const getDocRef = async (uid: string) => firestore.collection("users").doc(uid)
+const users = new JsonStore<UserModel>(dataPath("users.json"))
 
 export const getUserDoc = async (uid: string) => {
-  const docRef = await getDocRef(uid)
-  const docSnapshot = await docRef.get()
-  const docData = docSnapshot.data()
-  return docData as UserModel
+  const existing = await users.get(uid)
+  if (existing) return existing
+
+  const user = makeDefaultUser()
+  await users.set(uid, user)
+  return user
 }
 
-export const setUserDoc = async (uid: string, model: Partial<UserModel>) =>
-  await (await getDocRef(uid)).update(model)
+export const setUserDoc = async (uid: string, model: Partial<UserModel>) => {
+  const user = { ...(await getUserDoc(uid)), ...model }
+  await users.set(uid, user)
+  return user
+}
 
-export const setRootCID = async (uid: string, newCID: CID) =>
-  setUserDoc(uid, { rootCID: newCID.toString() })
-
-export const getRootCID = async (uid: string) => (await getUserDoc(uid)).rootCID
+const makeDefaultUser = (): UserModel => ({
+  firstName: "",
+  lastName: "",
+  organization: "",
+  uses2FA: false,
+  dataKey: "",
+  devices: {},
+  signedDataKey: {},
+  recoveryKey: null,
+})
