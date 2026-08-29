@@ -1,8 +1,6 @@
 import { defineConfig } from "vite"
 import preact from "@preact/preset-vite"
-import tsconfigPaths from "vite-tsconfig-paths"
 import mdPlugin, { Mode } from "vite-plugin-markdown"
-import { visualizer } from "rollup-plugin-visualizer"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,9 +14,11 @@ export default defineConfig({
       },
     },
   },
-  esbuild: {
-    jsxFactory: "h",
-    jsxFragment: "Fragment",
+  oxc: {
+    jsx: {
+      runtime: "automatic",
+      importSource: "preact",
+    },
     define: {
       this: "window",
     },
@@ -28,12 +28,5 @@ export default defineConfig({
     mdPlugin({
       mode: [Mode.HTML, Mode.REACT],
     }),
-    tsconfigPaths(),
-    //magicalSvg({
-    //// By default, the output will be a dom element (the <svg> you can use inside the webpage).
-    //// You can also change the output to react (or preact) to get a component you can use.
-    //target: "preact",
-    //}),
-    visualizer(),
   ],
 })
