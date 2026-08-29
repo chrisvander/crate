@@ -7,7 +7,7 @@ import { joinPath, splitPath } from "@crate/utils"
 
 const { getFile, addFile, rmFile } = fileClient
 
-const router = Router()
+const router: Router = Router()
 
 const post: RequestHandler = async (req, res) => {
   if (!req.token) throw new Error("Token expected to exist.")

@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/types" },
+    { "path": "./packages/utils" },
+    { "path": "./packages/server" },
+    { "path": "./packages/web" },
+    { "path": "./packages/web/tsconfig.node.json" }
+  ]
+}

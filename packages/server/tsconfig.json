@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -10,5 +11,5 @@
     "allowJs": true,
     "types": ["node"]
   },
-  "include": ["src"]
+  "include": ["src", "../types/src", "../utils/src"]
 }

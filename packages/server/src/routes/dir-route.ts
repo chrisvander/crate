@@ -5,7 +5,7 @@ import { asyncHandler } from "./utils"
 
 const { makeFile } = fileClient
 
-const router = Router()
+const router: Router = Router()
 
 const routeMakeFile: RequestHandler = async (req, res) => {
   if (!req.token) throw new Error("Token expected to exist.")

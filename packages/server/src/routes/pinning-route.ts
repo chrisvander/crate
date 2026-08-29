@@ -2,7 +2,7 @@ import { Pin, PinStatus, Status } from "@crate/types"
 import { Router } from "express"
 import { uuid } from "uuidv4"
 
-const router = Router()
+const router: Router = Router()
 
 router.get("/", (req, res) => {
   const fcRes = "List of pin objects."
