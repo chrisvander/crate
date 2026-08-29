@@ -41,16 +41,9 @@ export default function Navigation(props) {
                     <span className="space-x-4">
                       <Link
                         href="/login"
-                        className="px-6 py-3 font-medium bg-stone-500 text-neutral-50 rounded-md hover:text-neutral-300"
-                      >
-                        Log in
-                      </Link>
-
-                      <Link
-                        href="/register"
                         className="px-6 py-3 font-medium bg-orange-500 text-neutral-50 rounded-md hover:text-neutral-300"
                       >
-                        Register
+                        Log in
                       </Link>
                     </span>
                   </>

@@ -5,7 +5,7 @@ import lazy from "preact-lazy"
 import "./index.css"
 
 import Splash from "./pages/Splash"
-import Authenticate, { AuthenticateType } from "./pages/Authenticate"
+import Login from "./pages/Login"
 import Navigation from "./components/Navigation"
 import Footer from "./components/Footer"
 import NotFound from "./pages/NotFound"
@@ -107,10 +107,7 @@ export function App() {
         <Markdown html={marked.parse(TermsOfUseMarkdown)} />
       </Page>
       <Page path="/login" title={"Crate - Login"}>
-        <Authenticate type={AuthenticateType.LOGIN} />
-      </Page>
-      <Page path="/register" title={"Crate - Register"}>
-        <Authenticate type={AuthenticateType.REGISTER} />
+        <Login />
       </Page>
       <Page default title="Crate - 404 Not Found">
         <NotFound />

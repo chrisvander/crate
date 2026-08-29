@@ -52,10 +52,10 @@ export default function Splash() {
           </p>
           <div class="flex mt-12 space-x-8">
             <Link
-              href="/register"
+              href="/login"
               class="flex items-center justify-center bg-orange-500 text-white w-40 h-16 justify-center border border-transparent text-base font-medium rounded-md"
             >
-              Get started
+              Log in
             </Link>
             <Link
               href="#"

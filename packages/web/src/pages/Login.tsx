@@ -6,12 +6,7 @@ import FormInput from "../components/FormInput"
 import { useErrorStore } from "../store/ErrorStore"
 import { useUserStore } from "../store/UserStore"
 
-export enum AuthenticateType {
-  REGISTER = "Register",
-  LOGIN = "Login",
-}
-
-export default function Authenticate({ type }: { type: AuthenticateType }) {
+export default function Login() {
   const loggedIn = useUserStore((state) => state.signedIn)
   const login = useUserStore((state) => state.login)
   const [disabled, setDisabled] = useState(false)
@@ -31,7 +26,7 @@ export default function Authenticate({ type }: { type: AuthenticateType }) {
 
   return (
     <FormBox className="mt-6 space-y-4 md:mt-24 xl:mt-36">
-      <h2 className="pb-2">{type}</h2>
+      <h2 className="pb-2">Log in</h2>
       <p className="text-sm text-gray-700 dark:text-gray-300">
         Continue with your ATProto account. Your PDS will confirm the permissions Crate needs.
       </p>
