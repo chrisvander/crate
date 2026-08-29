@@ -13,8 +13,6 @@
     "@types/express-fileupload": "^1.2.2"
   },
   "dependencies": {
-    "@commitlint/cli": "^17.0.0",
-    "@commitlint/config-conventional": "^17.0.0",
     "@crate/types": "workspace:*",
     "@crate/utils": "workspace:*",
     "@filecoin-shipyard/lotus-client-provider-nodejs": "^1.1.1",
