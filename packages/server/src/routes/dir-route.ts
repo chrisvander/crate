@@ -24,7 +24,7 @@ const routeMakeFile: RequestHandler = async (req, res) => {
       uid: req.token.uid,
       path: req.query["path"],
       type: req.query["type"] as FileType,
-    })
+    }),
   )
 }
 

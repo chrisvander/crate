@@ -1,13 +1,6 @@
 import { GridView } from "../components/files/GridView"
 import { ListView } from "../components/files/ListView"
-import {
-  SearchBar,
-  SortBar,
-  SortBy,
-  AddBox,
-  ViewBar,
-  ViewMode,
-} from "../components/files/Toolbar"
+import { SearchBar, SortBar, SortBy, AddBox, ViewBar, ViewMode } from "../components/files/Toolbar"
 import useStoredState from "../hooks/useStoredState"
 import { FileInspector } from "../components/files/FileInspector"
 import {
@@ -39,15 +32,11 @@ function Breadcrumbs() {
           .slice(1)
           .map((el, idx) => (
             <span key={el}>
-              <span className="inline-block mx-3 font-light text-neutral-500">
-                &gt;
-              </span>
+              <span className="inline-block mx-3 font-light text-neutral-500">&gt;</span>
               <button
                 className="cursor-pointer hover:text-neutral-400 hover:underline"
                 onClick={() => {
-                  setPath(
-                    joinPath("ipfs", ...splitPath(path).slice(0, idx + 2))
-                  )
+                  setPath(joinPath("ipfs", ...splitPath(path).slice(0, idx + 2)))
                 }}
               >
                 {el}
@@ -60,8 +49,7 @@ function Breadcrumbs() {
 }
 
 function FilesChild() {
-  const { inspectorVisible, hideInspector, path, setPath, setLoading } =
-    useFVStore()
+  const { inspectorVisible, hideInspector, path, setPath, setLoading } = useFVStore()
   const rootCID = useUserStore((state) => state.userDoc.rootCID)
 
   useEffect(() => {
@@ -88,10 +76,7 @@ function FilesChild() {
       })
   }, [getChildren, path, setLoading])
 
-  const [viewMode, setViewMode] = useStoredState<ViewMode>(
-    ViewMode.LIST,
-    "view-mode"
-  )
+  const [viewMode, setViewMode] = useStoredState<ViewMode>(ViewMode.LIST, "view-mode")
   const [sortBy, setSortBy] = useStoredState<SortBy>(SortBy.NAME, "sort-order")
 
   const orderedFiles = Object.values(files).sort((a, b) => {

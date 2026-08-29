@@ -40,9 +40,7 @@ const fileViewStore =
         const infoArr = Array.isArray(info) ? info : [info]
         if (replace) state.selectedFiles = infoArr
         const newNames = infoArr.map((e) => e.name)
-        const newSelectedFiles = state.selectedFiles.filter(
-          (e) => !newNames.includes(e.name)
-        )
+        const newSelectedFiles = state.selectedFiles.filter((e) => !newNames.includes(e.name))
         state.selectedFiles = newSelectedFiles.concat(infoArr)
       }),
     deselect: (info: SelectionInfo | SelectionInfo[]) => {
@@ -56,8 +54,7 @@ const fileViewStore =
     },
     inspectorVisible: false,
     showInspector: () => set((state) => ({ ...state, inspectorVisible: true })),
-    hideInspector: () =>
-      set((state) => ({ ...state, inspectorVisible: false })),
+    hideInspector: () => set((state) => ({ ...state, inspectorVisible: false })),
     setPath: (path: string) =>
       set((state) => {
         state.selectedFiles = []
@@ -65,6 +62,5 @@ const fileViewStore =
       }),
   })
 
-const createStore = (userRootCID: string) => () =>
-  create(immer(fileViewStore(userRootCID)))
+const createStore = (userRootCID: string) => () => create(immer(fileViewStore(userRootCID)))
 export { createStore, useStore, Provider }

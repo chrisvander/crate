@@ -4,40 +4,35 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ## [0.10.0](https://github.com/Crate-Network/crate/compare/@crate/web-0.9.1...@crate/web-0.10.0) (2022-10-12)
 
-
 ### Features
 
-* color consistency, use stone instead of gray ([f2e14f4](https://github.com/Crate-Network/crate/commit/f2e14f430ce17f40b03e8b97ba81a279f66e26ce))
-* update preact, use async lazy loading ([04c3869](https://github.com/Crate-Network/crate/commit/04c3869a96160cdd431fd210d3286b3a1aaf8b82))
-
+- color consistency, use stone instead of gray ([f2e14f4](https://github.com/Crate-Network/crate/commit/f2e14f430ce17f40b03e8b97ba81a279f66e26ce))
+- update preact, use async lazy loading ([04c3869](https://github.com/Crate-Network/crate/commit/04c3869a96160cdd431fd210d3286b3a1aaf8b82))
 
 ### Bug Fixes
 
-* decreased font sizes for web ([0184525](https://github.com/Crate-Network/crate/commit/0184525afea844296ded1681ec419ae5e2f96c7e))
-* tweaked some webpage margins ([052c549](https://github.com/Crate-Network/crate/commit/052c549e4776f8df9f1bae1558ce6b63c4fc9e4c))
+- decreased font sizes for web ([0184525](https://github.com/Crate-Network/crate/commit/0184525afea844296ded1681ec419ae5e2f96c7e))
+- tweaked some webpage margins ([052c549](https://github.com/Crate-Network/crate/commit/052c549e4776f8df9f1bae1558ce6b63c4fc9e4c))
 
 ### [0.9.1](https://github.com/Crate-Network/crate/compare/@crate/web-0.9.0...@crate/web-0.9.1) (2022-10-09)
 
-
 ### Bug Fixes
 
-* fixed splash page container clipping content ([eaaec49](https://github.com/Crate-Network/crate/commit/eaaec495b7087f533da91fb0efa0e76e9991cf79))
+- fixed splash page container clipping content ([eaaec49](https://github.com/Crate-Network/crate/commit/eaaec495b7087f533da91fb0efa0e76e9991cf79))
 
 ## [0.9.0](https://github.com/Crate-Network/crate/compare/@crate/web-0.8.5...@crate/web-0.9.0) (2022-09-07)
 
-
 ### Features
 
-* made Splash have fancy new backdrop ([d3a5e59](https://github.com/Crate-Network/crate/commit/d3a5e592bb5d82cbcbcf94aa833a7e4c1a197998))
-* pumped up the font sizes ([2d3bfe4](https://github.com/Crate-Network/crate/commit/2d3bfe451bcc758a1252a704dc03d0db5a57285e))
-* redid assets and layout of splash ([df13a7b](https://github.com/Crate-Network/crate/commit/df13a7b0c0dbb7a4b508032ecaca5c21996a014c))
-* updated splash to incorporate into page more ([30b1960](https://github.com/Crate-Network/crate/commit/30b19601bedd10dfd3ddf303fe43e8bb7e6161a3))
-
+- made Splash have fancy new backdrop ([d3a5e59](https://github.com/Crate-Network/crate/commit/d3a5e592bb5d82cbcbcf94aa833a7e4c1a197998))
+- pumped up the font sizes ([2d3bfe4](https://github.com/Crate-Network/crate/commit/2d3bfe451bcc758a1252a704dc03d0db5a57285e))
+- redid assets and layout of splash ([df13a7b](https://github.com/Crate-Network/crate/commit/df13a7b0c0dbb7a4b508032ecaca5c21996a014c))
+- updated splash to incorporate into page more ([30b1960](https://github.com/Crate-Network/crate/commit/30b19601bedd10dfd3ddf303fe43e8bb7e6161a3))
 
 ### Bug Fixes
 
-* redirect from splash if logged in using effect ([37ce696](https://github.com/Crate-Network/crate/commit/37ce69622a9949d96ddcbc260aa70a7251563058))
-* sort tailwindcss, h2 on profile ([79a1907](https://github.com/Crate-Network/crate/commit/79a19076e656c49c10cea2f15e1239c2df612c91))
+- redirect from splash if logged in using effect ([37ce696](https://github.com/Crate-Network/crate/commit/37ce69622a9949d96ddcbc260aa70a7251563058))
+- sort tailwindcss, h2 on profile ([79a1907](https://github.com/Crate-Network/crate/commit/79a19076e656c49c10cea2f15e1239c2df612c91))
 
 ### [0.8.5](https://github.com/Crate-Network/crate/compare/@crate/web-0.8.4...@crate/web-0.8.5) (2022-08-14)
 

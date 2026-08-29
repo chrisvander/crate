@@ -44,14 +44,12 @@ export const makeCategory = (
   name: string,
   key: string,
   icon?: IconProp,
-  children?: Subcategory[]
+  children?: Subcategory[],
 ) => ({
   name,
   key,
   icon,
-  children: children
-    ? children.map((sub) => ({ ...sub, key: `${key}-${sub.key}` }))
-    : undefined,
+  children: children ? children.map((sub) => ({ ...sub, key: `${key}-${sub.key}` })) : undefined,
 })
 
 export const categories: Category[] = [

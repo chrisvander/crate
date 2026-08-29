@@ -66,15 +66,14 @@ const fileStore: StateCreator<
 
   const getChildren = async (path: string) => {
     const model = await getPath(path)
-    if (model.type !== "directory")
-      throw new FileError(FileErrorType.FILE_INVALID)
+    if (model.type !== "directory") throw new FileError(FileErrorType.FILE_INVALID)
 
     const children: Record<string, NamedFileModel> = {}
 
     await Promise.all(
       model.links.map(async (l) => {
         children[l.name] = { ...(await getCID(l.cid)), name: l.name }
-      })
+      }),
     )
 
     return children

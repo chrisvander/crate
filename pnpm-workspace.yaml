@@ -1,7 +1,7 @@
 allowBuilds:
-  '@nestjs/core': true
-  '@openapitools/openapi-generator-cli': true
-  '@parcel/watcher': true
+  "@nestjs/core": true
+  "@openapitools/openapi-generator-cli": true
+  "@parcel/watcher": true
   core-js-pure: true
   esbuild: true
   nx: true

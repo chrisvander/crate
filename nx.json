@@ -3,13 +3,7 @@
   "tasksRunnerOptions": {
     "default": {
       "options": {
-        "cacheableOperations": [
-          "generate-sources",
-          "build",
-          "dev",
-          "preview",
-          "deploy"
-        ]
+        "cacheableOperations": ["generate-sources", "build", "dev", "preview", "deploy"]
       }
     }
   },

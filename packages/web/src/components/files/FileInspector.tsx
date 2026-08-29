@@ -1,10 +1,6 @@
 import { useEffect, useState } from "preact/hooks"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  faGreaterThan,
-  faLessThan,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons"
+import { faGreaterThan, faLessThan, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { useFileStore } from "../../store/FileStore"
 import { FileInspectorFileBody } from "../files/FileInspectorFileBody"
 import { useStore as useFVStore } from "../../store/FileViewStore"
@@ -12,27 +8,19 @@ import shallow from "zustand/shallow"
 import { NamedFileModel } from "@crate/types"
 
 export function FileInspector({ close }: { close: () => void }) {
-  const [selection, path] = useFVStore(
-    (state) => [state.selectedFiles, state.path],
-    shallow
-  )
-  const [getCID, get] = useFileStore(
-    (state) => [state.getCID, state.get],
-    shallow
-  )
+  const [selection, path] = useFVStore((state) => [state.selectedFiles, state.path], shallow)
+  const [getCID, get] = useFileStore((state) => [state.getCID, state.get], shallow)
   const [selectedFiles, setSelectedFiles] = useState<NamedFileModel[]>([])
 
   useEffect(() => {
     if (selection.length === 0) {
-      get(path).then((dirModel) =>
-        setSelectedFiles([{ name: "Root", ...dirModel }])
-      )
+      get(path).then((dirModel) => setSelectedFiles([{ name: "Root", ...dirModel }]))
     } else {
       Promise.all(
         selection.map(async ({ name, cid }) => ({
           ...(await getCID(cid)),
           name,
-        }))
+        })),
       ).then((v) => {
         setSelectedFiles(v)
       })
@@ -57,9 +45,7 @@ export function FileInspector({ close }: { close: () => void }) {
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>
-      {selectedFiles.length === 1 && (
-        <FileInspectorFileBody file={selectedFiles[0]} />
-      )}
+      {selectedFiles.length === 1 && <FileInspectorFileBody file={selectedFiles[0]} />}
       {selectedFiles.length > 1 && (
         <>
           <FileInspectorFileBody file={selectedFiles[fileIndex]} />
@@ -85,9 +71,7 @@ export function FileInspector({ close }: { close: () => void }) {
         </>
       )}
       {selectedFiles.length === 0 && (
-        <span className="text-sm m-2 italic inline-block">
-          No files are selected.
-        </span>
+        <span className="text-sm m-2 italic inline-block">No files are selected.</span>
       )}
     </>
   )

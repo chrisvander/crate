@@ -1,10 +1,4 @@
-import {
-  CID,
-  FileError,
-  FileErrorType,
-  joinPath,
-  splitPath,
-} from "@crate/utils"
+import { CID, FileError, FileErrorType, joinPath, splitPath } from "@crate/utils"
 import { getRootCID, setRootCID } from "../user/user-model"
 import { IPFSHTTPClient } from "ipfs-http-client"
 import { removeFromDir } from "../lib/directories"
@@ -26,11 +20,7 @@ export default (client: IPFSHTTPClient) => async (opts: FileDeleteOptions) => {
   const dirCID = pathCIDs[pathCIDs.length - 2]
 
   const newDirCID = await removeFromDir(client, dirCID, filename)
-  const newPath = await updatePath(
-    client,
-    joinPath("ipfs", ...pathArr.slice(0, -1)),
-    newDirCID
-  )
+  const newPath = await updatePath(client, joinPath("ipfs", ...pathArr.slice(0, -1)), newDirCID)
   const newRootCID = CID.parse(splitPath(newPath)[0])
 
   await pin(client, newRootCID)

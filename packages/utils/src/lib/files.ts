@@ -2,10 +2,7 @@ import { CID, Node } from "./ipfs"
 import { Buffer } from "buffer"
 import { FileModel, FileType } from "@crate/types"
 
-export async function createFile(
-  type: FileType,
-  name = ""
-): Promise<FileModel> {
+export async function createFile(type: FileType, name = ""): Promise<FileModel> {
   const content = type === "file" ? Buffer.from("") : undefined
   const node = Node.fromFile({ type }, content)
   const file = await Node.toFile(node)
@@ -30,8 +27,7 @@ export function duplicateFile(file: FileModel): FileModel {
 }
 
 export function stripSlashes(part: string): string {
-  if (part.startsWith("/") && part[part.length - 1] === "/")
-    return part.slice(1, part.length - 1)
+  if (part.startsWith("/") && part[part.length - 1] === "/") return part.slice(1, part.length - 1)
   else if (part[part.length - 1] === "/") return part.slice(0, part.length - 1)
   else if (part.startsWith("/")) return part.slice(1)
   else return part

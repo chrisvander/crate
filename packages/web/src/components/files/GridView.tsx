@@ -69,11 +69,7 @@ function NameInput({
   )
 }
 
-function FileIcon({
-  file,
-}: {
-  file: { name: string; cid: string; type?: FileType }
-}) {
+function FileIcon({ file }: { file: { name: string; cid: string; type?: FileType } }) {
   const [hovered, setHovered] = useState(false)
   const [selected, setSelected] = useState(false)
   const [editingName, setEditingName] = useState(false)
@@ -81,14 +77,8 @@ function FileIcon({
   const contextShown = Boolean(anchorPos)
 
   const [selectionInfo, select, deselect, path, setPath] = useFVStore(
-    (state) => [
-      state.selectedFiles,
-      state.select,
-      state.deselect,
-      state.path,
-      state.setPath,
-    ],
-    shallow
+    (state) => [state.selectedFiles, state.select, state.deselect, state.path, state.setPath],
+    shallow,
   )
 
   const onContextMenu = (e: MouseEvent) => {
@@ -99,9 +89,7 @@ function FileIcon({
   const handleClose = () => setAnchorPos(null)
 
   useEffect(() => {
-    const newSelectedStatus = selectionInfo
-      .map((i) => i.name)
-      .includes(file.name)
+    const newSelectedStatus = selectionInfo.map((i) => i.name).includes(file.name)
     setSelected(newSelectedStatus)
     if (contextShown && !newSelectedStatus) setAnchorPos(null)
   }, [contextShown, file.name, selectionInfo])
@@ -144,7 +132,7 @@ function FileIcon({
         <div
           className={"flex justify-center items-center rounded-md m-1 w-24 h-24 ".concat(
             iconState === "hovered" ? "bg-opacity-10 bg-neutral-500 " : "",
-            iconState === "selected" ? "bg-opacity-40 bg-neutral-500 " : ""
+            iconState === "selected" ? "bg-opacity-40 bg-neutral-500 " : "",
           )}
         >
           <FontAwesomeIcon
@@ -169,7 +157,7 @@ function FileIcon({
           <span
             className={"px-1 font-medium text-sm rounded-md select-text ".concat(
               iconState === "hovered" ? "bg-opacity-10 bg-neutral-500 " : "",
-              iconState === "selected" ? "bg-orange-500 text-white " : ""
+              iconState === "selected" ? "bg-orange-500 text-white " : "",
             )}
           >
             {file.name.split(".")[0]}

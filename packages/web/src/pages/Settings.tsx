@@ -97,14 +97,11 @@ export default function Settings() {
     }
   }
 
-  if (!user)
-    return <div className="w-full mt-6 italic text-center">Loading...</div>
+  if (!user) return <div className="w-full mt-6 italic text-center">Loading...</div>
 
   return (
     <main className="max-w-screen-2xl">
-      <h1 className="mb-3 text-4xl font-bold font-iaQuattro lg:text-5xl lg:mb-8">
-        Settings
-      </h1>
+      <h1 className="mb-3 text-4xl font-bold font-iaQuattro lg:text-5xl lg:mb-8">Settings</h1>
       <div className="flex overflow-hidden bg-white border rounded-lg border-neutral-200 dark:border-neutral-700 dark:bg-stone-800 shadow-sm">
         <div className="w-56 p-3 border-r lg:w-fit lg:max-w-sm dark:border-neutral-700">
           {user.email !== "" && (

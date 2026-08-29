@@ -4,8 +4,7 @@
 
 .crate--shadow {
   image-rendering: crisp-edges;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))
-    drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)) drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))
     drop-shadow(0px 0.91px 0.75px rgba(0, 0, 0, 0.0253));
 }
 

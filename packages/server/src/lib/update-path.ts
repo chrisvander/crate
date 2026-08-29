@@ -15,7 +15,7 @@ import { walk } from "./resolution"
 export default async function updatePath(
   client: IPFSHTTPClient,
   oldPath: string,
-  replacementCID: CID
+  replacementCID: CID,
 ) {
   const pathArr = splitPath(oldPath)
   const pathCIDs = await walk(client, oldPath)

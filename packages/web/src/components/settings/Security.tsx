@@ -2,10 +2,7 @@ import shallow from "zustand/shallow"
 import { useUserStore } from "../../store/UserStore"
 
 export default function Security() {
-  const [userDoc, updateUser] = useUserStore(
-    (state) => [state.userDoc, state.updateUser],
-    shallow
-  )
+  const [userDoc, updateUser] = useUserStore((state) => [state.userDoc, state.updateUser], shallow)
 
   const { uses2FA } = userDoc
 
@@ -37,10 +34,9 @@ export default function Security() {
         </div>
       </div>
       <span className="text-sm text-stone-800 dark:text-stone-200">
-        Using 2-Factor Authentication (2FA) ensures that no one, not even Crate
-        Network, can access your data. However, if no other devices can
-        authenticate and you lose the recovery password, your data will not be
-        recoverable.
+        Using 2-Factor Authentication (2FA) ensures that no one, not even Crate Network, can access
+        your data. However, if no other devices can authenticate and you lose the recovery password,
+        your data will not be recoverable.
       </span>
     </div>
   )

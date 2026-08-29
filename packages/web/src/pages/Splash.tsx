@@ -45,10 +45,9 @@ export default function Splash() {
             </span>
           </h1>
           <p className="sm:max-w-2xl lg:max-w-5xl sm:text-2xl lg:text-4xl">
-            Store your files securely, with crypographically-verified guarantees
-            on data accessibility. Access your files on all your devices, from
-            anywhere in the world. Store as much data as you want. Get 1 TB of
-            storage for just
+            Store your files securely, with crypographically-verified guarantees on data
+            accessibility. Access your files on all your devices, from anywhere in the world. Store
+            as much data as you want. Get 1 TB of storage for just
             <span class="font-bold"> $10/month</span>.
           </p>
           <div class="flex mt-12 space-x-8">

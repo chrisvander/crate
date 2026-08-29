@@ -7,7 +7,7 @@ export async function makeKey() {
         length: 256,
       },
       true,
-      ["encrypt", "decrypt"]
-    )
+      ["encrypt", "decrypt"],
+    ),
   )
 }

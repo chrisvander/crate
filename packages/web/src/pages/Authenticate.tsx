@@ -72,11 +72,7 @@ type SignInBtnProps = {
 //   )
 // }
 
-function SignInWithApple({
-  handleProvider,
-  disabled,
-  providerText,
-}: SignInBtnProps) {
+function SignInWithApple({ handleProvider, disabled, providerText }: SignInBtnProps) {
   const useApple = handleProvider(async () => {
     const { signInWithRedirect } = await import("firebase/auth")
     const { auth, providers } = await import("../vendor/firebase")
@@ -110,9 +106,7 @@ export default function Authenticate({ type }: { type: AuthenticateType }) {
     providerCb().catch((error) => {
       const errorCode = error.code
       const errorMessage = error.message
-      useErrorStore
-        .getState()
-        .showError({ name: errorCode, message: errorMessage })
+      useErrorStore.getState().showError({ name: errorCode, message: errorMessage })
     })
     setDisableInputs(false)
   }
@@ -135,8 +129,7 @@ export default function Authenticate({ type }: { type: AuthenticateType }) {
     password &&
     email !== "" &&
     password.length > 8 &&
-    (type === AuthenticateType.LOGIN ||
-      (verifyPassword && verifyPassword === password))
+    (type === AuthenticateType.LOGIN || (verifyPassword && verifyPassword === password))
 
   return (
     <FormBox className="mt-6 space-y-4 md:mt-24 xl:mt-36">
@@ -173,11 +166,7 @@ export default function Authenticate({ type }: { type: AuthenticateType }) {
           }}
         />
       )}
-      <Button
-        className="w-full text-white"
-        onClick={useEmail}
-        disabled={!emailValidated}
-      >
+      <Button className="w-full text-white" onClick={useEmail} disabled={!emailValidated}>
         {providerText} with Email
       </Button>
       <SignInWithApple

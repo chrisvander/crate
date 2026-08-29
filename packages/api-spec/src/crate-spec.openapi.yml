@@ -186,8 +186,7 @@ paths:
   /pins:
     get:
       summary: List pin objects
-      description:
-        List all the pin objects, matching optional filters; when no filter is
+      description: List all the pin objects, matching optional filters; when no filter is
         provided, only successful pins are returned.
       tags:
         - pins

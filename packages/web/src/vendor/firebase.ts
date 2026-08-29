@@ -1,11 +1,6 @@
 import { getAnalytics } from "firebase/analytics"
 import { initializeApp } from "firebase/app"
-import {
-  getAuth,
-  GithubAuthProvider,
-  GoogleAuthProvider,
-  OAuthProvider,
-} from "firebase/auth"
+import { getAuth, GithubAuthProvider, GoogleAuthProvider, OAuthProvider } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 
 export const actionCodeSettings = {

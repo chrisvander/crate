@@ -11,17 +11,8 @@ import FileAPI from "../../api/FileAPI"
 import { useStore as useFVStore } from "../../store/FileViewStore"
 import shallow from "zustand/shallow"
 
-function NewFileBody({
-  dismiss,
-  type,
-}: {
-  dismiss: () => void
-  type: "directory" | "file"
-}) {
-  const [makeDir, makeFile] = useFileStore(
-    (state) => [state.makeDir, state.makeFile],
-    shallow
-  )
+function NewFileBody({ dismiss, type }: { dismiss: () => void; type: "directory" | "file" }) {
+  const [makeDir, makeFile] = useFileStore((state) => [state.makeDir, state.makeFile], shallow)
   const path = useFVStore((state) => state.path)
   const [name, setName] = useState("")
   const invalid = sanitizeFilename(name) !== name
@@ -35,9 +26,7 @@ function NewFileBody({
   return (
     <>
       <div className="p-2 w-96">
-        <h1 className="mb-2 text-xl font-bold">
-          New {type === "file" ? "File" : "Folder"}
-        </h1>
+        <h1 className="mb-2 text-xl font-bold">New {type === "file" ? "File" : "Folder"}</h1>
         <FormInput
           placeholder={type === "file" ? "file name" : "folder name"}
           value={name}
@@ -59,10 +48,7 @@ function NewFileBody({
 export function AddBox() {
   const [inputEl, setInputEl] = useState<HTMLInputElement>(null)
   const [isSelectingFile, setIsSelectingFile] = useState(false)
-  const [path, setPath] = useFVStore(
-    (state) => [state.path, state.setPath],
-    shallow
-  )
+  const [path, setPath] = useFVStore((state) => [state.path, state.setPath], shallow)
   const addFile = useFileStore((state) => state.add)
 
   useEffect(() => {
@@ -118,20 +104,13 @@ export function AddBox() {
 
   return (
     <div className="flex flex-col justify-between">
-      <label
-        htmlFor="search"
-        className="text-sm font-medium text-stone-700 dark:text-stone-400"
-      >
+      <label htmlFor="search" className="text-sm font-medium text-stone-700 dark:text-stone-400">
         Add Files
       </label>
-      <Dropdown
-        options={dropdownOptions}
-        display={<FontAwesomeIcon icon={faAdd} />}
-      />
+      <Dropdown options={dropdownOptions} display={<FontAwesomeIcon icon={faAdd} />} />
       {popover !== null && (
         <Popover key={popover}>
-          {(popover === PopoverWindow.NEW_FILE ||
-            popover === PopoverWindow.NEW_FOLDER) && (
+          {(popover === PopoverWindow.NEW_FILE || popover === PopoverWindow.NEW_FOLDER) && (
             <NewFileBody
               dismiss={() => setPopover(null)}
               type={popover === PopoverWindow.NEW_FILE ? "file" : "directory"}
@@ -153,12 +132,7 @@ export function SearchBar() {
         Search
       </label>
       <div className="relative mt-1 rounded-md shadow-sm">
-        <FormInput
-          type="text"
-          name="search"
-          id="search"
-          placeholder="textfile.txt"
-        />
+        <FormInput type="text" name="search" id="search" placeholder="textfile.txt" />
         <div className="absolute inset-y-0 right-0 flex items-center">
           <button
             className="flex items-center h-full px-6 text-xs font-medium leading-tight text-white uppercase bg-orange-500 rounded shadow-md btn hover:bg-orange-600 hover:shadow-lg focus:bg-orange-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-orange-700 active:shadow-lg transition duration-150 ease-in-out"
@@ -223,16 +197,10 @@ export enum ViewMode {
 export function ViewBar({ viewMode, setViewMode }) {
   return (
     <div className="flex flex-col justify-between">
-      <label
-        htmlFor="view-mode"
-        className="text-sm font-medium text-stone-700 dark:text-stone-400"
-      >
+      <label htmlFor="view-mode" className="text-sm font-medium text-stone-700 dark:text-stone-400">
         View Mode
       </label>
-      <div
-        className="inline-flex overflow-hidden rounded shadow-sm"
-        id="view-mode"
-      >
+      <div className="inline-flex overflow-hidden rounded shadow-sm" id="view-mode">
         <MultiSelectBar
           selected={viewMode}
           setSelected={setViewMode}
@@ -274,15 +242,8 @@ export function SortBar({ sortBy, setSortBy }: SortBarProps) {
         >
           Sorting
         </label>
-        <div
-          className="inline-flex overflow-hidden rounded shadow-sm"
-          id="view-mode"
-        >
-          <Dropdown
-            options={Object.values(SortBy)}
-            current={sortBy}
-            setValue={setSortBy}
-          />
+        <div className="inline-flex overflow-hidden rounded shadow-sm" id="view-mode">
+          <Dropdown options={Object.values(SortBy)} current={sortBy} setValue={setSortBy} />
         </div>
       </div>
       {/* <div className="flex flex-col justify-between">

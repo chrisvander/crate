@@ -12,10 +12,8 @@ export function FileInspectorFileBody({ file }: { file: FileModel }) {
   if (name) rows.push(["Name", name])
   rows.push(["Path", joinPath(...splitPath(path).slice(1), name ? name : "")])
   if (file.size) rows.push(["Size", formatFileSize(file.size)])
-  if (file.cumulativeSize)
-    rows.push(["Size", formatFileSize(file.cumulativeSize)])
-  if (name && name.includes("."))
-    rows.push(["Extension", name.split(".", 2)[1]])
+  if (file.cumulativeSize) rows.push(["Size", formatFileSize(file.cumulativeSize)])
+  if (name && name.includes(".")) rows.push(["Extension", name.split(".", 2)[1]])
   rows.push(["CID", cid, "text-xs font-mono break-all", true])
 
   return (
@@ -26,11 +24,7 @@ export function FileInspectorFileBody({ file }: { file: FileModel }) {
             <td className="font-semibold text-gray-600 dark:text-gray-300 text-right pr-4 align-top w-20">
               {title}
             </td>
-            <td
-              className={`break-all w-full ${
-                typeof classes === "string" ? classes : ""
-              }`}
-            >
+            <td className={`break-all w-full ${typeof classes === "string" ? classes : ""}`}>
               {value}{" "}
               {copy && (
                 <span

@@ -30,10 +30,7 @@ type AddResult = {
  * @param cids an array of {@link CID} to add
  * @returns an array of {@link AddResult} objects, which specify CID and size
  */
-async function resolveCID(
-  client: IPFSHTTPClient,
-  cid: CID
-): Promise<AddResult> {
+async function resolveCID(client: IPFSHTTPClient, cid: CID): Promise<AddResult> {
   const model = await fetchFModel(client, cid)
   return {
     cid,
@@ -49,7 +46,7 @@ async function resolveCID(
  */
 async function addFileBuffer(
   client: IPFSHTTPClient,
-  buffer: NodeJS.ReadableStream
+  buffer: NodeJS.ReadableStream,
 ): Promise<AddResult> {
   const res = await client.add(buffer)
   const block = await client.block.get(res.cid)

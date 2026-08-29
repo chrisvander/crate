@@ -13,7 +13,7 @@ export function FileRow({ file }: { file: FileModel }) {
   const [selected, setSelected] = useState(false)
   const [selectionInfo, select, deselect] = useFVStore(
     (state) => [state.selectedFiles, state.select, state.deselect],
-    shallow
+    shallow,
   )
   const rowRef = useRef()
 
@@ -27,9 +27,7 @@ export function FileRow({ file }: { file: FileModel }) {
   const handleClose = () => setAnchorPos(null)
 
   useEffect(() => {
-    const newSelectedStatus = selectionInfo
-      .map((i) => i.name)
-      .includes(file.name)
+    const newSelectedStatus = selectionInfo.map((i) => i.name).includes(file.name)
     setSelected(newSelectedStatus)
     if (contextShown && !newSelectedStatus) setAnchorPos(null)
   }, [contextShown, file.name, selectionInfo])
@@ -54,9 +52,7 @@ export function FileRow({ file }: { file: FileModel }) {
         onClick={(e) => select(selectionInfo, !e.ctrlKey && !e.metaKey)}
         onContextMenu={onContextMenu}
         className={`border-b border-opacity-30 ${
-          selected
-            ? "bg-orange-500 text-white"
-            : "hover:bg-neutral-200 active:bg-neutral-300"
+          selected ? "bg-orange-500 text-white" : "hover:bg-neutral-200 active:bg-neutral-300"
         } select-none cursor-pointer`}
       >
         <td className="p-2 pb-1 pt-1">{file.name}</td>
@@ -64,9 +60,7 @@ export function FileRow({ file }: { file: FileModel }) {
         <td>{formatFileSize(file.size)}</td>
       </tr>
 
-      {contextShown && (
-        <RightClickMenu close={handleClose} anchor={anchorPos} />
-      )}
+      {contextShown && <RightClickMenu close={handleClose} anchor={anchorPos} />}
     </>
   )
 }

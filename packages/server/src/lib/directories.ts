@@ -10,11 +10,7 @@ import { PBNode, PBLink } from "@ipld/dag-pb"
  * @param name the name of the file as desired to be displayed from the dir.
  * @returns a link
  */
-export async function getLinkTo(
-  client: IPFSHTTPClient,
-  cid: CID,
-  name?: string
-): Promise<PBLink> {
+export async function getLinkTo(client: IPFSHTTPClient, cid: CID, name?: string): Promise<PBLink> {
   const rawBlock = await client.block.get(cid)
   const node = Node.fromRawBlock(rawBlock)
   if (!node.Data) throw new FileError(FileErrorType.NO_DATA)
@@ -53,7 +49,7 @@ type FileDesc = { name: string; cid: CID }
 export async function addToDir(
   client: IPFSHTTPClient,
   parent: CID,
-  newFile: FileDesc
+  newFile: FileDesc,
 ): Promise<CID> {
   const parentNode = Node.fromRawBlock(await client.block.get(parent))
   if (!parentNode.Data) throw new FileError(FileErrorType.NO_DATA)
@@ -80,11 +76,7 @@ export async function addToDir(
  * @param nameToRemove the name of the link to remove.
  * @returns the updated {@link CID} of the directory with the new file added.
  */
-export async function removeFromDir(
-  client: IPFSHTTPClient,
-  parent: CID,
-  nameToRemove: string
-) {
+export async function removeFromDir(client: IPFSHTTPClient, parent: CID, nameToRemove: string) {
   const parentNode = Node.fromRawBlock(await client.block.get(parent))
   if (!parentNode.Data) throw new FileError(FileErrorType.NO_DATA)
 

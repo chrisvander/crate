@@ -5,10 +5,7 @@ import { useUserStore } from "../../store/UserStore"
 import shallow from "zustand/shallow"
 
 export default function Profile() {
-  const [user, userDoc] = useUserStore(
-    (state) => [state.user, state.userDoc],
-    shallow
-  )
+  const [user, userDoc] = useUserStore((state) => [state.user, state.userDoc], shallow)
 
   const updateUserDoc = useCallback(
     async (newDoc: Partial<UserModel>) => {
@@ -18,7 +15,7 @@ export default function Profile() {
       const userDocRef = doc(db, "users", user.uid.toString())
       setDoc(userDocRef, { ...userDoc, ...newDoc })
     },
-    [user.uid, userDoc]
+    [user.uid, userDoc],
   )
 
   const loaded = !!userDoc
@@ -41,8 +38,7 @@ export default function Profile() {
           value={firstName}
           onInput={(e) => {
             if (!loaded) return
-            if (e && e.target.value !== firstName)
-              updateUserDoc({ firstName: e.target.value })
+            if (e && e.target.value !== firstName) updateUserDoc({ firstName: e.target.value })
           }}
         />
       </div>
@@ -55,8 +51,7 @@ export default function Profile() {
           value={lastName}
           onInput={(e) => {
             if (!loaded) return
-            if (e && e.target.value !== lastName)
-              updateUserDoc({ lastName: e.target.value })
+            if (e && e.target.value !== lastName) updateUserDoc({ lastName: e.target.value })
           }}
         />
       </div>

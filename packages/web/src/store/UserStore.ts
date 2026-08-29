@@ -27,10 +27,7 @@ interface FirebaseState {
 
 const firebaseStateCreator: StateCreator<
   FirebaseState,
-  [
-    ["zustand/subscribeWithSelector", never],
-    ["zustand/persist", Partial<FirebaseState>]
-  ]
+  [["zustand/subscribeWithSelector", never], ["zustand/persist", Partial<FirebaseState>]]
 > = (set): FirebaseState => ({
   signedIn: false,
   authenticating: true,
@@ -53,11 +50,9 @@ export const useUserStore = create(
     persist(firebaseStateCreator, {
       name: "crate-session", // unique name
       partialize: (state) =>
-        Object.fromEntries(
-          Object.entries(state).filter(([key]) => ["signedIn"].includes(key))
-        ),
-    })
-  )
+        Object.fromEntries(Object.entries(state).filter(([key]) => ["signedIn"].includes(key))),
+    }),
+  ),
 )
 
 // UserStore subscription - update the remote UserStore on change.
@@ -73,7 +68,7 @@ useUserStore.subscribe(
     const userDocRef = doc(db, "users", state.user.uid.toString())
 
     setDoc(userDocRef, userDoc)
-  }
+  },
 )
 
 // user subscription - update the UserStore when the user changes
@@ -94,10 +89,10 @@ useUserStore.subscribe(
     })
 
     const unsub = onSnapshot(userDocRef, (newSnapshot) =>
-      useUserStore.getState().updateUser(newSnapshot.data())
+      useUserStore.getState().updateUser(newSnapshot.data()),
     )
     return unsub
-  }
+  },
 )
 
 const registerAuthChangeListener = async () => {

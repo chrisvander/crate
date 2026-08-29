@@ -1,9 +1,4 @@
-import {
-  faBox,
-  faCaretDown,
-  faMailForward,
-  faStar,
-} from "@fortawesome/free-solid-svg-icons"
+import { faBox, faCaretDown, faMailForward, faStar } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Button from "../components/Button"
 import { categories, CommunityPage, SidebarProps } from "../models/Community"
@@ -41,18 +36,12 @@ function SidebarButton({
                 className="w-5 h-5 flex justify-center rounded-md items-center bg-gray-200 hover:bg-gray-300 dark:bg-stone-600 dark:hover:bg-stone-500"
                 onClick={toggleExpanded}
               >
-                <span
-                  className={`transition-all ${
-                    expanded ? "rotate-0" : "rotate-90"
-                  }`}
-                >
+                <span className={`transition-all ${expanded ? "rotate-0" : "rotate-90"}`}>
                   <FontAwesomeIcon icon={faCaretDown} />
                 </span>
               </div>
             )}
-            {!children && selected && (
-              <span className="bg-orange-400 w-0.5 h-5 block" />
-            )}
+            {!children && selected && <span className="bg-orange-400 w-0.5 h-5 block" />}
           </div>
         </a>
       </li>
@@ -62,9 +51,7 @@ function SidebarButton({
 }
 
 export default function Community() {
-  const [pane, setPane] = useState<string | CommunityPage>(
-    CommunityPage.FEATURED
-  )
+  const [pane, setPane] = useState<string | CommunityPage>(CommunityPage.FEATURED)
   return (
     <div>
       <main>

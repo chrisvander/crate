@@ -50,7 +50,7 @@ app.use(
   fileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/",
-  })
+  }),
 )
 
 app.use(`${API_ROUTE}/file`, files)

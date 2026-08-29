@@ -1,10 +1,5 @@
 import { JSXInternal } from "preact/src/jsx"
-import {
-  makeOpt,
-  PopoverMenu,
-  PopoverMenuProps,
-  SelectionOptions,
-} from "./PopoverMenu"
+import { makeOpt, PopoverMenu, PopoverMenuProps, SelectionOptions } from "./PopoverMenu"
 import { useFileStore } from "../../store/FileStore"
 import Anchor from "../../models/Anchor"
 import shallow from "zustand/shallow"
@@ -25,42 +20,30 @@ export default function RightClickMenu({
 }: RightClickMenuProps & JSXInternal.HTMLAttributes<HTMLDivElement>) {
   const [addFile, deleteFile, getCID] = useFileStore(
     (state) => [state.add, state.delete, state.getCID],
-    shallow
+    shallow,
   )
 
-  const [selection, path] = useFVStore(
-    (state) => [state.selectedFiles, state.path],
-    shallow
-  )
+  const [selection, path] = useFVStore((state) => [state.selectedFiles, state.path], shallow)
 
   const deleteFiles = async () => {
     let nextPath = path
     for (const { name } of selection) {
-      nextPath = await deleteFile(
-        joinPath("ipfs", ...splitPath(nextPath), name)
-      )
+      nextPath = await deleteFile(joinPath("ipfs", ...splitPath(nextPath), name))
       console.log(nextPath)
     }
   }
 
   const openFile = () =>
     selection.forEach(({ cid, name }) =>
-      window.open(
-        `https://crate.network/ipfs/${cid}?filename=${name}`,
-        "_blank"
-      )
+      window.open(`https://crate.network/ipfs/${cid}?filename=${name}`, "_blank"),
     )
 
   const downloadFile = () =>
     selection.forEach(({ cid, name }) =>
-      window.open(
-        `https://crate.network/ipfs/${cid}?filename=${name}&download=true`,
-        "_blank"
-      )
+      window.open(`https://crate.network/ipfs/${cid}?filename=${name}&download=true`, "_blank"),
     )
 
-  const copyCID = () =>
-    navigator.clipboard.writeText(selection.map(({ cid }) => cid).join(","))
+  const copyCID = () => navigator.clipboard.writeText(selection.map(({ cid }) => cid).join(","))
 
   const duplicateFiles = () =>
     selection.forEach(async ({ cid }) => {

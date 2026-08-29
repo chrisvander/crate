@@ -9,19 +9,14 @@ export default function Navigation(props) {
       <div className="px-4 mx-auto sm:px-6 lg:px-8 2xl:px-24">
         <div className="relative z-10 pb-8">
           <div className="relative pt-6">
-            <nav
-              className="relative flex items-center justify-between sm:h-10"
-              aria-label="Global"
-            >
+            <nav className="relative flex items-center justify-between sm:h-10" aria-label="Global">
               <div className="flex items-center flex-grow flex-shrink-0 lg:flex-grow-0">
                 <div className="flex items-center justify-between w-full md:w-auto">
                   <Link href="/" className="flex items-center justify-between">
                     <div className="w-10 mr-6 lg:w-16 drop-shadow-md">
                       <img src={crateLogo} />
                     </div>
-                    <h1 className="hidden mb-0 text-4xl lg:inline-block">
-                      CRATE
-                    </h1>
+                    <h1 className="hidden mb-0 text-4xl lg:inline-block">CRATE</h1>
                   </Link>
                 </div>
               </div>

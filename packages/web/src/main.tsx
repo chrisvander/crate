@@ -71,9 +71,7 @@ const Page = (props: PageProps) => {
             ? breadcrumbs
             : [
                 {
-                  name: title.includes("Crate - ")
-                    ? title.split(" - ")[1]
-                    : title,
+                  name: title.includes("Crate - ") ? title.split(" - ")[1] : title,
                   link: props.path,
                 },
               ]

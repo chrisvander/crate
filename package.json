@@ -26,12 +26,11 @@
     "@typescript-eslint/parser": "~5.40.0",
     "esbuild": "^0.15.7",
     "eslint": "~8.25.0",
-    "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.26.0",
-    "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.0",
     "jest": "29.1.2",
     "lint-staged": "^13.0.3",
+    "oxfmt": "0.65.0",
     "ts-jest": "29.0.3",
     "ts-node": "~10.9.1",
     "vite": "^3.1.7",
@@ -42,7 +41,7 @@
   ],
   "lint-staged": {
     "**/*.{tsx,ts,jsx,js}": [
-      "nx format:write --uncommitted",
+      "oxfmt",
       "eslint",
       "nx affected:test --uncommitted"
     ]
@@ -58,6 +57,8 @@
     "dev:web": "nx dev @crate/web",
     "docker": "nx run-many --target=docker --all",
     "docs": "nx run-many --target=generate-sources --all && nx run @crate/types:build",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
     "prepare": "husky install",
     "postinstall": "patch-package"
   },

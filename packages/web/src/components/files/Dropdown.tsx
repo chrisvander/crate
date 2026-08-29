@@ -5,10 +5,7 @@ import { StateUpdater, useRef, useState } from "preact/hooks"
 import { JSXInternal } from "preact/src/jsx"
 import { makeOpt, PopoverMenu } from "./PopoverMenu"
 
-export type FuncInput =
-  | { name: string; onClick: () => void }
-  | "divider"
-  | "none"
+export type FuncInput = { name: string; onClick: () => void } | "divider" | "none"
 export default function Dropdown<T extends string>(
   props:
     | {
@@ -19,7 +16,7 @@ export default function Dropdown<T extends string>(
     | {
         options: FuncInput[]
         display: JSXInternal.Element
-      }
+      },
 ) {
   const { options, current, setValue, display } = {
     display: undefined,
@@ -85,13 +82,9 @@ export default function Dropdown<T extends string>(
           opts={
             display
               ? (options as FuncInput[]).map((v) =>
-                  typeof v !== "string"
-                    ? makeOpt(v.name, toggleExpanded, v.onClick)
-                    : v
+                  typeof v !== "string" ? makeOpt(v.name, toggleExpanded, v.onClick) : v,
                 )
-              : (options as T[]).map((v) =>
-                  makeOpt(v, toggleExpanded, () => setValue(v))
-                )
+              : (options as T[]).map((v) => makeOpt(v, toggleExpanded, () => setValue(v)))
           }
         />
       )}

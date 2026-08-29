@@ -12,7 +12,7 @@ async function authHeader() {
           (state) => state.user,
           (user) => {
             if (user.getIdToken) resolve(user.getIdToken())
-          }
+          },
         )
       })
     : await useUserStore.getState().user.getIdToken()

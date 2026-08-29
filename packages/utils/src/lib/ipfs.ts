@@ -30,10 +30,7 @@ export class Node {
     return decode(bytes)
   }
 
-  static fromFile(
-    file: LimitedFileModel,
-    content: Uint8Array = Uint8Array.from([])
-  ): PBNode {
+  static fromFile(file: LimitedFileModel, content: Uint8Array = Uint8Array.from([])): PBNode {
     return createNode(
       UnixFS.from(file.type, content).marshal(),
       file.links
@@ -42,7 +39,7 @@ export class Node {
             Name: name,
             Tsize: size,
           }))
-        : []
+        : [],
     )
   }
 
@@ -55,9 +52,7 @@ export class Node {
       cid: cid.toString(),
       name: "",
       size: ufs.fileSize(),
-      date: ufs.mtime
-        ? new Date(ufs.mtime.secs).toISOString()
-        : new Date().toISOString(),
+      date: ufs.mtime ? new Date(ufs.mtime.secs).toISOString() : new Date().toISOString(),
       ...(isDir
         ? {
             type: "directory",

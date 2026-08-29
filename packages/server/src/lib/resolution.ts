@@ -1,11 +1,4 @@
-import {
-  CID,
-  FileError,
-  FileErrorType,
-  Node,
-  splitPath,
-  validPath,
-} from "@crate/utils"
+import { CID, FileError, FileErrorType, Node, splitPath, validPath } from "@crate/utils"
 import { FileModel } from "@crate/types"
 import { IPFSHTTPClient } from "ipfs-http-client"
 
@@ -15,10 +8,7 @@ import { IPFSHTTPClient } from "ipfs-http-client"
  * @param cid the {@link CID} of the file.
  * @returns The {@link FileModel} metadata object.
  */
-export const fetchFModel = async (
-  client: IPFSHTTPClient,
-  cid: CID
-): Promise<FileModel> => {
+export const fetchFModel = async (client: IPFSHTTPClient, cid: CID): Promise<FileModel> => {
   const block = await client.block.get(cid)
   return await Node.toFile(Node.fromRawBlock(block))
 }
@@ -40,7 +30,7 @@ export const fetchFModel = async (
 export const walkDir = async (
   client: IPFSHTTPClient,
   dirCID: string,
-  path: string[]
+  path: string[],
 ): Promise<CID[]> => {
   const currPath = [CID.parse(dirCID)]
   // if there is no remaining path, this may be a file or directory, and we
@@ -49,8 +39,7 @@ export const walkDir = async (
   // fetch the file model for the CID
   const fModel = await fetchFModel(client, CID.parse(dirCID))
   // the fetched model must correspond to a directory to recurse
-  if (!fModel.links || fModel.type !== "directory")
-    throw new FileError(FileErrorType.FILE_INVALID)
+  if (!fModel.links || fModel.type !== "directory") throw new FileError(FileErrorType.FILE_INVALID)
   // get the next CID in the path according to the links in the directory.
   const nextCID = fModel.links.find((el) => el.name === path[0])?.cid
   // if the path is invalid, this will throw.
@@ -69,10 +58,7 @@ export const walkDir = async (
  * @throws {FileErrorType.PATH_INVALID} when the path is incorrect.
  * @returns an array of CIDs corresponding to each section of the path.
  */
-export const walk = async (
-  client: IPFSHTTPClient,
-  path: string
-): Promise<CID[]> => {
+export const walk = async (client: IPFSHTTPClient, path: string): Promise<CID[]> => {
   // throw if the file path is not valid.
   if (!validPath(path)) {
     throw new FileError(FileErrorType.PATH_INVALID)

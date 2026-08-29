@@ -10,8 +10,7 @@ export default function useClickOutside(opts: {
     const detectClick = (e) => {
       const { exclude } = opts
       if (!opts.ref || opts.ref.current.contains(e.target)) return
-      if (exclude && exclude.some((n) => n && e.target && n.contains(e.target)))
-        return
+      if (exclude && exclude.some((n) => n && e.target && n.contains(e.target))) return
       opts.handler(e)
     }
 

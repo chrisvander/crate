@@ -1,11 +1,7 @@
 import { useEffect, useState } from "preact/hooks"
 import Button from "./Button"
 
-export function PopoverButtonRow({
-  actions,
-}: {
-  actions: [string, () => void, boolean?][]
-}) {
+export function PopoverButtonRow({ actions }: { actions: [string, () => void, boolean?][] }) {
   return (
     <div className="border-t border-gray-400 border-opacity-50 flex justify-end p-2 space-x-2">
       {actions.map(([title, func, disabled], idx) => (

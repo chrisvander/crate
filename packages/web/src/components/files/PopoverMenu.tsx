@@ -20,7 +20,7 @@ export function makeOpt(
   name: string,
   closeFunc: (e: MouseEvent) => void,
   f?: () => void,
-  hide = false
+  hide = false,
 ): PopoverMenuItem {
   return hide
     ? "none"
@@ -46,8 +46,7 @@ export function PopoverMenu({
   useEffect(() => {
     if (!divRef.current) return
     const { offsetHeight, offsetWidth } = divRef.current
-    const { scrollTop, scrollLeft, clientHeight, clientWidth } =
-      document.documentElement
+    const { scrollTop, scrollLeft, clientHeight, clientWidth } = document.documentElement
     const docBottom = scrollTop + clientHeight
     const menuBottom = top + offsetHeight
     const docRight = scrollLeft + clientWidth
@@ -73,9 +72,7 @@ export function PopoverMenu({
     <div
       ref={divRef}
       className={`popover-menu flex flex-col p-1 z-20 transition-all duration-150 shadow-md text-sm dark:border-neutral-800 rounded-md absolute w-48 backdrop-blur-lg bg-white dark:bg-neutral-900 bg-opacity-40 dark:bg-opacity-50 select-none ${
-        initialMenuScale
-          ? "opacity-1"
-          : "opacity-0 -translate-x-1/4 -translate-y-1/4 scale-50"
+        initialMenuScale ? "opacity-1" : "opacity-0 -translate-x-1/4 -translate-y-1/4 scale-50"
       }`}
       style={{ left, top }}
       onContextMenu={close}
