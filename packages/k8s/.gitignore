@@ -1,0 +1,3 @@
+base/ssl/cert-patch.json
+base/**/.dockerconfigjson
+base/backend/firebase.json

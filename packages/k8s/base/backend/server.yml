@@ -1,0 +1,59 @@
+# DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+        - name: server
+          resources: {}
+          image: ghcr.io/crate-network/server:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/firebase/firebase.json
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "80"
+            - name: IPFS_CLIENT_URL
+              value: http://ipfs-ipfs-ipfs-cluster:5001
+            - name: FILECOIN_CLIENT_URL
+              value: ws://filecoin-0:1234/rpc/v0
+          volumeMounts:
+            - name: auth-cred-volume
+              mountPath: /etc/firebase
+              readOnly: true
+      volumes:
+        - name: auth-cred-volume
+          secret:
+            secretName: server-credentials
+            items:
+              - key: "firebase.json"
+                path: "firebase.json"
+      imagePullSecrets:
+        - name: regcred
+---
+# SERVICE SETUP
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+spec:
+  selector:
+    app: server
+  ports:
+    - port: 80
+      targetPort: 80
