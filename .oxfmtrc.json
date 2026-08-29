@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": [".yarn/**", "**/*.d.ts", "packages/app/**", "packages/k8s/**"],
+  "ignorePatterns": [".yarn/**", "packages/app/**", "packages/k8s/**"],
   "semi": false,
   "singleQuote": false,
   "sortPackageJson": false,

@@ -1,26 +1,19 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "target": "ESNext",
-    "sourceMap": true,
-    "importHelpers": true,
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "types": ["node", "jest"],
-    "lib": ["es2019"],
-    "declaration": true,
-    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
     "paths": {
-      "@crate/types": ["packages/types/src/index.ts"],
-      "@crate/utils": ["packages/utils/src/index.ts"],
-      "@crate/web": ["packages/web/src"]
-    }
-  },
-  "include": [],
-  "exclude": ["node_modules", "*/**/*.test.ts", "*/**/*.spec.ts"]
+      "@crate/types": ["./packages/types/src/index.ts"],
+      "@crate/utils": ["./packages/utils/src/index.ts"],
+      "@crate/web": ["./packages/web/src"]
+    },
+    "resolvePackageJsonExports": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES2022"
+  }
 }

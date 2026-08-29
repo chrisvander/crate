@@ -1,9 +1,8 @@
 import { CID, Node } from "./ipfs"
-import { Buffer } from "buffer"
 import { FileModel, FileType } from "@crate/types"
 
 export async function createFile(type: FileType, name = ""): Promise<FileModel> {
-  const content = type === "file" ? Buffer.from("") : undefined
+  const content = type === "file" ? new Uint8Array() : undefined
   const node = Node.fromFile({ type }, content)
   const file = await Node.toFile(node)
   file.name = name

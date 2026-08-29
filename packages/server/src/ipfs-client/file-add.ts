@@ -12,7 +12,7 @@ export type FileAddOptions = {
   filename?: string
 } & (
   | {
-      file: NodeJS.ReadableStream
+      file: AsyncIterable<Uint8Array>
     }
   | {
       fileCID: CID
@@ -41,12 +41,12 @@ async function resolveCID(client: IPFSHTTPClient, cid: CID): Promise<AddResult> 
 /**
  * Add a series of files to the IPFS client by way of NodeJS file buffers.
  * @param client the {@link IPFSHTTPClient}
- * @param files an array of {@link NodeJS.ReadableStream} to read bytes from
+ * @param files an array of byte streams to read
  * @returns an array of {@link AddResult} objects, which specify CID and size
  */
 async function addFileBuffer(
   client: IPFSHTTPClient,
-  buffer: NodeJS.ReadableStream,
+  buffer: AsyncIterable<Uint8Array>,
 ): Promise<AddResult> {
   const res = await client.add(buffer)
   const block = await client.block.get(res.cid)

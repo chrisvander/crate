@@ -2,5 +2,9 @@
   "name": "@crate/types",
   "version": "0.1.1",
   "author": "Christian van der Loo",
-  "type": "commonjs"
+  "type": "module",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  }
 }

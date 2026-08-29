@@ -2,10 +2,14 @@
   "name": "@crate/utils",
   "version": "0.5.1",
   "author": "Christian van der Loo",
-  "type": "commonjs",
+  "type": "module",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "license": "MIT",
   "dependencies": {
-    "@crate/types": "*",
+    "@crate/types": "workspace:*",
     "@ipld/dag-pb": "^2.1.17",
     "ipfs-unixfs": "^6.0.9",
     "multiformats": "^9.7.0"

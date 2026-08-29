@@ -101,14 +101,17 @@ export default function Authenticate({ type }: { type: AuthenticateType }) {
   const [disableInputs, setDisableInputs] = useState(false)
   const providerText = type === AuthenticateType.LOGIN ? "Sign in" : "Sign up"
 
-  const handleProvider = (providerCb: () => void) => () => {
+  const handleProvider = (providerCb: () => Promise<void>) => async () => {
     setDisableInputs(true)
-    providerCb().catch((error) => {
+    try {
+      await providerCb()
+    } catch (error) {
       const errorCode = error.code
       const errorMessage = error.message
       useErrorStore.getState().showError({ name: errorCode, message: errorMessage })
-    })
-    setDisableInputs(false)
+    } finally {
+      setDisableInputs(false)
+    }
   }
 
   const [email, setEmail] = useState("")
