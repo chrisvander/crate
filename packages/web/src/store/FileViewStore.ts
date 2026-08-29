@@ -3,8 +3,11 @@
  * consumed by any file view.
  */
 
-import create, { StateCreator, StoreApi } from "zustand"
-import createContext from "zustand/context"
+import { createContext, createElement, type ComponentChildren } from "preact"
+import { useContext } from "preact/hooks"
+import { useStore as useZustandStore } from "zustand"
+import { createStore as createZustandStore, type StoreApi } from "zustand/vanilla"
+import type { StateCreator } from "zustand"
 import { immer } from "zustand/middleware/immer"
 
 export type SelectionInfo = { name: string; cid: string }
@@ -26,7 +29,7 @@ type FileViewState = {
   setPath: (newPath: string) => void
 }
 
-const { Provider, useStore } = createContext<StoreApi<FileViewState>>()
+const FileViewContext = createContext<StoreApi<FileViewState> | null>(null)
 
 const fileViewStore =
   (): StateCreator<FileViewState, [["zustand/immer", never]]> => (set, get) => ({
@@ -61,5 +64,24 @@ const fileViewStore =
       }),
   })
 
-const createStore = () => () => create(immer(fileViewStore()))
+const createStore = () => createZustandStore<FileViewState>()(immer(fileViewStore()))
+
+function useStore(): FileViewState
+function useStore<T>(selector: (state: FileViewState) => T): T
+function useStore<T>(selector: (state: FileViewState) => T = (state) => state as T) {
+  const store = useContext(FileViewContext)
+  if (!store) throw new Error("File view store is missing its provider.")
+  return useZustandStore(store, selector)
+}
+
+function Provider({
+  children,
+  createStore,
+}: {
+  children: ComponentChildren
+  createStore: StoreApi<FileViewState>
+}) {
+  return createElement(FileViewContext.Provider, { value: createStore }, children)
+}
+
 export { createStore, useStore, Provider }

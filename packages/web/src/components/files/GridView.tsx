@@ -5,7 +5,6 @@ import useClickOutside from "../../hooks/useClickOutside"
 import RightClickMenu from "./RightClickMenu"
 import Anchor from "../../models/Anchor"
 import { useFileStore } from "../../store/FileStore"
-import shallow from "zustand/shallow"
 import { useStore as useFVStore } from "../../store/FileViewStore"
 import { FileType, NamedFileModel } from "@crate/types"
 import { joinPath } from "@crate/utils"
@@ -77,10 +76,11 @@ function FileIcon({ file }: { file: { name: string; cid: string; type?: FileType
   const [anchorPos, setAnchorPos] = useState<null | Anchor>(null)
   const contextShown = Boolean(anchorPos)
 
-  const [selectionInfo, select, deselect, path, setPath] = useFVStore(
-    (state) => [state.selectedFiles, state.select, state.deselect, state.path, state.setPath],
-    shallow,
-  )
+  const selectionInfo = useFVStore((state) => state.selectedFiles)
+  const select = useFVStore((state) => state.select)
+  const deselect = useFVStore((state) => state.deselect)
+  const path = useFVStore((state) => state.path)
+  const setPath = useFVStore((state) => state.setPath)
 
   const onContextMenu = (e: MouseEvent) => {
     e.preventDefault()

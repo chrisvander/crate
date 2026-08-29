@@ -9,10 +9,10 @@ import sanitizeFilename from "sanitize-filename"
 import { useFileStore } from "../../store/FileStore"
 import FileAPI from "../../api/FileAPI"
 import { useStore as useFVStore } from "../../store/FileViewStore"
-import shallow from "zustand/shallow"
 
 function NewFileBody({ dismiss, type }: { dismiss: () => void; type: "directory" | "file" }) {
-  const [makeDir, makeFile] = useFileStore((state) => [state.makeDir, state.makeFile], shallow)
+  const makeDir = useFileStore((state) => state.makeDir)
+  const makeFile = useFileStore((state) => state.makeFile)
   const path = useFVStore((state) => state.path)
   const [name, setName] = useState("")
   const invalid = sanitizeFilename(name) !== name
@@ -48,14 +48,16 @@ function NewFileBody({ dismiss, type }: { dismiss: () => void; type: "directory"
 export function AddBox() {
   const [inputEl, setInputEl] = useState<HTMLInputElement>(null)
   const [isSelectingFile, setIsSelectingFile] = useState(false)
-  const [path, setPath] = useFVStore((state) => [state.path, state.setPath], shallow)
-  const addFile = useFileStore((state) => state.add)
+  const path = useFVStore((state) => state.path)
+  const setPath = useFVStore((state) => state.setPath)
+  const refresh = useFileStore((state) => state.refresh)
 
   useEffect(() => {
     const onUpload = async (e) => {
       const fileInput: HTMLInputElement = e.target
       const { files } = fileInput
       await FileAPI.upload(files, path)
+      refresh(path)
       setIsSelectingFile(false)
     }
 
@@ -69,7 +71,7 @@ export function AddBox() {
       setInputEl(null)
       inpt.remove()
     }
-  }, [isSelectingFile, path, setPath, addFile])
+  }, [isSelectingFile, path, refresh, setPath])
 
   enum PopoverWindow {
     NEW_FILE,

@@ -2,10 +2,10 @@ import FormInput from "../FormInput"
 import { useCallback } from "preact/hooks"
 import { UserModel } from "@crate/types"
 import { useUserStore } from "../../store/UserStore"
-import shallow from "zustand/shallow"
 
 export default function Profile() {
-  const [userDoc, updateUser] = useUserStore((state) => [state.userDoc, state.updateUser], shallow)
+  const userDoc = useUserStore((state) => state.userDoc)
+  const updateUser = useUserStore((state) => state.updateUser)
 
   const updateUserDoc = useCallback(
     (newDoc: Partial<UserModel>) => updateUser(newDoc),

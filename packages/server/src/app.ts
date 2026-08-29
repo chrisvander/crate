@@ -28,7 +28,8 @@ app.use(
 app.use(`${API_ROUTE}/file`, files)
 app.use(`${API_ROUTE}/dir`, dirs)
 
-const port = process.env["PORT"] || 3030
-app.listen(port, () => {
-  logger.info(`Listening on port ${port}`)
+const port = Number(process.env["PORT"] ?? 3030)
+const host = process.env["CRATE_SERVER_HOST"] ?? "127.0.0.1"
+app.listen(port, host, () => {
+  logger.info(`Listening on http://${host}:${port}`)
 })

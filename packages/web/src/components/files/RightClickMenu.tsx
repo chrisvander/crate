@@ -2,7 +2,6 @@ import { JSXInternal } from "preact/src/jsx"
 import { makeOpt, PopoverMenu, PopoverMenuProps, SelectionOptions } from "./PopoverMenu"
 import { useFileStore } from "../../store/FileStore"
 import Anchor from "../../models/Anchor"
-import shallow from "zustand/shallow"
 import { useStore as useFVStore } from "../../store/FileViewStore"
 import { duplicateFile, joinPath, splitPath } from "@crate/utils"
 import FileAPI from "../../api/FileAPI"
@@ -19,12 +18,12 @@ export default function RightClickMenu({
   onRenameRequest,
   ...props
 }: RightClickMenuProps & JSXInternal.HTMLAttributes<HTMLDivElement>) {
-  const [addFile, deleteFile, getCID] = useFileStore(
-    (state) => [state.add, state.delete, state.getCID],
-    shallow,
-  )
+  const addFile = useFileStore((state) => state.add)
+  const deleteFile = useFileStore((state) => state.delete)
+  const getCID = useFileStore((state) => state.getCID)
 
-  const [selection, path] = useFVStore((state) => [state.selectedFiles, state.path], shallow)
+  const selection = useFVStore((state) => state.selectedFiles)
+  const path = useFVStore((state) => state.path)
 
   const deleteFiles = async () => {
     let nextPath = path

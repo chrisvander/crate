@@ -6,7 +6,7 @@
  */
 
 import { FileError, FileErrorType } from "@crate/utils"
-import create, { StateCreator } from "zustand"
+import { create, type StateCreator } from "zustand"
 import { FileModel, NamedFileModel } from "@crate/types"
 import { subscribeWithSelector } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -17,6 +17,7 @@ type CIDRefFileModel = Exclude<FileModel, { name: string }>
 interface FileState {
   // the file list mapping CID or path to FileModel
   files: Record<string, CIDRefFileModel>
+  revision: number
   // retrieval
   get: (path: string) => Promise<FileModel>
   getCID: (cid: string) => Promise<FileModel>
@@ -29,6 +30,7 @@ interface FileState {
   rename: (path: string, newName: string) => Promise<string>
   makeDir: (path: string, name: string) => Promise<string>
   makeFile: (path: string, name: string) => Promise<string>
+  refresh: (path: string) => void
 }
 
 const fileStore: StateCreator<
@@ -91,22 +93,38 @@ const fileStore: StateCreator<
     return ""
   }
 
+  const refresh = (path: string) =>
+    set((state) => {
+      delete state.files[path]
+      state.revision += 1
+    })
+
+  const mutateDirectory = async (path: string, mutation: () => Promise<string>) => {
+    const result = await mutation()
+    refresh(path)
+    return result
+  }
+
   return {
     files: {},
+    revision: 0,
     get: getPath,
     getCID,
     getChildren,
     add,
     update,
-    delete: (path: string) => FileAPI.deleteFile(path),
+    delete: async (path: string) => {
+      const parent = await FileAPI.deleteFile(path)
+      refresh(parent)
+      return parent
+    },
     rename,
-    makeDir: (path: string, name: string) => FileAPI.makeDir(path, name),
-    makeFile: (path: string, name: string) => FileAPI.makeFile(path, name),
+    makeDir: (path: string, name: string) =>
+      mutateDirectory(path, () => FileAPI.makeDir(path, name)),
+    makeFile: (path: string, name: string) =>
+      mutateDirectory(path, () => FileAPI.makeFile(path, name)),
+    refresh,
   }
 }
 
 export const useFileStore = create(immer(subscribeWithSelector(fileStore)))
-
-useFileStore.subscribe(({ files }) => {
-  console.log(files)
-})

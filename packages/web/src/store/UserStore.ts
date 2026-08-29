@@ -1,5 +1,5 @@
 import type { AtprotoUser, UserModel } from "@crate/types"
-import create from "zustand"
+import { create } from "zustand"
 import AuthAPI from "../api/AuthAPI"
 
 interface UserState {

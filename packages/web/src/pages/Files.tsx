@@ -46,7 +46,7 @@ function Breadcrumbs() {
 
 function FilesChild() {
   const { inspectorVisible, hideInspector, path, setLoading } = useFVStore()
-  const { getChildren } = useFileStore()
+  const { getChildren, revision } = useFileStore()
   const [files, setFiles] = useState<Record<string, NamedFileModel>>({})
 
   useEffect(() => {
@@ -59,7 +59,7 @@ function FilesChild() {
       .catch(() => {
         setLoading(false)
       })
-  }, [getChildren, path, setLoading])
+  }, [getChildren, path, revision, setLoading])
 
   const [viewMode, setViewMode] = useStoredState<ViewMode>(ViewMode.LIST, "view-mode")
   const [sortBy, setSortBy] = useStoredState<SortBy>(SortBy.NAME, "sort-order")

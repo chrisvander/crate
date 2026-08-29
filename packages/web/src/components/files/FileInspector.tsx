@@ -4,12 +4,13 @@ import { faGreaterThan, faLessThan, faXmark } from "@fortawesome/free-solid-svg-
 import { useFileStore } from "../../store/FileStore"
 import { FileInspectorFileBody } from "../files/FileInspectorFileBody"
 import { useStore as useFVStore } from "../../store/FileViewStore"
-import shallow from "zustand/shallow"
 import { NamedFileModel } from "@crate/types"
 
 export function FileInspector({ close }: { close: () => void }) {
-  const [selection, path] = useFVStore((state) => [state.selectedFiles, state.path], shallow)
-  const [getCID, get] = useFileStore((state) => [state.getCID, state.get], shallow)
+  const selection = useFVStore((state) => state.selectedFiles)
+  const path = useFVStore((state) => state.path)
+  const getCID = useFileStore((state) => state.getCID)
+  const get = useFileStore((state) => state.get)
   const [selectedFiles, setSelectedFiles] = useState<NamedFileModel[]>([])
 
   useEffect(() => {

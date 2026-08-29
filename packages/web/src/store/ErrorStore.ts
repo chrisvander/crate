@@ -1,4 +1,4 @@
-import create, { StateCreator } from "zustand"
+import { create, type StateCreator } from "zustand"
 
 interface ErrorState {
   name: string

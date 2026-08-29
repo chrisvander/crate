@@ -2,7 +2,6 @@ import useClickOutside from "../../hooks/useClickOutside"
 import Anchor from "../../models/Anchor"
 import { useEffect, useRef, useState } from "preact/hooks"
 import RightClickMenu from "./RightClickMenu"
-import shallow from "zustand/shallow"
 import { useStore as useFVStore } from "../../store/FileViewStore"
 import { FileModel, NamedFileModel } from "@crate/types"
 import formatFileSize from "../../utils/formatFileSize"
@@ -11,10 +10,9 @@ import DirectoryLoading from "./DirectoryLoading"
 
 export function FileRow({ file }: { file: FileModel }) {
   const [selected, setSelected] = useState(false)
-  const [selectionInfo, select, deselect] = useFVStore(
-    (state) => [state.selectedFiles, state.select, state.deselect],
-    shallow,
-  )
+  const selectionInfo = useFVStore((state) => state.selectedFiles)
+  const select = useFVStore((state) => state.select)
+  const deselect = useFVStore((state) => state.deselect)
   const rowRef = useRef()
 
   const [anchorPos, setAnchorPos] = useState<null | Anchor>(null)
