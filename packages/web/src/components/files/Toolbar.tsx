@@ -2,7 +2,7 @@ import { faGrip, faBars, faAdd } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import FormInput from "../FormInput"
 import { Popover, PopoverButtonRow } from "../Popover"
-import { StateUpdater, useEffect, useState } from "preact/hooks"
+import { Dispatch, StateUpdater, useEffect, useState } from "preact/hooks"
 import { JSXInternal } from "preact/src/jsx"
 import Dropdown, { FuncInput } from "./Dropdown"
 import sanitizeFilename from "sanitize-filename"
@@ -167,7 +167,7 @@ function MultiSelectBar<T>({
   elements,
 }: {
   selected: T
-  setSelected: StateUpdater<T>
+  setSelected: Dispatch<StateUpdater<T>>
   elements: { item: T; element: JSXInternal.Element }[]
 }) {
   return (
@@ -229,7 +229,7 @@ export enum SortDirection {
 
 type SortBarProps = {
   sortBy: SortBy
-  setSortBy: StateUpdater<SortBy>
+  setSortBy: Dispatch<StateUpdater<SortBy>>
 }
 
 export function SortBar({ sortBy, setSortBy }: SortBarProps) {

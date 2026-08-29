@@ -2,6 +2,6 @@
   "watch": ["src"],
   "ignore": ["src/**/*.test.ts"],
   "ext": "ts,mjs,js,json,graphql",
-  "exec": "yarn build && yarn start",
+  "exec": "bun run build && bun run start",
   "legacyWatch": true
 }

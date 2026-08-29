@@ -1,7 +1,7 @@
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Anchor from "../../models/Anchor"
-import { StateUpdater, useRef, useState } from "preact/hooks"
+import { Dispatch, StateUpdater, useRef, useState } from "preact/hooks"
 import { JSXInternal } from "preact/src/jsx"
 import { makeOpt, PopoverMenu } from "./PopoverMenu"
 
@@ -11,7 +11,7 @@ export default function Dropdown<T extends string>(
     | {
         options: T[]
         current: T
-        setValue: StateUpdater<T>
+        setValue: Dispatch<StateUpdater<T>>
       }
     | {
         options: FuncInput[]

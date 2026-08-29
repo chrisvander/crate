@@ -3,7 +3,7 @@
   "categories": {
     "correctness": "error"
   },
-  "ignorePatterns": [".yarn/**", "dist/**", "packages/app/**", "packages/k8s/**", "tmp/**"],
+  "ignorePatterns": ["dist/**", "packages/app/**", "packages/k8s/**", "tmp/**"],
   "plugins": ["import", "react", "typescript", "unicorn"],
   "rules": {
     "eslint/no-unused-vars": [
