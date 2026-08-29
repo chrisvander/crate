@@ -24,7 +24,7 @@
     "build:server": "bun run --filter @crate/server build",
     "build:web": "bun run --filter @crate/web build",
     "test": "vitest run",
-    "typecheck": "tsc -p packages/types && tsc -p packages/utils && tsc -p packages/server && tsc -p packages/web",
+    "typecheck": "tsc -p packages/types && tsc -p packages/utils && tsc -p packages/server && tsc -p packages/web && tsc -p packages/web/tsconfig.node.json",
     "dev": "bun run dev:web",
     "dev:web": "bun run --filter @crate/web dev",
     "docs": "openapi-generator-cli generate -i packages/api-spec/src/crate-spec.openapi.yml -g html -o packages/api-docs/src",

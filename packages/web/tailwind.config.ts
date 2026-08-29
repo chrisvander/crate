@@ -1,4 +1,7 @@
-module.exports = {
+import forms from "@tailwindcss/forms"
+import type { Config } from "tailwindcss"
+
+export default {
   content: ["./index.html", "./src/**/*.{html,js,jsx,ts,tsx}"],
   theme: {
     extend: {
@@ -7,5 +10,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms")],
-}
+  plugins: [forms],
+} satisfies Config
