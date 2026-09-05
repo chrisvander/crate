@@ -1,4 +1,5 @@
 pub mod browser;
+pub mod exchange;
 pub mod identity;
 pub mod metadata;
 pub mod revocation;

@@ -45,7 +45,23 @@ impl AuthApi {
             return Err(ApiError::bad("An ATProto handle is required."));
         }
         let binding = browser::token();
-        let url = state.oauth.authorize(handle, AuthorizeOptions {scopes:metadata::scopes(),state:Some(binding.clone()),..Default::default()}).await.map_err(|_|ApiError::upstream("Your PDS could not start OAuth. Verify your handle and that it supports ATProto Spaces."))?;
+        let oauth_state = state.0.clone();
+        let handle = handle.to_owned();
+        let app_state = binding.clone();
+        let url = crate::auth::exchange::complete(async move {
+            oauth_state
+                .oauth
+                .authorize(
+                    &handle,
+                    AuthorizeOptions {
+                        scopes: metadata::scopes(),
+                        state: Some(app_state),
+                        ..Default::default()
+                    },
+                )
+                .await
+        })
+        .await?;
         Ok(LoginResponse::Success(
             Json(LoginOutput { redirect_url: url }),
             browser::cookie(&state.config, browser::LOGIN_COOKIE, &binding, 600),
@@ -58,9 +74,8 @@ impl AuthApi {
         auth: Authenticated,
         state: Data<&Arc<State>>,
     ) -> Result<Json<Session>> {
-        let (did, oauth) = auth.0;
+        let (did, _) = auth.0;
         let space = space::personal(&did);
-        space::exists(&oauth, &space).await?;
         let handle = identity::handle(
             &state.config,
             &did.parse().map_err(|_| ApiError::unauthorized())?,
@@ -75,16 +90,16 @@ impl AuthApi {
     #[oai(path = "/api/v1/logout", method = "post", operation_id = "logout")]
     async fn logout(&self, request: &Request, state: Data<&Arc<State>>) -> Result<LogoutResponse> {
         if let Some(cookie) = browser::read(request, browser::COOKIE) {
-            if let Some(session) = browser::get(&state.database, Some(cookie))? {
-                if let Ok(did) = session.did.parse::<atrium_api::types::string::Did>() {
-                    let _ = state.oauth.revoke(&did).await;
-                    SessionPersistence::new(state.database.clone(), "oauth-session", 0)
-                        .del(&did)
-                        .await
-                        .map_err(|_| {
-                            ApiError::upstream("Session storage is temporarily unavailable.")
-                        })?;
-                }
+            if let Some(session) = browser::get(&state.database, Some(cookie))?
+                && let Ok(did) = session.did.parse::<atrium_api::types::string::Did>()
+            {
+                let _ = state.oauth.revoke(&did).await;
+                SessionPersistence::new(state.database.clone(), "oauth-session", 0)
+                    .del(&did)
+                    .await
+                    .map_err(|_| {
+                        ApiError::upstream("Session storage is temporarily unavailable.")
+                    })?;
             }
             browser::delete(&state.database, cookie)?;
         }
@@ -121,11 +136,12 @@ pub async fn callback(
                 "The OAuth callback does not match this browser.",
             ));
         }
-        let (session, user_state) = state
-            .oauth
-            .callback(params)
-            .await
-            .map_err(|_| ApiError::bad("OAuth callback failed. Restart login."))?;
+        let oauth_state = state.0.clone();
+        let (session, user_state) =
+            crate::auth::exchange::complete(
+                async move { oauth_state.oauth.callback(params).await },
+            )
+            .await?;
         if user_state.as_deref() != Some(binding) {
             return Err(ApiError::forbidden(
                 "The OAuth callback does not match this browser.",
