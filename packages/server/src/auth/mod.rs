@@ -1,4 +1,5 @@
 pub mod browser;
+pub mod callback;
 pub mod exchange;
 pub mod identity;
 pub mod metadata;

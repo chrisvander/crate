@@ -1,3 +1,4 @@
+use crate::auth::callback::{Callback, Outcome, rejection};
 use crate::storage::oauth::{SessionPersistence, StatePersistence};
 use crate::{
     auth::{browser, identity, metadata, security::Authenticated},
@@ -116,18 +117,15 @@ impl AuthApi {
 pub async fn callback(
     request: &Request,
     state: Data<&Arc<State>>,
-    Query(params): Query<CallbackParams>,
+    Query(params): Query<Callback>,
 ) -> Response {
     let result = async {
         let binding = browser::read(request, browser::LOGIN_COOKIE).ok_or_else(|| {
             ApiError::forbidden("The OAuth callback is not bound to this browser.")
         })?;
-        let key = params
-            .state
-            .as_ref()
-            .ok_or_else(|| ApiError::bad("OAuth state is missing."))?;
-        let pending = StatePersistence::new(state.database.clone(), "oauth-state", 600)
-            .get(key)
+        let store = StatePersistence::new(state.database.clone(), "oauth-state", 600);
+        let pending = store
+            .get(&params.state)
             .await
             .map_err(|_| ApiError::upstream("OAuth state is unavailable."))?
             .ok_or_else(|| ApiError::bad("OAuth state expired. Restart login."))?;
@@ -136,6 +134,37 @@ pub async fn callback(
                 "The OAuth callback does not match this browser.",
             ));
         }
+        if params
+            .issuer
+            .as_deref()
+            .is_some_and(|issuer| issuer != pending.iss)
+        {
+            return Err(ApiError::forbidden(
+                "The OAuth callback issuer does not match this login.",
+            ));
+        }
+        let code = match params.outcome {
+            Outcome::Authorized { code } => code,
+            Outcome::Rejected { error, description } => {
+                store
+                    .del(&params.state)
+                    .await
+                    .map_err(|_| ApiError::upstream("OAuth state is unavailable."))?;
+                let mut response = rejection(&error, description.as_deref()).into_response();
+                response.headers_mut().append(
+                    "Set-Cookie",
+                    browser::cookie(&state.config, browser::LOGIN_COOKIE, "", 0)
+                        .parse()
+                        .unwrap(),
+                );
+                return Ok(response);
+            }
+        };
+        let params = CallbackParams {
+            code,
+            state: Some(params.state),
+            iss: params.issuer,
+        };
         let oauth_state = state.0.clone();
         let (session, user_state) =
             crate::auth::exchange::complete(
