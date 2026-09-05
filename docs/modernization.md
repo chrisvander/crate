@@ -6,7 +6,8 @@ Crate is an ATProto-native file application. A trusted, permissioned PDS owns
 records, blobs, and access control. Rust defines the storage models and HTTP
 contract. The server derives OpenAPI from its actual typed handlers; TypeScript
 and Swift consume generated clients. Astro owns the web pages and a cohesive
-Preact island owns the interactive file browser.
+Preact island owns the interactive file browser. The migration must preserve the
+original page layout and visual styling, not redesign the application.
 
 The browser may use a same-origin OAuth backend. Its tokens and sessions are
 private operational state, not user-profile records. The backend must not become
@@ -46,6 +47,7 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 - [x] TypeScript clients use source exports; clean typechecking needs no type build.
 - [x] Swift generated client compiles and exercises the response contract.
 - [x] PDS adapters pass explicit permissioned context; live interoperability remains below.
+- [ ] The PDS can discover the published Crate Space declaration during OAuth consent.
 - [x] File identity, revision CID, blob CID, and parent identity remain distinct.
 - [x] Record boundaries reject malformed names, dates, sizes, references, and blobs.
 - [ ] Creation, empty files, upload, rename, duplicate, and download work.
@@ -59,6 +61,7 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 ### Web
 
 - [x] Astro replaces the manual Preact page router and Vite entry point.
+- [ ] Original login, landing, explorer, inspector, and account layouts are preserved.
 - [x] Shared explorer interactions have regression tests for grid and list views.
 - [x] Cache keys include account/storage context and mutations invalidate correctly.
 - [x] Session restoration, account changes, request cancellation, and logout are tested.
@@ -78,12 +81,12 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 - [x] The integrated history contains no deployment-specific credentials; examples remain usable.
 - [ ] Browser verification covers login and meaningful file interactions.
 - [ ] Real PDS sign-in is performed by the user; existing records are not silently migrated or deleted.
-- [x] Final history is linear, single-concept, and all work is integrated into the main checkout.
+- [ ] Final history is linear, single-concept, and all work is integrated into the main checkout.
 
 ## Verified on 2026-09-05
 
 `bun install --frozen-lockfile` and `bun run check` pass from the main checkout:
-67 JavaScript tests, 34 Rust tests, deterministic Lexicon/OpenAPI/SDK drift checks,
+72 JavaScript tests, 41 Rust tests, deterministic Lexicon/OpenAPI/SDK drift checks,
 and four Swift tests. TypeScript 7 checks source-only root references; Astro reports
 zero errors and warnings, with two dependency deprecation hints in query tests.
 The Swift generator emits upstream unused-public-import warnings in generated files.
@@ -108,13 +111,32 @@ filesystem cleared the stale error state without resetting or restarting the VM.
 The Rust image build now discards compiler output before committing its build layer.
 Nested environment files and browser artifacts are excluded from image contexts.
 
+The user's live sign-in attempt reached the Spaces alpha provider, which rejected
+consent with `invalid_scope`: it could not retrieve Space declarations. Public
+authoritative DNS had no TXT record at `_lexicon.crate.network`. The local generated
+declaration also lacked the alpha validator's required `name` and `key` metadata;
+the Rust generator now includes both, with a regression test. Callback handling
+now distinguishes bound provider rejection from malformed requests, consumes only
+the matching pending login, and never reflects arbitrary provider descriptions.
+
+The interrupted browser run performed no file operations. Its diagnostic artifact
+was removed. Manual sign-in observation now reports provider rejection promptly
+without leaving a locator that logs callback URLs on cancellation. Live mode also
+disables Playwright's separate failure-page snapshot capture; an intentionally
+failing synthetic-provider test verified that neither its page contents nor its
+callback-state marker appeared in the diagnostic artifact.
+
 Remaining acceptance boundaries:
 
-- The first headed PDS test timed out before reaching the file browser; no file
-  operations ran. The next attempt requires the user's sign-in. The test now waits
-  for persisted revisions before downloading and treats an incomplete manual sign-in
-  as skipped, avoiding a failure-page snapshot on the PDS login screen. A skipped
-  test is not evidence of live OAuth or file interoperability.
+- Public declaration discovery, successful OAuth, and live file interoperability
+  remain unverified. DNS changes and schema publication are intentionally deferred;
+  no PDS records or DNS entries were published. A later authorized setup requires a
+  schema-publisher DID and publicly resolvable generated Lexicons before another
+  user-driven sign-in attempt can complete.
+- The original UI was substantially redesigned during the initial Astro migration.
+  Restoration is in progress, with original-revision screenshot baselines using
+  synthetic accounts and files. Original selection, truncation, and mobile-overflow
+  bugs must not be reintroduced with the original styling.
 - Astro 7.3.1 retains esbuild 0.28.2 internally. Crate has no direct dependency or
   build scripts using it. Approval of this framework-only exception is still pending.
 

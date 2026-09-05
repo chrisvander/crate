@@ -25,7 +25,11 @@ Use `127.0.0.1`, not `localhost`, so OAuth redirect origins and cookies agree.
 
 Sign in with your own ATProto handle and approve access on your PDS. The PDS must
 implement the permissioned Spaces API described in
-[the protocol documentation](packages/protocol/README.md). Crate does not fall
+[the protocol documentation](packages/protocol/README.md). Before sign-in can finish,
+the generated Space declaration must be publicly resolvable through the namespace's
+Lexicon authority. [Declaration publication](packages/protocol/README.md#public-declaration-discovery)
+is a separate, explicitly authorized setup step; `bun run dev` does not publish
+schemas or change DNS. Crate does not fall
 back to public repository storage. Existing legacy records are not migrated or
 deleted automatically. Authentication tests never require sharing a password.
 
