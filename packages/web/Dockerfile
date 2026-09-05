@@ -1,3 +1,3 @@
-FROM nginx:1.20.2-alpine
-COPY ./packages/web/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY ./dist/packages/web /etc/nginx/html/
+FROM nginx:stable-alpine
+COPY packages/web/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY dist/packages/web /usr/share/nginx/html
