@@ -1,0 +1,53 @@
+{
+  "defs": {
+    "main": {
+      "description": "A mutable file head, addressed by its stable record key in a private drive space.",
+      "key": "tid",
+      "record": {
+        "properties": {
+          "blob": {
+            "accept": [
+              "*/*"
+            ],
+            "maxSize": 1073741824,
+            "type": "blob"
+          },
+          "createdAt": {
+            "format": "datetime",
+            "type": "string"
+          },
+          "isDirectory": {
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "type": "string"
+          },
+          "parentId": {
+            "format": "record-key",
+            "type": "string"
+          },
+          "trashedAt": {
+            "format": "datetime",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "datetime",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "isDirectory",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "type": "record"
+    }
+  },
+  "id": "network.crate.file",
+  "lexicon": 1
+}

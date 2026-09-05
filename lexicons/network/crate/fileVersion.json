@@ -1,0 +1,38 @@
+{
+  "defs": {
+    "main": {
+      "description": "Immutable snapshot created atomically before replacing a file head.",
+      "key": "any",
+      "record": {
+        "properties": {
+          "capturedAt": {
+            "format": "datetime",
+            "type": "string"
+          },
+          "fileId": {
+            "format": "record-key",
+            "type": "string"
+          },
+          "record": {
+            "ref": "network.crate.file",
+            "type": "ref"
+          },
+          "revision": {
+            "format": "cid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fileId",
+          "revision",
+          "capturedAt",
+          "record"
+        ],
+        "type": "object"
+      },
+      "type": "record"
+    }
+  },
+  "id": "network.crate.fileVersion",
+  "lexicon": 1
+}

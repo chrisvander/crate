@@ -1,0 +1,15 @@
+{
+  "defs": {
+    "main": {
+      "collections": [
+        "network.crate.file",
+        "network.crate.fileVersion",
+        "network.crate.fileName"
+      ],
+      "description": "Personal Crate drive. Only its owner can read or write; clients use the shared collection protocol.",
+      "type": "space"
+    }
+  },
+  "id": "network.crate.drive",
+  "lexicon": 1
+}

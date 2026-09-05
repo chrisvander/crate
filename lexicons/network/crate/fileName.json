@@ -1,0 +1,33 @@
+{
+  "defs": {
+    "main": {
+      "description": "Atomic uniqueness claim for a filename within a parent directory.",
+      "key": "any",
+      "record": {
+        "properties": {
+          "fileId": {
+            "format": "record-key",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "type": "string"
+          },
+          "parentId": {
+            "format": "record-key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fileId",
+          "name"
+        ],
+        "type": "object"
+      },
+      "type": "record"
+    }
+  },
+  "id": "network.crate.fileName",
+  "lexicon": 1
+}
