@@ -141,3 +141,25 @@ fn metadata_update_requires_name_and_revision() {
     let update = UpdateFile::parse_from_json(Some(json!({"revision":CID,"name":"New"}))).unwrap();
     assert!(update.parent_id.is_none());
 }
+
+#[test]
+fn name_claims_are_scoped_and_unambiguous() {
+    use crate_protocol::name_claim_key;
+    assert_eq!(
+        name_claim_key(None, "Documents"),
+        "cc78b9e5ea9ff8bd300f79190f7f7754b7befd1b77d87460dcf77288c4f7e27f"
+    );
+    assert_eq!(
+        name_claim_key(Some("3mabcdef12345"), "café.txt"),
+        "7d91c5e0f4fdb569e9fad9dc48bb18b7ca66fa09824eed7eddeb17e4a53d2961"
+    );
+    assert_ne!(
+        name_claim_key(None, "Documents"),
+        name_claim_key(Some("parent"), "Documents")
+    );
+    assert_ne!(
+        name_claim_key(Some("ab"), "c"),
+        name_claim_key(Some("a"), "bc")
+    );
+    assert_ne!(name_claim_key(None, "A"), name_claim_key(None, "a"));
+}

@@ -1,12 +1,19 @@
 pub use atrium_api::types::TypedBlobRef as BlobRef;
 use jacquard_derive::LexiconSchema;
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
 pub const FILE_COLLECTION: &str = "network.crate.file";
 pub const VERSION_COLLECTION: &str = "network.crate.fileVersion";
 pub const NAME_COLLECTION: &str = "network.crate.fileName";
 pub const SPACE_TYPE: &str = "network.crate.drive";
 pub const MAX_FILE_BYTES: usize = 1_073_741_824;
+
+/// Lowercase SHA-256 of the compact UTF-8 JSON array `[parentId-or-null, name]`.
+pub fn name_claim_key(parent_id: Option<&str>, name: &str) -> String {
+    let input = serde_json::to_vec(&(parent_id, name)).expect("strings always serialize");
+    format!("{:x}", Sha256::digest(input))
+}
 
 /// A mutable file head, addressed by its stable record key in a private drive space.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, LexiconSchema)]
