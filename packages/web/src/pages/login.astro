@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import DriveApp from "../components/DriveApp";
 ---
 
-<Layout title="Log in"
+<Layout title="Log in" navigation={false}
   ><DriveApp mode="login" client:only="preact"
     ><p slot="fallback" role="status">Loading Crate…</p></DriveApp
   ></Layout

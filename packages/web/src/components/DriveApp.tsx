@@ -4,8 +4,12 @@ import { api, getSession, sessionKey } from "../lib/api"
 import { createQueryClient } from "../lib/query"
 import { LoginForm } from "./LoginForm"
 import { Explorer } from "./files/Explorer"
+import { Navigation } from "./Navigation"
+import { AccountSettings } from "./AccountSettings"
 
-function Account({ mode }: { mode: "files" | "login" }) {
+type Mode = "files" | "login" | "settings"
+
+function Account({ mode }: { mode: Mode }) {
   const client = useQueryClient()
   const session = useQuery({
     queryKey: sessionKey,
@@ -36,56 +40,69 @@ function Account({ mode }: { mode: "files" | "login" }) {
     }
   }
 
-  if (session.isPending) return <p role="status">Restoring your ATProto session…</p>
+  if (session.isPending)
+    return (
+      <>
+        <Navigation />
+        <main>
+          <p role="status">Restoring your ATProto session…</p>
+        </main>
+      </>
+    )
   if (session.isError)
     return (
-      <section className="panel stack">
-        <h1>Cannot restore your session</h1>
-        <p className="error" role="alert">
-          {session.error.message}
-        </p>
-        {error && (
+      <>
+        <Navigation />
+        <main className="stack">
+          <h1>Cannot restore your session</h1>
           <p className="error" role="alert">
-            {error}
+            {session.error.message}
           </p>
-        )}
-        <button disabled={loggingOut} onClick={() => void session.refetch()}>
-          Try again
-        </button>
-        <button disabled={loggingOut} onClick={() => void logOut()}>
-          Use another account
-        </button>
-      </section>
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
+          <button disabled={loggingOut} onClick={() => void session.refetch()}>
+            Try again
+          </button>
+          <button disabled={loggingOut} onClick={() => void logOut()}>
+            Use another account
+          </button>
+        </main>
+      </>
     )
-  if (!account) return <LoginForm />
+  if (!account)
+    return (
+      <>
+        <Navigation />
+        <LoginForm />
+      </>
+    )
   if (mode === "login") return <p role="status">Opening your files…</p>
 
   return (
-    <section className="stack">
-      <div className="row account-row">
-        <div>
-          <strong>{account.user.handle}</strong>
-          <p className="muted">Private ATProto space</p>
-        </div>
-        <button disabled={loggingOut} onClick={() => void logOut()}>
-          Log out
-        </button>
-      </div>
+    <>
+      <Navigation authenticated />
       {error && (
         <p className="error" role="alert">
           {error}
         </p>
       )}
-      {loggingOut ? (
-        <p role="status">Logging out…</p>
+      {mode === "settings" ? (
+        <AccountSettings session={account} pending={loggingOut} onLogout={() => void logOut()} />
+      ) : loggingOut ? (
+        <main>
+          <p role="status">Logging out…</p>
+        </main>
       ) : (
         <Explorer key={account.user.did + account.space.uri} session={account} />
       )}
-    </section>
+    </>
   )
 }
 
-export default function DriveApp({ mode }: { mode: "files" | "login" }) {
+export default function DriveApp({ mode }: { mode: Mode }) {
   const [client] = useState(createQueryClient)
   return (
     <QueryClientProvider client={client}>
