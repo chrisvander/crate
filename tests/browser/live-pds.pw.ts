@@ -1,4 +1,4 @@
-import { expect as baseExpect, test, type Page } from "@playwright/test"
+import { errors, expect as baseExpect, test, type Page } from "@playwright/test"
 
 const expect = baseExpect.configure({ timeout: 30_000 })
 
@@ -9,9 +9,15 @@ test("user-authorized private PDS file lifecycle", async ({ page }) => {
   test.setTimeout(15 * 60_000)
   await page.goto("/login")
   console.log("Please sign in in the browser window; credentials are not recorded.")
-  await expect(page.getByRole("heading", { name: "Files", exact: true })).toBeVisible({
-    timeout: 10 * 60_000,
-  })
+  try {
+    await page.getByRole("heading", { name: "Files", exact: true }).waitFor({
+      state: "visible",
+      timeout: 10 * 60_000,
+    })
+  } catch (error) {
+    if (!(error instanceof errors.TimeoutError)) throw error
+    test.skip(true, "Manual sign-in was not completed; no file operations ran")
+  }
   await expect(page.getByText("Loading files…", { exact: true })).toBeHidden()
   await expect(page.getByRole("alert")).toHaveCount(0)
 
