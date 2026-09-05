@@ -40,9 +40,6 @@
 .login-form label {
   display: block;
 }
-.session-message {
-  max-width: 1536px;
-}
 @media (min-width: 768px) {
   .login-box {
     margin-top: 96px;
