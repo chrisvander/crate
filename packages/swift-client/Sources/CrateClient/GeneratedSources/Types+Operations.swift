@@ -7682,17 +7682,22 @@ public enum Operations {
             public struct Headers: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/api/v1/files/{id}/content/GET/header/Range`.
                 public var Range: Swift.String?
+                /// - Remark: Generated from `#/paths/api/v1/files/{id}/content/GET/header/If-Range`.
+                public var If_hyphen_Range: Swift.String?
                 public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.downloadFile.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - Range:
+                ///   - If_hyphen_Range:
                 ///   - accept:
                 public init(
                     Range: Swift.String? = nil,
+                    If_hyphen_Range: Swift.String? = nil,
                     accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.downloadFile.AcceptableContentType>] = .defaultValues()
                 ) {
                     self.Range = Range
+                    self.If_hyphen_Range = If_hyphen_Range
                     self.accept = accept
                 }
             }

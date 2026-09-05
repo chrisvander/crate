@@ -1864,6 +1864,16 @@
             "required": false,
             "deprecated": false,
             "explode": true
+          },
+          {
+            "name": "If-Range",
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "required": false,
+            "deprecated": false,
+            "explode": true
           }
         ],
         "responses": {

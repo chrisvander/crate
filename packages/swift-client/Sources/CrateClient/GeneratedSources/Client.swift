@@ -3503,6 +3503,11 @@ public struct Client: APIProtocol {
                     name: "Range",
                     value: input.headers.Range
                 )
+                try converter.setHeaderFieldAsURI(
+                    in: &request.headerFields,
+                    name: "If-Range",
+                    value: input.headers.If_hyphen_Range
+                )
                 converter.setAcceptHeader(
                     in: &request.headerFields,
                     contentTypes: input.headers.accept

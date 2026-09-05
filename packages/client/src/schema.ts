@@ -686,6 +686,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                "If-Range"?: string;
                 Range?: string;
             };
             path: {
