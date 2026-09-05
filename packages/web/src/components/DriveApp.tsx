@@ -1,6 +1,6 @@
 import { QueryClientProvider, useQuery, useQueryClient } from "@tanstack/preact-query"
 import { useEffect, useState } from "preact/hooks"
-import { api, filesKey, getSession, sessionKey } from "../lib/api"
+import { api, getSession, sessionKey } from "../lib/api"
 import { createQueryClient } from "../lib/query"
 import { LoginForm } from "./LoginForm"
 import { Explorer } from "./files/Explorer"
@@ -20,6 +20,22 @@ function Account({ mode }: { mode: "files" | "login" }) {
     if (account && mode === "login") window.location.replace("/files")
   }, [account, mode])
 
+  const logOut = async () => {
+    setLoggingOut(true)
+    setError("")
+    try {
+      await client.cancelQueries({ queryKey: ["files"] })
+      const response = await api.POST("/api/v1/logout")
+      if (!response.response.ok && response.response.status !== 401)
+        throw new Error("Logout failed. Please try again.")
+      client.clear()
+      window.location.replace("/login")
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Logout failed.")
+      setLoggingOut(false)
+    }
+  }
+
   if (session.isPending) return <p role="status">Restoring your ATProto session…</p>
   if (session.isError)
     return (
@@ -28,7 +44,17 @@ function Account({ mode }: { mode: "files" | "login" }) {
         <p className="error" role="alert">
           {session.error.message}
         </p>
-        <button onClick={() => void session.refetch()}>Try again</button>
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+        <button disabled={loggingOut} onClick={() => void session.refetch()}>
+          Try again
+        </button>
+        <button disabled={loggingOut} onClick={() => void logOut()}>
+          Use another account
+        </button>
       </section>
     )
   if (!account) return <LoginForm />
@@ -41,26 +67,7 @@ function Account({ mode }: { mode: "files" | "login" }) {
           <strong>{account.user.handle}</strong>
           <p className="muted">Private ATProto space</p>
         </div>
-        <button
-          disabled={loggingOut}
-          onClick={async () => {
-            setLoggingOut(true)
-            setError("")
-            try {
-              await client.cancelQueries({
-                queryKey: filesKey(account.user.did, account.space.uri),
-              })
-              const response = await api.POST("/api/v1/logout")
-              if (!response.response.ok && response.response.status !== 401)
-                throw new Error("Logout failed. Please try again.")
-              client.clear()
-              window.location.replace("/login")
-            } catch (error) {
-              setError(error instanceof Error ? error.message : "Logout failed.")
-              setLoggingOut(false)
-            }
-          }}
-        >
+        <button disabled={loggingOut} onClick={() => void logOut()}>
           Log out
         </button>
       </div>

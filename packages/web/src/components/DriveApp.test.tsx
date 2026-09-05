@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from "@testing-library/preact"
+import { cleanup, fireEvent, render, screen } from "@testing-library/preact"
 import { afterEach, describe, expect, it, vi } from "vitest"
 import DriveApp from "./DriveApp"
 
@@ -41,5 +41,31 @@ describe("ATProto session restoration", () => {
     render(<DriveApp mode="files" />)
     expect((await screen.findByRole("alert")).textContent).toContain("private Spaces")
     expect(screen.queryByRole("button", { name: "Continue with ATProto" })).toBeNull()
+    expect(screen.getByRole("button", { name: "Use another account" })).toBeTruthy()
+  })
+  it("allows an unsupported-PDS session to be cleared and reports logout failures", async () => {
+    const requests: Request[] = []
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL) => {
+        const request = input instanceof Request ? input : new Request(input)
+        requests.push(request)
+        return Response.json(
+          { message: "Private Spaces unavailable." },
+          {
+            status: request.method === "POST" ? 500 : 503,
+          },
+        )
+      }),
+    )
+    render(<DriveApp mode="login" />)
+    fireEvent.click(await screen.findByRole("button", { name: "Use another account" }))
+    await screen.findByText("Logout failed. Please try again.")
+    expect(
+      requests.some(
+        (request) =>
+          request.method === "POST" && new URL(request.url).pathname === "/api/v1/logout",
+      ),
+    ).toBe(true)
   })
 })
