@@ -8,8 +8,12 @@
 **/.build
 **/.swiftpm
 **/.crate-data
-.env
-.env.*
-!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+**/.dockerconfigjson
+**/*.log
+**/test-results
+**/playwright-report
 logs
 tmp
