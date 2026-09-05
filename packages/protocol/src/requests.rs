@@ -2,6 +2,15 @@ use crate::FileKind;
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 
+// Poem's default String parser coerces scalars; serde preserves the JSON contract.
+fn parse_strict<T>(value: Option<serde_json::Value>) -> poem_openapi::types::ParseResult<T>
+where
+    T: serde::de::DeserializeOwned + poem_openapi::types::Type,
+{
+    serde_json::from_value(value.unwrap_or(serde_json::Value::Null))
+        .map_err(poem_openapi::types::ParseError::custom)
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Object)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 #[oai(
@@ -10,9 +19,13 @@ use serde::{Deserialize, Serialize};
     skip_serializing_if_is_none
 )]
 pub struct CreateFile {
-    #[oai(validator(min_length = "1", max_length = "255"))]
+    #[oai(
+        deserialize_with = "parse_strict",
+        validator(min_length = "1", max_length = "255")
+    )]
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[oai(deserialize_with = "parse_strict")]
     pub parent_id: Option<String>,
     pub kind: FileKind,
 }
@@ -26,8 +39,12 @@ pub struct CreateFile {
     skip_serializing_if_is_none
 )]
 pub struct UpdateFile {
+    #[oai(deserialize_with = "parse_strict")]
     pub revision: String,
-    #[oai(validator(min_length = "1", max_length = "255"))]
+    #[oai(
+        deserialize_with = "parse_strict",
+        validator(min_length = "1", max_length = "255")
+    )]
     pub name: String,
 }
 
@@ -39,10 +56,15 @@ pub struct UpdateFile {
     skip_serializing_if_is_none
 )]
 pub struct DuplicateFile {
+    #[oai(deserialize_with = "parse_strict")]
     pub revision: String,
-    #[oai(validator(min_length = "1", max_length = "255"))]
+    #[oai(
+        deserialize_with = "parse_strict",
+        validator(min_length = "1", max_length = "255")
+    )]
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[oai(deserialize_with = "parse_strict")]
     pub parent_id: Option<String>,
 }
 
@@ -50,6 +72,7 @@ pub struct DuplicateFile {
 #[serde(deny_unknown_fields)]
 #[oai(deny_unknown_fields)]
 pub struct RevisionInput {
+    #[oai(deserialize_with = "parse_strict")]
     pub revision: String,
 }
 
@@ -57,7 +80,7 @@ pub struct RevisionInput {
 #[serde(deny_unknown_fields)]
 #[oai(deny_unknown_fields)]
 pub struct LoginInput {
-    #[oai(validator(min_length = "1"))]
+    #[oai(deserialize_with = "parse_strict", validator(min_length = "1"))]
     pub handle: String,
 }
 

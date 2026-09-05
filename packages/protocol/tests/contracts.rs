@@ -150,6 +150,35 @@ fn metadata_update_requires_name_and_revision() {
 }
 
 #[test]
+fn request_strings_never_coerce_json_scalars() {
+    use crate_protocol::{CreateFile, DuplicateFile, LoginInput, RevisionInput};
+    for value in [json!(42), json!(true), json!({}), json!([])] {
+        let invalid = [
+            LoginInput::parse_from_json(Some(json!({"handle": value}))).is_err(),
+            RevisionInput::parse_from_json(Some(json!({"revision": value}))).is_err(),
+            UpdateFile::parse_from_json(Some(json!({"revision": value, "name": "New"}))).is_err(),
+            UpdateFile::parse_from_json(Some(json!({"revision": CID, "name": value}))).is_err(),
+            CreateFile::parse_from_json(Some(json!({"kind": "file", "name": value}))).is_err(),
+            CreateFile::parse_from_json(Some(
+                json!({"kind": "file", "name": "New", "parentId": value}),
+            ))
+            .is_err(),
+            DuplicateFile::parse_from_json(Some(json!({"revision": value, "name": "New"})))
+                .is_err(),
+            DuplicateFile::parse_from_json(Some(json!({"revision": CID, "name": value}))).is_err(),
+            DuplicateFile::parse_from_json(Some(
+                json!({"revision": CID, "name": "New", "parentId": value}),
+            ))
+            .is_err(),
+        ];
+        assert!(
+            invalid.into_iter().all(|rejected| rejected),
+            "Coerced {value}"
+        );
+    }
+}
+
+#[test]
 fn version_records_validate_every_boundary() {
     let version = VersionRecord {
         file_id: TID.into(),
