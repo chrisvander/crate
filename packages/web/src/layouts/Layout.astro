@@ -1,0 +1,31 @@
+---
+import "../styles/base.css";
+import Footer from "../components/Footer.astro";
+import { PublicNavigation } from "../components/PublicNavigation";
+interface Props {
+  title: string;
+  navigation?: boolean;
+}
+const { title, navigation = true } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" />
+    <title>{title} · Crate</title>
+  </head>
+  <body>
+    <a
+      class="skip-link absolute -top-15 z-100 focus:top-3 focus:left-3 focus:bg-panel focus:p-2.5"
+      href="#main">Skip to content</a
+    >
+    <div class="page-shell relative min-h-screen pb-48">
+      {navigation && <PublicNavigation client:load />}
+      <div id="main"><slot /></div>
+      <Footer breadcrumbs={[{ name: title, link: Astro.url.pathname }]} />
+    </div>
+  </body>
+</html>
