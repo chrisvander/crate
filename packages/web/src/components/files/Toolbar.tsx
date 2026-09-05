@@ -1,127 +1,58 @@
 import { faGrip, faBars, faAdd } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useRef } from "preact/hooks"
+import { Icon } from "../Icon"
 import FormInput from "../FormInput"
-import { Popover, PopoverButtonRow } from "../Popover"
-import { Dispatch, StateUpdater, useEffect, useState } from "preact/hooks"
-import { JSXInternal } from "preact/src/jsx"
-import Dropdown, { FuncInput } from "./Dropdown"
-import sanitizeFilename from "sanitize-filename"
-import { useFileStore } from "../../store/FileStore"
-import FileAPI from "../../api/FileAPI"
-import { useStore as useFVStore } from "../../store/FileViewStore"
+import Dropdown from "./Dropdown"
+import { sortOptions, type Sort, type View } from "../../lib/files"
 
-function NewFileBody({ dismiss, type }: { dismiss: () => void; type: "directory" | "file" }) {
-  const makeDir = useFileStore((state) => state.makeDir)
-  const makeFile = useFileStore((state) => state.makeFile)
-  const path = useFVStore((state) => state.path)
-  const [name, setName] = useState("")
-  const invalid = sanitizeFilename(name) !== name
-
-  const confirm = async () => {
-    if (type === "directory") await makeDir(path, name)
-    else await makeFile(path, name)
-    dismiss()
-  }
-
-  return (
-    <>
-      <div className="p-2 w-96">
-        <h1 className="mb-2 text-xl font-bold">New {type === "file" ? "File" : "Folder"}</h1>
-        <FormInput
-          placeholder={type === "file" ? "file name" : "folder name"}
-          value={name}
-          onInput={(e) => {
-            setName(e.target.value)
-          }}
-        />
-      </div>
-      <PopoverButtonRow
-        actions={[
-          ["Done", confirm, invalid],
-          ["Cancel", dismiss],
-        ]}
-      />
-    </>
-  )
+type Props = {
+  search: string
+  sort: Sort
+  view: View
+  pending: boolean
+  onSearch: (value: string) => void
+  onSort: (sort: Sort) => void
+  onView: (view: View) => void
+  onCreate: (kind: "file" | "directory") => void
+  onUpload: (files: File[]) => void
 }
-
-export function AddBox() {
-  const [inputEl, setInputEl] = useState<HTMLInputElement>(null)
-  const [isSelectingFile, setIsSelectingFile] = useState(false)
-  const path = useFVStore((state) => state.path)
-  const setPath = useFVStore((state) => state.setPath)
-  const refresh = useFileStore((state) => state.refresh)
-
-  useEffect(() => {
-    const onUpload = async (e) => {
-      const fileInput: HTMLInputElement = e.target
-      const { files } = fileInput
-      await FileAPI.upload(files, path)
-      refresh(path)
-      setIsSelectingFile(false)
-    }
-
-    const inpt = document.createElement("input")
-    inpt.className = "hidden"
-    inpt.onchange = onUpload
-    inpt.type = "file"
-    inpt.multiple = true
-    setInputEl(inpt)
-    return () => {
-      setInputEl(null)
-      inpt.remove()
-    }
-  }, [isSelectingFile, path, refresh, setPath])
-
-  enum PopoverWindow {
-    NEW_FILE,
-    NEW_FOLDER,
-  }
-  const [popover, setPopover] = useState<PopoverWindow | null>(null)
-
-  useEffect(() => {
-    const listener = (ev) => {
-      if (ev.key === "Escape") setPopover(null)
-    }
-    window.addEventListener("keydown", listener)
-    return () => {
-      window.removeEventListener("keydown", listener)
-    }
-  }, [])
-
-  const mOpt = (n, f) => ({ name: n, onClick: f })
-  const dropdownOptions: FuncInput[] = [
-    mOpt("New File", () => setPopover(PopoverWindow.NEW_FILE)),
-    mOpt("New Folder", () => setPopover(PopoverWindow.NEW_FOLDER)),
-    mOpt("Upload", () => {
-      if (inputEl) {
-        inputEl.click()
-        setIsSelectingFile(true)
-      }
-    }),
-  ]
-
+export function AddBox({
+  pending,
+  onCreate,
+  onUpload,
+}: Pick<Props, "pending" | "onCreate" | "onUpload">) {
+  const input = useRef<HTMLInputElement>(null)
   return (
     <div className="flex flex-col justify-between">
-      <label htmlFor="search" className="text-sm font-medium text-stone-700 dark:text-stone-400">
-        Add Files
-      </label>
-      <Dropdown options={dropdownOptions} display={<FontAwesomeIcon icon={faAdd} />} />
-      {popover !== null && (
-        <Popover key={popover}>
-          {(popover === PopoverWindow.NEW_FILE || popover === PopoverWindow.NEW_FOLDER) && (
-            <NewFileBody
-              dismiss={() => setPopover(null)}
-              type={popover === PopoverWindow.NEW_FILE ? "file" : "directory"}
-            />
-          )}
-        </Popover>
-      )}
+      <span className="text-sm font-medium text-stone-700 dark:text-stone-400">Add Files</span>
+      <Dropdown
+        label="Add files"
+        disabled={pending}
+        display={<Icon icon={faAdd} />}
+        options={[
+          { name: "New File", onClick: () => onCreate("file") },
+          { name: "New Folder", onClick: () => onCreate("directory") },
+          "divider",
+          { name: "Upload", onClick: () => input.current?.click() },
+        ]}
+      />
+      <input
+        ref={input}
+        className="hidden"
+        type="file"
+        multiple
+        disabled={pending}
+        aria-label="Upload files"
+        onChange={(event) => {
+          const files = Array.from(event.currentTarget.files ?? [])
+          event.currentTarget.value = ""
+          if (files.length) onUpload(files)
+        }}
+      />
     </div>
   )
 }
-
-export function SearchBar() {
+export function SearchBar({ search, onSearch }: Pick<Props, "search" | "onSearch">) {
   return (
     <div className="flex-col justify-between flex-1">
       <label
@@ -131,10 +62,18 @@ export function SearchBar() {
         Search
       </label>
       <div className="relative mt-1 rounded-md shadow-sm">
-        <FormInput type="text" name="search" id="search" placeholder="textfile.txt" />
+        <FormInput
+          type="text"
+          name="search"
+          id="search"
+          placeholder="textfile.txt"
+          aria-label="Search files"
+          value={search}
+          onInput={(event) => onSearch(event.currentTarget.value)}
+        />
         <div className="absolute inset-y-0 right-0 flex items-center">
           <button
-            className="flex items-center h-full px-6 text-xs font-medium leading-tight text-white uppercase bg-orange-500 rounded shadow-md btn hover:bg-orange-600 hover:shadow-lg focus:bg-orange-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-orange-700 active:shadow-lg transition duration-150 ease-in-out"
+            className="flex items-center h-full px-6 text-xs font-medium leading-tight text-white uppercase bg-orange-500 rounded-sm shadow-md btn hover:bg-orange-600 hover:shadow-lg focus:bg-orange-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-orange-700 active:shadow-lg transition duration-150 ease-in-out"
             type="button"
             id="search-button"
           >
@@ -160,100 +99,48 @@ export function SearchBar() {
   )
 }
 
-function MultiSelectBar<T>({
-  selected,
-  setSelected,
-  elements,
-}: {
-  selected: T
-  setSelected: Dispatch<StateUpdater<T>>
-  elements: { item: T; element: JSXInternal.Element }[]
-}) {
-  return (
-    <>
-      {elements.map(({ item, element }) => (
-        <button
-          key={element.key}
-          className={`${
-            item === selected
-              ? "bg-neutral-300 dark:bg-neutral-600"
-              : "bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
-          }  text-neutral-800 dark:text-neutral-200 py-2 px-4`}
-          onClick={() => setSelected(item)}
-        >
-          {element}
-        </button>
-      ))}
-    </>
-  )
-}
-
-export enum ViewMode {
-  LIST = "list",
-  GRID = "grid",
-}
-
-export function ViewBar({ viewMode, setViewMode }) {
+export function ViewBar({ view, onView }: Pick<Props, "view" | "onView">) {
   return (
     <div className="flex flex-col justify-between">
-      <label htmlFor="view-mode" className="text-sm font-medium text-stone-700 dark:text-stone-400">
-        View Mode
-      </label>
-      <div className="inline-flex overflow-hidden rounded shadow-sm" id="view-mode">
-        <MultiSelectBar
-          selected={viewMode}
-          setSelected={setViewMode}
-          elements={[
-            { item: ViewMode.GRID, element: <FontAwesomeIcon icon={faGrip} /> },
-            { item: ViewMode.LIST, element: <FontAwesomeIcon icon={faBars} /> },
-          ]}
-        />
+      <span className="text-sm font-medium text-stone-700 dark:text-stone-400">View Mode</span>
+      <div className="inline-flex overflow-hidden rounded-sm shadow-sm">
+        {(["grid", "list"] as const).map((item) => (
+          <button
+            key={item}
+            aria-label={item === "grid" ? "Grid view" : "List view"}
+            aria-pressed={item === view}
+            onClick={() => onView(item)}
+            className={`${item === view ? "bg-neutral-300 dark:bg-neutral-600" : "bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"} rounded-none px-4 py-2 text-neutral-800 dark:text-neutral-200`}
+          >
+            <Icon icon={item === "grid" ? faGrip : faBars} />
+          </button>
+        ))}
       </div>
     </div>
   )
 }
-
-export enum SortBy {
-  NAME = "Name",
-  KIND = "Kind",
-  DATE_CREATED = "Date Created",
-  DATE_MODIFIED = "Date Modified",
-  SIZE = "Size",
-}
-
-export enum SortDirection {
-  UP = "Up",
-  DOWN = "Down",
-}
-
-type SortBarProps = {
-  sortBy: SortBy
-  setSortBy: Dispatch<StateUpdater<SortBy>>
-}
-
-export function SortBar({ sortBy, setSortBy }: SortBarProps) {
+export function SortBar({ sort, onSort }: Pick<Props, "sort" | "onSort">) {
   return (
-    <>
-      <div className="flex flex-col justify-between">
-        <label
-          htmlFor="view-mode"
-          className="text-sm font-medium text-stone-700 dark:text-stone-400"
-        >
-          Sorting
-        </label>
-        <div className="inline-flex overflow-hidden rounded shadow-sm" id="view-mode">
-          <Dropdown options={Object.values(SortBy)} current={sortBy} setValue={setSortBy} />
-        </div>
+    <div className="flex flex-col justify-between">
+      <span className="text-sm font-medium text-stone-700 dark:text-stone-400">Sorting</span>
+      <div className="inline-flex overflow-hidden rounded-sm shadow-sm">
+        <Dropdown label="Sort files" options={sortOptions} current={sort} setValue={onSort} />
       </div>
-      {/* <div className="flex flex-col justify-between">
-        <span />
-        <div
-          className="inline-flex overflow-hidden rounded shadow-sm"
-          id="view-mode"
-        >
-          Test2
-        </div>
-      </div> */}
-    </>
+    </div>
+  )
+}
+export function Toolbar(props: Props) {
+  return (
+    <div
+      id="file-toolbar"
+      className="file-toolbar flex flex-col justify-between md:flex-row md:gap-8 lg:gap-24 2xl:gap-48"
+    >
+      <SearchBar {...props} />
+      <div className="mt-4 flex flex-wrap justify-end gap-4 sm:gap-8 md:mt-0">
+        <AddBox {...props} />
+        <SortBar {...props} />
+        <ViewBar {...props} />
+      </div>
+    </div>
   )
 }

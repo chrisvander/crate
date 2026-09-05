@@ -1,15 +1,18 @@
+import { createPortal } from "preact/compat"
 import { useEffect, useState } from "preact/hooks"
+import type { ComponentChildren } from "preact"
 import Button from "./Button"
 
 export function PopoverButtonRow({ actions }: { actions: [string, () => void, boolean?][] }) {
   return (
-    <div className="border-t border-gray-400 border-opacity-50 flex justify-end p-2 space-x-2">
-      {actions.map(([title, func, disabled], idx) => (
+    <div className="flex justify-end gap-2 border-t border-gray-400/50 p-2">
+      {actions.map(([title, action, disabled], index) => (
         <Button
           key={title}
-          onClick={func}
+          type="button"
+          onClick={action}
           disabled={disabled}
-          className={idx === 0 ? "" : "bg-slate-400"}
+          className={index === 0 ? "" : "bg-slate-400"}
         >
           {title}
         </Button>
@@ -17,26 +20,19 @@ export function PopoverButtonRow({ actions }: { actions: [string, () => void, bo
     </div>
   )
 }
-
-export function Popover({ children }) {
+export function Popover({ children }: { children: ComponentChildren }) {
   const [shownState, setShownState] = useState(false)
   useEffect(() => setShownState(true), [])
-
-  return (
+  return createPortal(
     <div
-      className={`h-full w-full absolute top-0 left-0 transition-all z-30 flex justify-center items-center duration-300 ${
-        shownState
-          ? "backdrop-blur-md backdrop-brightness-75"
-          : "backdrop-blur-none backdrop-brightness-100"
-      }`}
+      className={`fixed inset-0 z-60 flex items-center justify-center transition-all duration-300 ${shownState ? "backdrop-blur-md backdrop-brightness-75" : "backdrop-blur-none backdrop-brightness-100"}`}
     >
       <div
-        className={`bg-orange-100 dark:bg-stone-900 text-black dark:text-cyan-50 shadow-md rounded-md transition-all duration-300 ${
-          shownState ? "opacity-100 scale-100" : "opacity-0 scale-50"
-        }`}
+        className={`popover max-w-[calc(100vw-2rem)] rounded-md bg-orange-100 text-black shadow-md transition-all duration-300 dark:bg-stone-900 dark:text-cyan-50 ${shownState ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

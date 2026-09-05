@@ -1,22 +1,23 @@
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Anchor from "../../models/Anchor"
-import { Dispatch, StateUpdater, useRef, useState } from "preact/hooks"
-import { JSXInternal } from "preact/src/jsx"
+import { Icon as FontAwesomeIcon } from "../Icon"
+import type Anchor from "../../models/Anchor"
+import { useRef, useState } from "preact/hooks"
+import type { JSX } from "preact"
 import { makeOpt, PopoverMenu } from "./PopoverMenu"
 
 export type FuncInput = { name: string; onClick: () => void } | "divider" | "none"
 export default function Dropdown<T extends string>(
-  props:
+  props: { label: string; disabled?: boolean } & (
     | {
-        options: T[]
+        options: readonly T[]
         current: T
-        setValue: Dispatch<StateUpdater<T>>
+        setValue: (value: T) => void
       }
     | {
         options: FuncInput[]
-        display: JSXInternal.Element
-      },
+        display: JSX.Element
+      }
+  ),
 ) {
   const { options, current, setValue, display } = {
     display: undefined,
@@ -31,7 +32,11 @@ export default function Dropdown<T extends string>(
     e.preventDefault()
     if (expanded || !btnRef.current) setAnchorPos(null)
     else {
-      const { offsetTop, offsetHeight, offsetLeft } = btnRef.current
+      const {
+        top: offsetTop,
+        height: offsetHeight,
+        left: offsetLeft,
+      } = btnRef.current.getBoundingClientRect()
       setAnchorPos({
         top: offsetTop + offsetHeight,
         left: offsetLeft,
@@ -43,6 +48,9 @@ export default function Dropdown<T extends string>(
     <>
       <button
         ref={btnRef}
+        aria-label={props.label}
+        disabled={props.disabled}
+        type="button"
         className={`
         flex  
         h-10
@@ -60,7 +68,7 @@ export default function Dropdown<T extends string>(
         bg-clip-padding
         border border-solid border-stone-300
         dark:border-neutral-700
-        rounded
+        rounded-sm
         transition
         ease-in-out
         m-0
@@ -77,14 +85,15 @@ export default function Dropdown<T extends string>(
       </button>
       {expanded && (
         <PopoverMenu
-          anchor={anchorPos}
+          anchor={anchorPos!}
+          trigger={btnRef.current}
           close={toggleExpanded}
           opts={
             display
               ? (options as FuncInput[]).map((v) =>
                   typeof v !== "string" ? makeOpt(v.name, toggleExpanded, v.onClick) : v,
                 )
-              : (options as T[]).map((v) => makeOpt(v, toggleExpanded, () => setValue(v)))
+              : (options as T[]).map((v) => makeOpt(v, toggleExpanded, () => setValue!(v)))
           }
         />
       )}
