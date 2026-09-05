@@ -77,7 +77,8 @@ Keep authored files below 400 lines. Tests and generated contracts/SDKs are
 exempt; `bun run check:files` enforces this boundary. Keep Jujutsu changes small
 and single-concept. No publishing or deployment is part of the local workflow.
 
-With the stack running, `bun run test:browser` checks anonymous browser behavior.
+With the stack running, `bun run test:browser` checks anonymous behavior and
+synthetic-account layout and interactions without accessing a real PDS.
 Install its Chromium browser with `bunx playwright install chromium` if needed.
 The authenticated lifecycle is opt-in and requires you to sign in manually:
 

@@ -61,7 +61,7 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 ### Web
 
 - [x] Astro replaces the manual Preact page router and Vite entry point.
-- [ ] Original login, landing, explorer, inspector, and account layouts are preserved.
+- [x] Original login, landing, explorer, inspector, and account layouts are preserved.
 - [x] Shared explorer interactions have regression tests for grid and list views.
 - [x] Cache keys include account/storage context and mutations invalidate correctly.
 - [x] Session restoration, account changes, request cancellation, and logout are tested.
@@ -81,25 +81,38 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 - [x] The integrated history contains no deployment-specific credentials; examples remain usable.
 - [ ] Browser verification covers login and meaningful file interactions.
 - [ ] Real PDS sign-in is performed by the user; existing records are not silently migrated or deleted.
-- [ ] Final history is linear, single-concept, and all work is integrated into the main checkout.
+- [x] Final history is linear, single-concept, and all work is integrated into the main checkout.
 
 ## Verified on 2026-09-05
 
 `bun install --frozen-lockfile` and `bun run check` pass from the main checkout:
-72 JavaScript tests, 41 Rust tests, deterministic Lexicon/OpenAPI/SDK drift checks,
+81 JavaScript tests, 41 Rust tests, deterministic Lexicon/OpenAPI/SDK drift checks,
 and four Swift tests. TypeScript 7 checks source-only root references; Astro reports
 zero errors and warnings, with two dependency deprecation hints in query tests.
 The Swift generator emits upstream unused-public-import warnings in generated files.
 
-Both production builds pass. Four anonymous Chromium tests cover hydration,
-protected routes, typed proxy errors, retryable login failures, and mobile layout.
+Both production builds pass. Nine Chromium tests cover hydration, protected routes,
+typed proxy errors, retryable login failures, original layout geometry, selection,
+search, grid/list switching, inspector controls, and synthetic-account logout.
+The opt-in live PDS lifecycle remains skipped, not counted as a passing test.
 Both listeners bind `127.0.0.1`; the proxied health endpoint responds successfully.
 The running server's OpenAPI is semantically identical to the generated contract.
 Bacon restarted successfully after a source change. The largest authored file is
-254 lines. Commits change no more than six files.
+254 lines. The linear implementation series contains 127 commits since the
+login-only baseline; each changes no more than six files. This evidence update
+follows them as a separate documentation commit.
 
-Both container images build successfully. The same four anonymous browser checks
-pass against the packaged Nginx/Rust stack. The container API exposes the generated
+Original-revision screenshots were compared with the restored UI using synthetic
+accounts and files at desktop and mobile widths, including dark mode. The original
+shell, login card, landing artwork, file toolbar/table/grid/inspector, and settings
+sidebar are restored. Real ATProto identity and controls remain; placeholder
+security/billing pages, clipped filenames, broken selection, and mobile overflow
+were not reinstated. Layout assertions run in the regular browser suite.
+
+Both container images build successfully. All nine non-live browser checks pass
+against the final restored web image and the updated OAuth server image on an
+isolated loopback port. No real PDS requests are made by that suite. Earlier
+container lifecycle checks also verified that the API exposes the generated
 OpenAPI contract, runs as UID 10001, and creates its data directory with mode 700
 and SQLite database with mode 600. The volume survives server replacement. Nginx
 refreshes a changed backend IP without restarting, and the server's default stop
@@ -118,6 +131,10 @@ declaration also lacked the alpha validator's required `name` and `key` metadata
 the Rust generator now includes both, with a regression test. Callback handling
 now distinguishes bound provider rejection from malformed requests, consumes only
 the matching pending login, and never reflects arbitrary provider descriptions.
+All four generated documents and their publication envelopes also passed the
+unmodified official alpha validator pinned to commit
+`7cefaccc5307db53d92cda364ff582a2efec0027`; negative controls missing `name` or `key`
+were rejected. This validates local syntax, not remote discovery.
 
 The interrupted browser run performed no file operations. Its diagnostic artifact
 was removed. Manual sign-in observation now reports provider rejection promptly
@@ -129,14 +146,11 @@ callback-state marker appeared in the diagnostic artifact.
 Remaining acceptance boundaries:
 
 - Public declaration discovery, successful OAuth, and live file interoperability
-  remain unverified. DNS changes and schema publication are intentionally deferred;
-  no PDS records or DNS entries were published. A later authorized setup requires a
+  remain unverified. The user confirmed control of `crate.network` and explicitly
+  deferred DNS changes. Schema publication is also deferred; no PDS records or DNS
+  entries were published. A later authorized setup requires a
   schema-publisher DID and publicly resolvable generated Lexicons before another
   user-driven sign-in attempt can complete.
-- The original UI was substantially redesigned during the initial Astro migration.
-  Restoration is in progress, with original-revision screenshot baselines using
-  synthetic accounts and files. Original selection, truncation, and mobile-overflow
-  bugs must not be reintroduced with the original styling.
 - Astro 7.3.1 retains esbuild 0.28.2 internally. Crate has no direct dependency or
   build scripts using it. Approval of this framework-only exception is still pending.
 
