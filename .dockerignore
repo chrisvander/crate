@@ -1,0 +1,15 @@
+.git
+.jj
+.codex
+.agents
+**/node_modules
+**/target
+**/.astro
+**/.build
+**/.swiftpm
+**/.crate-data
+.env
+.env.*
+!.env.example
+logs
+tmp
