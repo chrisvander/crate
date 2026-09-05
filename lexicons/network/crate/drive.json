@@ -7,6 +7,8 @@
         "network.crate.fileName"
       ],
       "description": "Personal Crate drive. Only its owner can read or write; clients use the shared collection protocol.",
+      "key": "literal:self",
+      "name": "Crate Drive",
       "type": "space"
     }
   },

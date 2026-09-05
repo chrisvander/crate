@@ -10,6 +10,40 @@ directory structure. They are local artifacts; generating them does not publish
 records, configure DNS, or change a PDS. The space schema is an explicit alpha
 extension and must be supported by the PDS. There is no public-repository fallback.
 
+## Public declaration discovery
+
+OAuth consent resolves the Space declaration even when every collection is named
+explicitly in the requested scope. The alpha's
+[Space schema](https://github.com/bluesky-social/atproto/blob/7cefaccc5307db53d92cda364ff582a2efec0027/packages/lex/lex-document/src/lexicon-document.ts#L644)
+requires a consent-screen `name` and a `key` rule. Crate generates `Crate Drive`
+and `literal:self`, declaring this Space type's personal `self` key.
+
+Live discovery requires separately authorized publication following the
+[Lexicon publication specification](https://atproto.com/specs/lexicon#lexicon-publication-and-resolution):
+
+1. Choose a stable schema-publisher DID and publish each generated document in
+   that DID's public repository, collection `com.atproto.lexicon.schema`, with its
+   full NSID as the record key. Add `$type: com.atproto.lexicon.schema` to the
+   published record without changing the document's `id` or definitions.
+2. Point `_lexicon.crate.network` DNS TXT to `did=<schema-publisher DID>`.
+3. Read back DNS and resolve
+   `at://<schema-publisher DID>/com.atproto.lexicon.schema/network.crate.drive`,
+   checking its required metadata and all three declared collection schemas.
+
+These are public schema records, not private file records. Schema publication and
+personal drive authority are different roles; publishing schemas does not grant
+access to drives. Do not substitute a publisher DID into the personal Space URI
+or broaden OAuth scopes to bypass discovery. A local schema file alone is not
+discoverable by a remote PDS.
+
+Before publication, `cargo test --locked -p crate-protocol` checks local declaration
+metadata; `dig TXT _lexicon.crate.network` is a read-only DNS preflight. Missing or
+invalid declarations produce the provider's `invalid_scope` error. The alpha
+provider
+[caches resolution for five minutes](https://github.com/bluesky-social/atproto/blob/7cefaccc5307db53d92cda364ff582a2efec0027/packages/oauth/oauth-provider/src/oauth-constants.ts#L83),
+so a later authorized publication may not be visible immediately. No generation
+or check command in this repository publishes records or changes DNS.
+
 ## Identity and ownership
 
 A personal drive is `at://{did}/space/network.crate.drive/self`. Its authority and

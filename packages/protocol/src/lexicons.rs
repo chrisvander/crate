@@ -29,6 +29,8 @@ pub fn documents() -> Result<Vec<(&'static str, Value)>, serde_json::Error> {
                 "id": SPACE_TYPE,
                 "defs": {"main": {
                     "type": "space",
+                    "key": "literal:self",
+                    "name": "Crate Drive",
                     "description": "Personal Crate drive. Only its owner can read or write; clients use the shared collection protocol.",
                     "collections": [FILE_COLLECTION, VERSION_COLLECTION, NAME_COLLECTION]
                 }}

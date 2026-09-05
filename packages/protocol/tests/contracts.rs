@@ -49,6 +49,31 @@ fn serialized_records_match_derived_lexicons() {
 }
 
 #[test]
+fn personal_space_declaration_has_required_metadata_and_record_collections() {
+    use crate_protocol::{FILE_COLLECTION, NAME_COLLECTION, SPACE_TYPE, VERSION_COLLECTION};
+
+    let documents = crate_protocol::lexicons::documents().unwrap();
+    let (_, space) = documents
+        .iter()
+        .find(|(_, document)| document["id"] == SPACE_TYPE)
+        .unwrap();
+    let declaration = &space["defs"]["main"];
+    assert_eq!(space["lexicon"], 1);
+    assert_eq!(declaration["type"], "space");
+    assert_eq!(declaration["key"], "literal:self");
+    assert_eq!(declaration["name"], "Crate Drive");
+    assert_eq!(
+        declaration["collections"],
+        json!([FILE_COLLECTION, VERSION_COLLECTION, NAME_COLLECTION])
+    );
+    for collection in declaration["collections"].as_array().unwrap() {
+        assert!(documents.iter().any(|(_, document)| {
+            document["id"] == *collection && document["defs"]["main"]["type"] == "record"
+        }));
+    }
+}
+
+#[test]
 fn record_semantics_reject_invalid_files() {
     let directory = directory();
     assert!(directory.validate().is_ok());
