@@ -6,3 +6,8 @@ tmp
 logs
 stats.html
 *.tsbuildinfo
+target
+.astro
+.build
+.swiftpm
+.bacon-locations
