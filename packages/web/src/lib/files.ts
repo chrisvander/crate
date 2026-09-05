@@ -14,9 +14,9 @@ export function visibleFiles(files: FileEntry[], search: string, sort: Sort, des
         sort === "Size"
           ? a.size - b.size
           : sort === "Created"
-            ? a.createdAt.localeCompare(b.createdAt)
+            ? Date.parse(a.createdAt) - Date.parse(b.createdAt)
             : sort === "Modified"
-              ? a.updatedAt.localeCompare(b.updatedAt)
+              ? Date.parse(a.updatedAt) - Date.parse(b.updatedAt)
               : sort === "Kind"
                 ? a.kind.localeCompare(b.kind)
                 : byName
