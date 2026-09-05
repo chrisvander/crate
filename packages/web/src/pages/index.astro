@@ -1,16 +1,27 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { Navigation } from "../components/Navigation";
+import { HeroBackdrop } from "../components/HeroBackdrop";
+import "../styles/landing.css";
 ---
 
-<Layout title="Your files">
-  <section class="hero panel">
-    <p class="eyebrow">An ATProto-native drive</p>
-    <h1>Your files.<br />Your account.</h1>
-    <p>Store files in your personal data server and access them with Crate.</p>
-    <p>
-      Your PDS controls storage and access. Crate does not add a separate
-      account or storage subscription.
-    </p>
-    <a class="button" href="/files">Open your files</a>
-  </section>
+<Layout title="Crate" navigation={false}>
+  <div class="landing-page">
+    <Navigation />
+    <section class="hero-frame">
+      <HeroBackdrop client:load />
+      <div class="hero-content">
+        <h1>Cloud storage, <span>reimagined.</span></h1>
+        <p>
+          Store your files in your own personal data server. Access them across
+          clients with your ATProto account. Your PDS controls storage and
+          permissions; Crate requires private Spaces support.
+        </p>
+        <div class="hero-actions">
+          <a class="hero-primary" href="/login">Log in</a>
+          <a class="hero-secondary" href="/files">Open files</a>
+        </div>
+      </div>
+    </section>
+  </div>
 </Layout>
