@@ -20,17 +20,39 @@ describe.each(["list", "grid"] as const)("%s file view", (view) => {
         onOpen={onOpen}
       />,
     )
-    fireEvent.click(screen.getByRole("checkbox", { name: "Select Documents" }))
-    expect(onSelect).toHaveBeenCalledWith("folder", true)
-    fireEvent.click(screen.getByRole("button", { name: /Documents/ }))
+    fireEvent.click(screen.getByText("Documents"))
+    expect(onSelect).toHaveBeenCalledWith("folder", true, false)
+    fireEvent.dblClick(screen.getByText("Documents"))
     expect(onOpen).toHaveBeenCalledWith(folder)
   })
-  it("shows the complete filename and honors externally changed selection", () => {
+  it("preserves the original filename presentation and selection styling", () => {
     const entry = file({ name: "report.final.pdf" })
     const props = { files: [entry], view, pending: false, onSelect: vi.fn(), onOpen: vi.fn() }
     const { rerender } = render(<FileList {...props} selected={[]} />)
-    expect(screen.getByText("report.final.pdf")).toBeTruthy()
+    expect(screen.getByText(view === "grid" ? "report" : "report.final.pdf")).toBeTruthy()
     rerender(<FileList {...props} selected={[entry.id]} />)
-    expect(screen.getByRole("checkbox", { checked: true })).toBeTruthy()
+    expect(
+      screen
+        .getByText(view === "grid" ? "report" : "report.final.pdf")
+        .closest(view === "grid" ? "span" : "tr")?.className,
+    ).toContain("bg-orange-500")
+  })
+  it("opens the record on double-click without changing the selected record", () => {
+    const entry = file()
+    const onSelect = vi.fn()
+    const onOpen = vi.fn()
+    render(
+      <FileList
+        files={[entry]}
+        selected={[]}
+        view={view}
+        pending={false}
+        onSelect={onSelect}
+        onOpen={onOpen}
+      />,
+    )
+    fireEvent.dblClick(screen.getByText(view === "grid" ? entry.name.split(".")[0] : entry.name))
+    expect(onOpen).toHaveBeenCalledWith(entry)
+    expect(onSelect).not.toHaveBeenCalled()
   })
 })

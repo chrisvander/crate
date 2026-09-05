@@ -1,0 +1,124 @@
+.file-table,
+.file-grid {
+  margin: 32px 0 0;
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px #0001;
+}
+.file-name {
+  display: block;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  color: inherit;
+  text-align: inherit;
+  font: inherit;
+}
+.file-table {
+  border-spacing: 0;
+  overflow: hidden;
+  text-align: left;
+}
+.file-table th {
+  padding: 8px;
+  font-weight: 600;
+}
+.file-table th,
+.file-table tbody tr:not(:last-child) td {
+  border-bottom: 1px solid var(--line);
+}
+.file-table td {
+  padding: 4px 8px;
+}
+.file-table td:first-child {
+  padding: 0;
+}
+.file-table .file-name {
+  width: 100%;
+  padding: 4px 8px;
+  overflow-wrap: anywhere;
+}
+.file-table tbody tr:hover {
+  background: #e5e5e5;
+}
+.file-table tbody tr.selected {
+  background: var(--accent);
+  color: white;
+}
+.file-table td:not(:first-child) {
+  white-space: nowrap;
+}
+.file-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(144px, 1fr));
+  padding: 8px;
+}
+.file-grid li {
+  min-width: 0;
+}
+.file-grid .file-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 144px;
+  height: 144px;
+  max-width: 100%;
+  margin: auto;
+}
+.file-icon-pad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  margin: 4px;
+  border-radius: 6px;
+}
+.file-icon-pad .icon {
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  color: var(--accent);
+}
+.file-grid .file-label {
+  max-width: 100%;
+  padding: 0 4px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.file-grid .file-name:hover .file-icon-pad {
+  background: #7373731a;
+}
+.file-grid [aria-checked="true"] .file-icon-pad {
+  background: #73737366;
+}
+.file-grid [aria-checked="true"] .file-label {
+  background: var(--accent);
+  color: white;
+}
+@media (min-width: 640px) {
+  .file-grid {
+    padding: 16px;
+  }
+}
+@media (min-width: 768px) {
+  .file-grid {
+    padding: 32px;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .file-table tbody tr:hover {
+    background: #404040;
+  }
+  .file-table tbody tr.selected {
+    background: var(--accent);
+  }
+}
