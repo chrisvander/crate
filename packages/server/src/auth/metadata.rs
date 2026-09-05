@@ -5,8 +5,14 @@ use jose_jwk::Jwk;
 use p256::elliptic_curve::{rand_core::OsRng, sec1::ToEncodedPoint};
 
 pub fn scopes() -> Vec<Scope> {
-    vec![Scope::Known(KnownScope::Atproto), Scope::Unknown("blob:*/*".into()),
-        Scope::Unknown("space:network.crate.drive?skey=self&collection=network.crate.file&collection=network.crate.fileVersion&collection=network.crate.fileName&action=read_self&action=create&action=update&action=delete&manage=create".into())]
+    use crate_protocol::{FILE_COLLECTION, NAME_COLLECTION, SPACE_TYPE, VERSION_COLLECTION};
+    vec![
+        Scope::Known(KnownScope::Atproto),
+        Scope::Unknown("blob:*/*".into()),
+        Scope::Unknown(format!(
+            "space:{SPACE_TYPE}?skey=self&collection={FILE_COLLECTION}&collection={VERSION_COLLECTION}&collection={NAME_COLLECTION}&action=read_self&action=create&action=update&action=delete&manage=create"
+        )),
+    ]
 }
 
 pub fn production(config: &Config) -> AtprotoClientMetadata {

@@ -3,15 +3,15 @@ use crate::{
     auth::Session,
     error::{ApiError, Result},
 };
-use crate_protocol::Space;
+use crate_protocol::{SPACE_TYPE, Space};
 use serde::Deserialize;
 use serde_json::{Value, json};
 
 pub fn personal(did: &str) -> Space {
     Space {
-        uri: format!("at://{did}/space/network.crate.drive/self"),
+        uri: format!("at://{did}/space/{SPACE_TYPE}/self"),
         authority_did: did.into(),
-        space_type: "network.crate.drive".into(),
+        space_type: SPACE_TYPE.into(),
         key: "self".into(),
     }
 }

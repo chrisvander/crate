@@ -27,9 +27,6 @@ impl FilesApi {
     ) -> Result<Json<FileList>> {
         let (did, session) = auth.0;
         let space = space::personal(&did);
-        if !space::exists(&session, &space).await? {
-            return Ok(Json(FileList { files: vec![] }));
-        }
         let repo = PdsRepository {
             session: &session,
             space: &space,
