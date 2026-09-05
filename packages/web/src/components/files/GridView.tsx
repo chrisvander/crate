@@ -1,16 +1,14 @@
 import { faFile, faFolder } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Icon as FontAwesomeIcon } from "../Icon"
 import { useEffect, useRef, useState } from "preact/hooks"
 import useClickOutside from "../../hooks/useClickOutside"
 import RightClickMenu from "./RightClickMenu"
-import Anchor from "../../models/Anchor"
-import { useFileStore } from "../../store/FileStore"
-import { useStore as useFVStore } from "../../store/FileViewStore"
-import { FileType, NamedFileModel } from "@crate/types"
-import { joinPath } from "@crate/utils"
+import type Anchor from "../../models/Anchor"
 import DirectoryLoading from "./DirectoryLoading"
 import DirectoryEmpty from "./DirectoryEmpty"
-import FileAPI from "../../api/FileAPI"
+import type { FileEntry } from "../../lib/api"
+import type { FileViewProps } from "./ListView"
+import { validName } from "../../lib/files"
 
 type IconState = "empty" | "selected" | "hovered"
 const getIconState = (selected: boolean, hovered: boolean): IconState => {
@@ -22,12 +20,14 @@ function NameInput({
   oldName,
   onComplete,
   onCancel,
+  pending,
 }: {
   oldName: string
+  pending: boolean
   onComplete: (newName: string) => void
   onCancel: () => void
 }) {
-  const fiRef = useRef<HTMLInputElement>()
+  const fiRef = useRef<HTMLInputElement>(null)
   const [val, setVal] = useState(oldName)
 
   useEffect(() => {
@@ -36,22 +36,24 @@ function NameInput({
   }, [])
 
   useEffect(() => {
-    const keyPressListener = (e) => {
+    const keyPressListener = (e: KeyboardEvent) => {
+      if (pending) return
       if (e.key === "Escape") {
         onCancel()
       } else if (e.key === "Enter") {
-        onComplete(val)
+        e.preventDefault()
+        onComplete(fiRef.current?.value ?? val)
       }
     }
     document.addEventListener("keydown", keyPressListener)
     return () => document.removeEventListener("keydown", keyPressListener)
-  }, [onCancel, onComplete, val])
+  }, [onCancel, onComplete, val, pending])
 
   useClickOutside({
     ref: fiRef,
     handler: () => {
-      if (!fiRef.current) return
-      onComplete(val)
+      if (!fiRef.current || pending) return
+      onComplete(fiRef.current?.value ?? val)
     },
   })
 
@@ -59,6 +61,7 @@ function NameInput({
     <input
       className="h-5 text-sm text-center border-gray-500"
       type="text"
+      disabled={pending}
       ref={fiRef}
       value={val}
       autoFocus={true}
@@ -69,61 +72,53 @@ function NameInput({
   )
 }
 
-function FileIcon({ file }: { file: { name: string; cid: string; type?: FileType } }) {
+function FileIcon({ file, ...props }: FileViewProps & { file: FileEntry }) {
   const [hovered, setHovered] = useState(false)
   const [selected, setSelected] = useState(false)
   const [editingName, setEditingName] = useState(false)
   const [anchorPos, setAnchorPos] = useState<null | Anchor>(null)
   const contextShown = Boolean(anchorPos)
 
-  const selectionInfo = useFVStore((state) => state.selectedFiles)
-  const select = useFVStore((state) => state.select)
-  const deselect = useFVStore((state) => state.deselect)
-  const path = useFVStore((state) => state.path)
-  const setPath = useFVStore((state) => state.setPath)
-
+  const selectionInfo = props.selected
+  const select = (replace: boolean) => props.onSelect(file.id, !selected, !replace)
   const onContextMenu = (e: MouseEvent) => {
     e.preventDefault()
-    if (!selected) select(file, true)
-    setAnchorPos({ top: e.pageY, left: e.pageX })
+    e.stopPropagation()
+    if (!selected) select(true)
+    setAnchorPos({ top: e.clientY, left: e.clientX })
   }
   const handleClose = () => setAnchorPos(null)
 
   useEffect(() => {
-    const newSelectedStatus = selectionInfo.map((i) => i.name).includes(file.name)
+    const newSelectedStatus = selectionInfo.includes(file.id)
     setSelected(newSelectedStatus)
     if (contextShown && !newSelectedStatus) setAnchorPos(null)
-  }, [contextShown, file.name, selectionInfo])
+  }, [contextShown, file.id, selectionInfo])
 
-  const iconRef = useRef()
+  const iconRef = useRef<HTMLDivElement>(null)
   useClickOutside({
     ref: iconRef,
     handler: (e) => {
-      if (anchorPos !== null) handleClose()
       if (e.ctrlKey || e.metaKey || !selected) return
-      deselect(selectionInfo)
+      props.onDeselect?.(selectionInfo)
     },
     exclude: [
       document.getElementById("file-toolbar"),
       document.getElementById("file-inspector"),
       ...document.getElementsByClassName("popover-menu"),
       ...document.getElementsByClassName("rightclick-menu"),
+      ...document.getElementsByClassName("popover"),
     ],
   })
 
-  const renameFile = useFileStore((state) => state.rename)
   const iconState = getIconState(selected || editingName, hovered)
   return (
     <>
       <div
         className="flex flex-col items-center justify-center select-none w-36 h-36"
-        onClick={(e) => select(file, !e.ctrlKey && !e.metaKey)}
+        onClick={(e) => !props.pending && !editingName && select(!e.ctrlKey && !e.metaKey)}
         onDblClick={() => {
-          if (file.type === "file" && !editingName)
-            window.open(FileAPI.contentUrl(file.cid), "_blank")
-          else if (file.type === "directory") {
-            setPath(joinPath(path, file.name))
-          }
+          if (!editingName && !props.pending) props.onOpen(file)
         }}
         onContextMenu={onContextMenu}
         onMouseOver={() => setHovered(true)}
@@ -131,33 +126,36 @@ function FileIcon({ file }: { file: { name: string; cid: string; type?: FileType
         ref={iconRef}
       >
         <div
-          className={"flex justify-center items-center rounded-md m-1 w-24 h-24 ".concat(
-            iconState === "hovered" ? "bg-opacity-10 bg-neutral-500 " : "",
-            iconState === "selected" ? "bg-opacity-40 bg-neutral-500 " : "",
+          className={"file-icon-pad flex justify-center items-center rounded-md m-1 w-24 h-24 [&_.icon]:size-16 ".concat(
+            iconState === "hovered" ? "bg-neutral-500/10 " : "",
+            iconState === "selected" ? "bg-neutral-500/40 " : "",
           )}
         >
           <FontAwesomeIcon
-            icon={file.type === "file" ? faFile : faFolder}
-            className="w-16 h-16 m-2"
-            color="rgb(249,115,22)"
+            icon={file.kind === "file" ? faFile : faFolder}
+            className="w-16 h-16 m-2 text-orange-500"
           />
         </div>
         {editingName ? (
           <NameInput
             oldName={file.name}
+            pending={props.pending}
             onCancel={() => {
               setEditingName(false)
             }}
-            onComplete={(newName) => {
-              setEditingName(false)
-              if (newName === "") return
-              renameFile(file.cid, newName)
+            onComplete={async (newName) => {
+              if (newName === file.name) {
+                setEditingName(false)
+                return
+              }
+              if (!validName(newName) || props.pending) return
+              if (await props.onRename?.(file, newName)) setEditingName(false)
             }}
           />
         ) : (
           <span
-            className={"px-1 font-medium text-sm rounded-md select-text ".concat(
-              iconState === "hovered" ? "bg-opacity-10 bg-neutral-500 " : "",
+            className={"file-label px-1 font-medium text-sm rounded-md select-text ".concat(
+              iconState === "hovered" ? "bg-neutral-500/10 " : "",
               iconState === "selected" ? "bg-orange-500 text-white " : "",
             )}
           >
@@ -165,10 +163,13 @@ function FileIcon({ file }: { file: { name: string; cid: string; type?: FileType
           </span>
         )}
       </div>
-      {contextShown && (
+      {contextShown && props.menuActions && (
         <RightClickMenu
           close={handleClose}
-          anchor={anchorPos}
+          anchor={anchorPos!}
+          pending={props.pending}
+          selection={props.files.filter((entry) => selectionInfo.includes(entry.id))}
+          {...props.menuActions(props.files.filter((entry) => selectionInfo.includes(entry.id)))}
           onRenameRequest={() => setEditingName(true)}
         />
       )}
@@ -176,21 +177,21 @@ function FileIcon({ file }: { file: { name: string; cid: string; type?: FileType
   )
 }
 
-export function GridView({ files }: { files: NamedFileModel[] }) {
-  const loading = useFVStore((state) => state.loading)
+export function GridView({ files, ...props }: FileViewProps) {
+  const loading = props.loading
   return (
     <div className="p-2 mt-8 bg-white border sm:p-4 md:p-8 shadow-sm dark:bg-neutral-800 rounded-md border-neutral-200 dark:border-neutral-700">
       {loading && <DirectoryLoading />}
-      {files.length === 0 && !loading && <DirectoryEmpty />}
+      {files.length === 0 && !loading && <DirectoryEmpty message={props.emptyMessage} />}
       {files.length !== 0 && !loading && (
         <div
-          className="w-full grid"
+          className="file-grid w-full grid"
           style={{
             gridTemplateColumns: "repeat(auto-fill, minmax(9rem, 1fr))",
           }}
         >
           {files.map((el) => (
-            <FileIcon file={el} key={el.name} />
+            <FileIcon file={el} key={el.id} files={files} {...props} />
           ))}
         </div>
       )}

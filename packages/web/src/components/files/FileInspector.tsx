@@ -1,33 +1,19 @@
 import { useEffect, useState } from "preact/hooks"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Icon as FontAwesomeIcon } from "../Icon"
 import { faGreaterThan, faLessThan, faXmark } from "@fortawesome/free-solid-svg-icons"
-import { useFileStore } from "../../store/FileStore"
-import { FileInspectorFileBody } from "../files/FileInspectorFileBody"
-import { useStore as useFVStore } from "../../store/FileViewStore"
-import { NamedFileModel } from "@crate/types"
-
-export function FileInspector({ close }: { close: () => void }) {
-  const selection = useFVStore((state) => state.selectedFiles)
-  const path = useFVStore((state) => state.path)
-  const getCID = useFileStore((state) => state.getCID)
-  const get = useFileStore((state) => state.get)
-  const [selectedFiles, setSelectedFiles] = useState<NamedFileModel[]>([])
-
-  useEffect(() => {
-    if (selection.length === 0) {
-      get(path).then((dirModel) => setSelectedFiles([{ name: "Root", ...dirModel }]))
-    } else {
-      Promise.all(
-        selection.map(async ({ name, cid }) => ({
-          ...(await getCID(cid)),
-          name,
-        })),
-      ).then((v) => {
-        setSelectedFiles(v)
-      })
-    }
-  }, [getCID, get, path, selection])
-
+import { FileInspectorFileBody, type InspectorFile } from "./FileInspectorFileBody"
+export function FileInspector({
+  selection,
+  directory,
+  path = "",
+  close,
+}: {
+  selection: InspectorFile[]
+  directory?: InspectorFile
+  path?: string
+  close: () => void
+}) {
+  const selectedFiles = selection.length ? selection : directory ? [directory] : []
   const [fileIndex, setFileIndex] = useState(0)
   const maxIndex = selectedFiles.length - 1
   useEffect(() => {
@@ -38,7 +24,7 @@ export function FileInspector({ close }: { close: () => void }) {
   return (
     <>
       <div className="flex flex-row items-center justify-between border-b">
-        <h2 className="font-iaQuattro text-xl font-bold ml-2">Inspector</h2>
+        <h2 className="font-heading text-xl font-bold ml-2">Inspector</h2>
         <button
           onClick={close}
           className="bg-orange-500 h-8 w-8 m-2 rounded-md hover:shadow-lg active:shadow-md text-white transition-shadow"
@@ -46,10 +32,18 @@ export function FileInspector({ close }: { close: () => void }) {
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>
-      {selectedFiles.length === 1 && <FileInspectorFileBody file={selectedFiles[0]} />}
+      {selectedFiles.length === 1 && (
+        <FileInspectorFileBody
+          file={selectedFiles[0]!}
+          path={selection.length ? path : path.split("/").slice(0, -1).join("/")}
+        />
+      )}
       {selectedFiles.length > 1 && (
         <>
-          <FileInspectorFileBody file={selectedFiles[fileIndex]} />
+          <FileInspectorFileBody
+            file={selectedFiles[Math.max(0, Math.min(fileIndex, maxIndex))]!}
+            path={path}
+          />
           <div className="flex justify-center items-center">
             <button
               disabled={fileIndex === 0}
