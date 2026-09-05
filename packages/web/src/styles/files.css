@@ -1,0 +1,202 @@
+.account-row {
+  justify-content: space-between;
+}
+.account-row p {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+.login-panel {
+  max-width: 520px;
+  margin: 24px auto;
+}
+.breadcrumbs {
+  margin-bottom: 8px;
+}
+.breadcrumbs button {
+  border: none;
+  background: none;
+  color: var(--accent);
+  padding: 4px;
+}
+.toolbar {
+  margin-bottom: 10px;
+}
+.search-label {
+  flex: 1;
+  min-width: 200px;
+}
+.search-label input {
+  width: 100%;
+}
+.explorer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+.explorer:has(.inspector) {
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
+.explorer > .panel {
+  min-width: 0;
+  align-content: start;
+}
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.file-list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.file-list .selected {
+  background: var(--selected);
+}
+.file-select {
+  display: inline-flex;
+  padding: 8px;
+  cursor: pointer;
+}
+.file-name {
+  flex: 1;
+  border: 0;
+  padding: 4px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  background: none;
+  overflow-wrap: anywhere;
+}
+.file-name:hover {
+  text-decoration: underline;
+}
+.file-icon {
+  color: var(--accent);
+  font-size: 26px;
+}
+.file-meta,
+.file-date {
+  font-size: 13px;
+  color: var(--muted);
+}
+.file-date {
+  min-width: 85px;
+  text-align: right;
+}
+.file-list.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 12px;
+}
+.grid li {
+  position: relative;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--line);
+  padding: 20px 8px;
+}
+.grid .file-select {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.grid .file-name {
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+}
+.grid .file-icon {
+  font-size: 52px;
+}
+.grid .file-date {
+  text-align: center;
+}
+.selection-bar {
+  font-size: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.empty {
+  text-align: center;
+  padding: 50px 0;
+  color: var(--muted);
+}
+.inspector {
+  height: fit-content;
+}
+.inspector h2 {
+  overflow-wrap: anywhere;
+}
+.inspector dl {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+.inspector dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+.inspector dd {
+  margin: 0 0 12px;
+}
+.record-uri {
+  overflow-wrap: anywhere;
+  font-family: monospace;
+  font-size: 12px;
+}
+.upload-button {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+.upload-button:focus-within {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.upload-button input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+}
+.version {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+dialog {
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  width: min(440px, calc(100vw - 32px));
+  padding: 24px;
+}
+dialog::backdrop {
+  background: #0008;
+  backdrop-filter: blur(2px);
+}
+@media (max-width: 950px) {
+  .explorer:has(.inspector) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .file-list.list .file-date {
+    display: none;
+  }
+  .file-list li {
+    gap: 6px;
+  }
+  .explorer > .panel {
+    padding: 12px;
+  }
+}
