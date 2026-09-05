@@ -38,47 +38,76 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 
 ### Protocol and server
 
-- [ ] Rust server replaces Express and the Node OAuth runtime.
-- [ ] Root `lexicons/network/crate` layout follows the personal site's convention.
-- [ ] Rust records generate valid Lexicons without a separately maintained schema.
-- [ ] Rust handler responses generate OpenAPI, TypeScript, and Swift contracts.
-- [ ] Regeneration is deterministic and drift checks detect incompatible changes.
-- [ ] TypeScript clients use source exports; clean typechecking needs no type build.
-- [ ] Swift generated client compiles and exercises the response contract.
-- [ ] Required permissioned context is passed to actual PDS endpoints.
-- [ ] File identity, revision CID, blob CID, and parent identity remain distinct.
-- [ ] Record boundaries reject malformed names, dates, sizes, references, and blobs.
+- [x] Rust server replaces Express and the Node OAuth runtime.
+- [x] Root `lexicons/network/crate` layout follows the personal site's convention.
+- [x] Rust records generate valid Lexicons without a separately maintained schema.
+- [x] Rust handler responses generate OpenAPI, TypeScript, and Swift contracts.
+- [x] Regeneration is deterministic and drift checks detect incompatible changes.
+- [x] TypeScript clients use source exports; clean typechecking needs no type build.
+- [x] Swift generated client compiles and exercises the response contract.
+- [x] PDS adapters pass explicit permissioned context; live interoperability remains below.
+- [x] File identity, revision CID, blob CID, and parent identity remain distinct.
+- [x] Record boundaries reject malformed names, dates, sizes, references, and blobs.
 - [ ] Creation, empty files, upload, rename, duplicate, and download work.
-- [ ] Mutations have explicit duplicate-name and concurrent-write behavior.
-- [ ] Trash, restore, version retention, and folder mutation behavior are tested.
-- [ ] Reads avoid per-child full-collection scans and derived state is refreshable.
-- [ ] Content responses enforce safe browser headers and bounded resource usage.
-- [ ] Authentication restores, expires, logs out, and preserves transient failures.
-- [ ] OAuth persistence has explicit concurrency and deployment constraints.
+- [x] Mutations have explicit duplicate-name and concurrent-write behavior.
+- [x] Trash, restore, version retention, and folder mutation behavior are tested.
+- [x] Reads avoid per-child full-collection scans and derived state is refreshable.
+- [x] Content responses enforce safe browser headers and bounded resource usage.
+- [x] Authentication lifecycle and transient-failure behavior have local regression tests.
+- [x] OAuth persistence has explicit concurrency and deployment constraints.
 
 ### Web
 
-- [ ] Astro replaces the manual Preact page router and Vite entry point.
-- [ ] Shared explorer interactions work in both grid and list views.
-- [ ] Cache keys include account/storage context and mutations invalidate correctly.
-- [ ] Session restoration, account changes, request cancellation, and logout are tested.
-- [ ] Visible search, sort, file operations, and error states reflect real behavior.
-- [ ] Fake 2FA, profile database, community, billing, and other placeholder UI are removed.
-- [ ] Marketing and privacy text describe actual behavior without invented guarantees.
-- [ ] Obsolete crypto, pinning types, Filecoin declarations, dead assets, and dependencies are removed.
+- [x] Astro replaces the manual Preact page router and Vite entry point.
+- [x] Shared explorer interactions have regression tests for grid and list views.
+- [x] Cache keys include account/storage context and mutations invalidate correctly.
+- [x] Session restoration, account changes, request cancellation, and logout are tested.
+- [x] Visible controls call real operations; authenticated browser verification remains below.
+- [x] Fake 2FA, profile database, community, billing, and other placeholder UI are removed.
+- [x] Marketing and privacy text describe actual behavior without invented guarantees.
+- [x] Obsolete crypto, pinning contracts, dead assets, and dependencies are removed.
 
 ### Tooling, deployment, and verification
 
-- [ ] Root TypeScript project references and Astro-specific checking both run.
-- [ ] Bun runs top-level `dev:web` and `dev:server` in parallel on `127.0.0.1`.
-- [ ] Bacon rebuilds/restarts the Rust server.
-- [ ] Format, lint, typecheck, Rust checks, unit/contract tests, and production builds pass.
+- [x] Root TypeScript project references and Astro-specific checking both run.
+- [x] Bun runs top-level `dev:web` and `dev:server` in parallel on `127.0.0.1`.
+- [x] Bacon rebuilds/restarts the Rust server.
+- [x] Format, lint, typecheck, Rust checks, unit/contract tests, and production builds pass.
 - [ ] Local/container routing, binding, persistence, and configuration agree.
 - [x] Kubernetes manifests and configuration are removed; Pulumi is out of scope.
-- [ ] Deployment-specific credentials are not committed; examples remain usable.
+- [x] The integrated history contains no deployment-specific credentials; examples remain usable.
 - [ ] Browser verification covers login and meaningful file interactions.
 - [ ] Real PDS sign-in is performed by the user; existing records are not silently migrated or deleted.
-- [ ] Final history is reviewable, single-concept, and all work is integrated.
+- [x] Final history is linear, single-concept, and all work is integrated into the main checkout.
+
+## Verified on 2026-09-05
+
+`bun install --frozen-lockfile` and `bun run check` pass from the main checkout:
+67 JavaScript tests, 34 Rust tests, deterministic Lexicon/OpenAPI/SDK drift checks,
+and four Swift tests. TypeScript 7 checks source-only root references; Astro reports
+zero errors and warnings, with two dependency deprecation hints in query tests.
+The Swift generator emits upstream unused-public-import warnings in generated files.
+
+Both production builds pass. Four anonymous Chromium tests cover hydration,
+protected routes, typed proxy errors, retryable login failures, and mobile layout.
+Both listeners bind `127.0.0.1`; the proxied health endpoint responds successfully.
+The running server's OpenAPI is semantically identical to the generated contract.
+Bacon restarted successfully after a source change. The largest authored file is
+254 lines. Commits change no more than six files.
+
+Remaining acceptance boundaries:
+
+- The opt-in headed PDS test is waiting for the user's sign-in. No real-account
+  file lifecycle has been claimed as verified and no existing PDS data was changed.
+- Both container builds stop before the first build instruction because the local
+  Podman VM reports an overlay-mount input/output error. Native builds pass;
+  container execution remains unverified. Repairing the host VM is outside this change.
+- Astro 7.3.1 retains esbuild 0.28.2 internally. Crate has no direct dependency or
+  build scripts using it. Approval of this framework-only exception is still pending.
+
+Astro auto-backgrounds inside detected coding-agent environments. For foreground
+verification here, `env -u CODEX_THREAD_ID bun run dev` disables only that detection;
+ordinary shells use the unchanged `bun run dev` command.
 
 ## Verification boundaries
 

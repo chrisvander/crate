@@ -73,5 +73,18 @@ Keep authored files below 400 lines. Tests and generated contracts/SDKs are
 exempt; `bun run check:files` enforces this boundary. Keep Jujutsu changes small
 and single-concept. No publishing or deployment is part of the local workflow.
 
+With the stack running, `bun run test:browser` checks anonymous browser behavior.
+Install its Chromium browser with `bunx playwright install chromium` if needed.
+The authenticated lifecycle is opt-in and requires you to sign in manually:
+
+```sh
+CRATE_LIVE_PDS=1 bun run test:browser --grep 'user-authorized private PDS' --headed --workers=1
+```
+
+That test disables credential recording and creates only a new verification folder.
+It leaves its test files for inspection and never alters existing files. Current
+verification evidence and outstanding boundaries are in
+[the modernization checklist](docs/modernization.md).
+
 Kubernetes has been removed. Container definitions remain for the web gateway
 and Rust companion; future infrastructure provisioning is a separate decision.
