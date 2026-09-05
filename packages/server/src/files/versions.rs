@@ -25,7 +25,12 @@ pub async fn list(repo: &impl Repository, id: &str, space: &str, did: &str) -> R
             file,
         });
     }
-    versions.sort_by(|a, b| b.captured_at.cmp(&a.captured_at));
+    versions.sort_by_cached_key(|version| {
+        std::cmp::Reverse(
+            chrono::DateTime::parse_from_rfc3339(&version.captured_at)
+                .expect("version timestamps were validated"),
+        )
+    });
     Ok(VersionList { versions })
 }
 

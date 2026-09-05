@@ -228,6 +228,56 @@ async fn restoring_a_version_is_a_new_revision_with_the_same_file_id() {
 }
 
 #[tokio::test]
+async fn version_history_orders_mixed_offsets_by_instant_not_local_clock() {
+    use crate_protocol::VersionRecord;
+    use crate_server::files::repository::Write;
+
+    let repo = MemoryRepository::default();
+    let current = mutation::create(&repo, file("current", None, false))
+        .await
+        .unwrap();
+    for captured_at in [
+        "2026-09-05T12:30:00+02:00",
+        "2026-09-05T11:00:00Z",
+        "2026-09-05T07:30:00-04:00",
+    ] {
+        let mut record = current.record.clone();
+        record.updated_at = captured_at.into();
+        let revision = support::cid(&serde_json::to_vec(&record).unwrap());
+        let version = VersionRecord {
+            file_id: current.id.clone(),
+            revision: revision.clone(),
+            captured_at: captured_at.into(),
+            record,
+        };
+        repo.apply(vec![Write::Create {
+            collection: VERSION_COLLECTION.into(),
+            rkey: format!("{}.{}", current.id, revision),
+            value: serde_json::to_value(version).unwrap(),
+        }])
+        .await
+        .unwrap();
+    }
+
+    let history = versions::list(&repo, &current.id, "space", "did")
+        .await
+        .unwrap();
+    let timestamps: Vec<_> = history
+        .versions
+        .iter()
+        .map(|version| version.captured_at.as_str())
+        .collect();
+    assert_eq!(
+        timestamps,
+        [
+            "2026-09-05T07:30:00-04:00",
+            "2026-09-05T11:00:00Z",
+            "2026-09-05T12:30:00+02:00",
+        ]
+    );
+}
+
+#[tokio::test]
 async fn central_commit_rejects_moves_and_therefore_cross_client_cycles() {
     let repo = MemoryRepository::default();
     let a = mutation::create(&repo, file("a", None, true))
