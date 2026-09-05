@@ -73,7 +73,7 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 - [x] Bun runs top-level `dev:web` and `dev:server` in parallel on `127.0.0.1`.
 - [x] Bacon rebuilds/restarts the Rust server.
 - [x] Format, lint, typecheck, Rust checks, unit/contract tests, and production builds pass.
-- [ ] Local/container routing, binding, persistence, and configuration agree.
+- [x] Local/container routing, binding, persistence, and configuration agree.
 - [x] Kubernetes manifests and configuration are removed; Pulumi is out of scope.
 - [x] The integrated history contains no deployment-specific credentials; examples remain usable.
 - [ ] Browser verification covers login and meaningful file interactions.
@@ -95,13 +95,26 @@ The running server's OpenAPI is semantically identical to the generated contract
 Bacon restarted successfully after a source change. The largest authored file is
 254 lines. Commits change no more than six files.
 
+Both container images build successfully. The same four anonymous browser checks
+pass against the packaged Nginx/Rust stack. The container API exposes the generated
+OpenAPI contract, runs as UID 10001, and creates its data directory with mode 700
+and SQLite database with mode 600. The volume survives server replacement. Nginx
+refreshes a changed backend IP without restarting, and the server's default stop
+signal reaches its graceful handler (observed clean exit in 130 ms).
+
+Host disk exhaustion blocked checkout updates while Podman reported overlay/writeback
+errors. Only task-owned rebuildable caches and a failed build container were removed; flushing the VM's
+filesystem cleared the stale error state without resetting or restarting the VM.
+The Rust image build now discards compiler output before committing its build layer.
+Nested environment files and browser artifacts are excluded from image contexts.
+
 Remaining acceptance boundaries:
 
-- The opt-in headed PDS test is waiting for the user's sign-in. No real-account
-  file lifecycle has been claimed as verified and no existing PDS data was changed.
-- Both container builds stop before the first build instruction because the local
-  Podman VM reports an overlay-mount input/output error. Native builds pass;
-  container execution remains unverified. Repairing the host VM is outside this change.
+- The first headed PDS test timed out before reaching the file browser; no file
+  operations ran. The next attempt requires the user's sign-in. The test now waits
+  for persisted revisions before downloading and treats an incomplete manual sign-in
+  as skipped, avoiding a failure-page snapshot on the PDS login screen. A skipped
+  test is not evidence of live OAuth or file interoperability.
 - Astro 7.3.1 retains esbuild 0.28.2 internally. Crate has no direct dependency or
   build scripts using it. Approval of this framework-only exception is still pending.
 
