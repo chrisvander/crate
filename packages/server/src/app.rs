@@ -45,7 +45,11 @@ pub fn app(state: Arc<State>) -> impl Endpoint<Output = Response> {
                 check_origin(&request, &state)?;
                 let json = request
                     .content_type()
-                    .is_some_and(|value| value.starts_with("application/json"));
+                    .and_then(|value| value.parse::<mime::Mime>().ok())
+                    .is_some_and(|value| {
+                        value.type_() == mime::APPLICATION
+                            && (value.subtype() == mime::JSON || value.suffix() == Some(mime::JSON))
+                    });
                 if json {
                     let bytes = tokio::time::timeout(
                         std::time::Duration::from_secs(10),

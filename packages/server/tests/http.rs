@@ -178,3 +178,29 @@ async fn request_slots_are_held_until_bodies_drain_but_health_stays_available() 
         .await
         .assert_status_is_ok();
 }
+
+#[tokio::test]
+async fn every_json_media_type_accepted_by_poem_gets_the_same_body_limit() {
+    let (_dir, client, _) = fixture();
+    for mime in [
+        "application/json",
+        "application/ld+json",
+        "Application/JSON",
+    ] {
+        let response = client
+            .post("/oauth/login")
+            .header("Origin", "http://127.0.0.1:5173")
+            .header("Content-Type", mime)
+            .body("x".repeat(1024 * 1024 + 1))
+            .send()
+            .await;
+        response.assert_status(StatusCode::PAYLOAD_TOO_LARGE);
+        response
+            .json()
+            .await
+            .value()
+            .object()
+            .get("code")
+            .assert_string("TransferLimit");
+    }
+}
