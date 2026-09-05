@@ -1,0 +1,43 @@
+[package]
+name = "crate-server"
+version = "0.4.0"
+edition = "2024"
+publish = false
+default-run = "crate-server"
+
+[dependencies]
+anyhow = "1"
+async-trait = "0.1"
+atrium-api = { version = "0.25.8", default-features = false }
+atrium-common = "0.1.4"
+atrium-identity = "0.1.9"
+atrium-oauth = { version = "0.1.7", default-features = false }
+atrium-xrpc = "0.12.4"
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+cid = "0.11"
+crate-protocol = { path = "../protocol" }
+hickory-resolver = "0.24"
+http = "1"
+http-range = "0.1"
+mime = "0.3"
+percent-encoding = "2"
+jose-jwk = { version = "0.1.2", features = ["p256"], default-features = false }
+p256 = { version = "0.13", features = ["ecdsa"] }
+poem = { version = "3.1", features = ["test", "cookie"] }
+poem-openapi = { version = "5.1", features = ["chrono", "cookie", "swagger-ui"] }
+rand = "0.9"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "stream"] }
+rusqlite = { version = "0.37", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_urlencoded = "0.7"
+sha2 = "0.10"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+url = "2"
+
+[dev-dependencies]
+tempfile = "3"
