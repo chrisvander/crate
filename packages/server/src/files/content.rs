@@ -6,11 +6,15 @@ use tokio::io::AsyncReadExt;
 
 pub async fn read_upload(body: Body, limit: usize) -> Result<Vec<u8>> {
     let mut bytes = Vec::new();
-    body.into_async_read()
-        .take(limit as u64 + 1)
-        .read_to_end(&mut bytes)
-        .await
-        .map_err(|_| ApiError::bad("The upload was interrupted."))?;
+    tokio::time::timeout(
+        std::time::Duration::from_secs(300),
+        body.into_async_read()
+            .take(limit as u64 + 1)
+            .read_to_end(&mut bytes),
+    )
+    .await
+    .map_err(|_| ApiError::bad("The upload timed out."))?
+    .map_err(|_| ApiError::bad("The upload was interrupted."))?;
     if bytes.len() > limit {
         return Err(ApiError::too_large());
     }
@@ -64,6 +68,19 @@ pub fn disposition(name: &str) -> String {
     )
 }
 
+pub fn byte_range(value: &str, length: usize) -> Option<std::ops::Range<usize>> {
+    let ranges = http_range::HttpRange::parse(value, length as u64).ok()?;
+    if ranges.len() != 1 {
+        return None;
+    }
+    let range = ranges[0];
+    let end = range.start.checked_add(range.length)?;
+    if range.length == 0 || end > length as u64 {
+        return None;
+    }
+    Some(range.start as usize..end as usize)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -77,5 +94,35 @@ mod tests {
         let value = disposition("a\r\nContent-Type: text/html");
         assert!(!value.contains(['\r', '\n']));
         assert!(value.starts_with("attachment;"));
+    }
+
+    #[test]
+    fn single_ranges_are_bounded_and_empty_files_never_underflow() {
+        assert_eq!(byte_range("bytes=1-3", 5), Some(1..4));
+        assert_eq!(byte_range("bytes=-2", 5), Some(3..5));
+        assert_eq!(byte_range("bytes=2-", 5), Some(2..5));
+        for value in [
+            "bytes=0-0",
+            "bytes=-0",
+            "bytes=999999999999999999999-",
+            "bytes=0-1,3-4",
+        ] {
+            assert!(byte_range(value, 0).is_none());
+        }
+        assert!(byte_range("bytes=5-", 5).is_none());
+        assert!(byte_range("bytes=0-1,3-4", 5).is_none());
+    }
+
+    #[test]
+    fn verifies_empty_and_nonempty_blob_bytes_and_rejects_tampering() {
+        for bytes in [b"".as_slice(), b"hello".as_slice()] {
+            let cid = cid::Cid::new_v1(
+                0x55,
+                cid::multihash::Multihash::wrap(0x12, &Sha256::digest(bytes)).unwrap(),
+            );
+            let blob=serde_json::from_value(serde_json::json!({"$type":"blob","ref":{"$link":cid.to_string()},"mimeType":"text/plain","size":bytes.len()})).unwrap();
+            assert!(verify_blob(&blob, bytes).is_ok());
+            assert!(verify_blob(&blob, b"tampered").is_err());
+        }
     }
 }

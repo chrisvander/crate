@@ -152,3 +152,29 @@ async fn contract_and_docs_are_served_without_login_and_derive_cookie_security()
             .is_none()
     );
 }
+
+#[tokio::test]
+async fn request_slots_are_held_until_bodies_drain_but_health_stays_available() {
+    let (_dir, client, _) = fixture();
+    let mut pending = Vec::new();
+    for _ in 0..4 {
+        let response = client.get("/openapi.json").send().await;
+        response.assert_status_is_ok();
+        pending.push(response);
+    }
+    let busy = client.get("/openapi.json").send().await;
+    busy.assert_status(StatusCode::SERVICE_UNAVAILABLE);
+    busy.json()
+        .await
+        .value()
+        .object()
+        .get("code")
+        .assert_string("ServerBusy");
+    client.get("/health").send().await.assert_status_is_ok();
+    drop(pending.pop());
+    client
+        .get("/openapi.json")
+        .send()
+        .await
+        .assert_status_is_ok();
+}

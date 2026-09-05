@@ -28,11 +28,15 @@ pub fn app(state: Arc<State>) -> impl Endpoint<Output = Response> {
         .data(state.clone());
     route.around(move |endpoint, mut request| {
         let state = state.clone();
-        let permit = slots.clone().try_acquire_owned();
+        let permit = if request.uri().path() == "/health" {
+            None
+        } else {
+            Some(slots.clone().try_acquire_owned())
+        };
         async move {
             let docs = request.uri().path().starts_with("/docs");
             let result = async {
-                if permit.is_err() {
+                if matches!(permit, Some(Err(_))) {
                     return Err(ApiError::Unavailable(body(
                         "ServerBusy",
                         "The server has reached its concurrent request limit. Retry shortly.",
@@ -43,9 +47,12 @@ pub fn app(state: Arc<State>) -> impl Endpoint<Output = Response> {
                     .content_type()
                     .is_some_and(|value| value.starts_with("application/json"));
                 if json {
-                    let bytes =
-                        crate::files::content::read_upload(request.take_body(), 1024 * 1024)
-                            .await?;
+                    let bytes = tokio::time::timeout(
+                        std::time::Duration::from_secs(10),
+                        crate::files::content::read_upload(request.take_body(), 1024 * 1024),
+                    )
+                    .await
+                    .map_err(|_| ApiError::bad("The JSON request body timed out."))??;
                     request.set_body(bytes);
                 }
                 Ok::<_, ApiError>(match endpoint.call(request).await {
@@ -79,7 +86,7 @@ pub fn app(state: Arc<State>) -> impl Endpoint<Output = Response> {
                         .unwrap(),
                 );
             }
-            if let Ok(permit) = permit {
+            if let Some(Ok(permit)) = permit {
                 let body = response.take_body();
                 response.set_body(crate::limits::LimitedBody::wrap(body, permit));
             }

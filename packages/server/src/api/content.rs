@@ -144,6 +144,7 @@ impl ContentApi {
         state: Data<&Arc<State>>,
         id: Path<String>,
         #[oai(name = "Range")] range: Header<Option<String>>,
+        #[oai(name = "If-Range")] if_range: Header<Option<String>>,
     ) -> Result<Download> {
         let (did, session) = auth.0;
         let space = space::personal(&did);
@@ -175,26 +176,21 @@ impl ContentApi {
         content::verify_blob(blob, &bytes)?;
         let disposition = content::disposition(&file.record.name);
         let etag = format!("\"{cid}\"");
-        if let Some(range) = range.0 {
-            let Ok(ranges) = http_range::HttpRange::parse(&range, bytes.len() as u64) else {
+        if let Some(range) = range
+            .0
+            .filter(|_| if_range.as_deref().is_none_or(|value| value == etag))
+        {
+            let Some(range) = content::byte_range(&range, bytes.len()) else {
                 return Ok(Download::Unsatisfiable(
                     body("InvalidRange", "The requested byte range is invalid."),
                     format!("bytes */{}", bytes.len()),
                 ));
             };
-            if ranges.len() != 1 {
-                return Ok(Download::Unsatisfiable(
-                    body("InvalidRange", "Only one byte range is supported."),
-                    format!("bytes */{}", bytes.len()),
-                ));
-            }
-            let range = ranges[0];
-            let end = (range.start + range.length) as usize;
             return Ok(Download::Partial(
-                Binary(bytes[range.start as usize..end].to_vec()),
+                Binary(bytes[range.clone()].to_vec()),
                 disposition,
                 etag,
-                format!("bytes {}-{}/{}", range.start, end - 1, bytes.len()),
+                format!("bytes {}-{}/{}", range.start, range.end - 1, bytes.len()),
             ));
         }
         Ok(Download::Complete(Binary(bytes), disposition, etag))
