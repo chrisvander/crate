@@ -1,4 +1,6 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect as baseExpect, test, type Page } from "@playwright/test"
+
+const expect = baseExpect.configure({ timeout: 30_000 })
 
 test.use({ trace: "off", screenshot: "off", video: "off" })
 
@@ -39,19 +41,24 @@ test("user-authorized private PDS file lifecycle", async ({ page }) => {
   await expect(inspector.getByRole("heading", { name: "renamed.txt", exact: true })).toBeVisible()
   await expect(inspector.locator("dd.record-uri").first()).toHaveText(identity)
 
+  const revision = inspector.locator("dd.record-uri").last()
+  const originalRevision = await revision.innerText()
   const replacement = Buffer.from("Crate private PDS browser verification: replacement\n")
   await page.getByLabel("Replace contents of renamed.txt", { exact: true }).setInputFiles({
     name: "replacement.txt",
     mimeType: "text/plain",
     buffer: replacement,
   })
+  await expect(revision).not.toHaveText(originalRevision)
   await expect(page.getByText("Saving to your PDS…", { exact: true })).toBeHidden()
   expect(await download(page)).toEqual(replacement)
   await page.getByRole("button", { name: "Version history", exact: true }).click()
   const restore = page.getByRole("button", { name: "Restore version", exact: true }).first()
   await expect(restore).toBeVisible()
+  const replacementRevision = await revision.innerText()
   page.once("dialog", (dialog) => dialog.accept())
   await restore.click()
+  await expect(revision).not.toHaveText(replacementRevision)
   await expect(page.getByText("Saving to your PDS…", { exact: true })).toBeHidden()
   expect(await download(page)).toEqual(original)
   await expect(inspector.locator("dd.record-uri").first()).toHaveText(identity)
