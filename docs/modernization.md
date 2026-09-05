@@ -25,6 +25,12 @@ There is no silent fallback from permissioned storage to public repositories.
 Work is developed in separate Jujutsu workspaces. Commits represent one concept;
 integration preserves their descriptions and orders prerequisites before callers.
 Generated files are committed with their corresponding contract change.
+Authored files stay below 400 lines; tests and machine-generated Lexicon, OpenAPI,
+TypeScript, and Swift output are exempt. Generators own their output formatting.
+Oxfmt formats supported files; Prettier's Astro plugin handles only `.astro`.
+TypeScript 7 checks the root project-reference graph. Astro's language-server
+checker uses an isolated legacy TypeScript API dependency for `.astro` files;
+it does not select the application compiler or require built package types.
 
 ## Acceptance checklist
 

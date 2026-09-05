@@ -1,5 +1,13 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "**/*.astro",
+    "lexicons/**/*.json",
+    "packages/client/openapi.json",
+    "packages/client/src/schema.ts",
+    "packages/swift-client/Sources/CrateClient/openapi.json",
+    "packages/swift-client/Sources/CrateClient/GeneratedSources/**"
+  ],
   "semi": false,
   "singleQuote": false,
   "sortPackageJson": false,
