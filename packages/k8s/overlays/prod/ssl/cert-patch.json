@@ -1,7 +1,0 @@
-[
-  {
-    "op": "replace",
-    "path": "/spec/acme/email",
-    "value": "chris.vanderloo@yahoo.com"
-  }
-]
