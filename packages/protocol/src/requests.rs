@@ -17,7 +17,7 @@ pub struct CreateFile {
     pub kind: FileKind,
 }
 
-/// Replaces both mutable metadata fields; omission of parentId means the root.
+/// Renames a file without changing its parent or stable identity.
 #[derive(Debug, Clone, Serialize, Deserialize, Object)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 #[oai(
@@ -29,8 +29,6 @@ pub struct UpdateFile {
     pub revision: String,
     #[oai(validator(min_length = "1", max_length = "255"))]
     pub name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub parent_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Object)]

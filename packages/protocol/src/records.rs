@@ -24,7 +24,7 @@ pub struct FileRecord {
     #[lexicon(min_length = 1, max_length = 1024)]
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[lexicon(format = "record-key")]
+    #[lexicon(format = "tid")]
     pub parent_id: Option<String>,
     pub is_directory: bool,
     #[lexicon(format = "datetime")]
@@ -44,8 +44,8 @@ impl FileRecord {
             .map_err(|error| error.to_string())?;
         validate_name(&self.name)?;
         if let Some(parent) = &self.parent_id {
-            atrium_api::types::string::RecordKey::new(parent.clone())
-                .map_err(|error| format!("Invalid parent record key: {error}"))?;
+            atrium_api::types::string::Tid::new(parent.clone())
+                .map_err(|error| format!("Invalid parent TID: {error}"))?;
         }
         for value in [
             Some(&self.created_at),
@@ -91,7 +91,7 @@ pub fn validate_name(name: &str) -> Result<(), String> {
 #[serde(tag = "$type", rename = "network.crate.fileVersion")]
 #[lexicon(nsid = "network.crate.fileVersion", record, key = "any")]
 pub struct VersionRecord {
-    #[lexicon(format = "record-key")]
+    #[lexicon(format = "tid")]
     pub file_id: String,
     #[lexicon(format = "cid")]
     pub revision: String,
@@ -101,16 +101,28 @@ pub struct VersionRecord {
     pub record: FileRecord,
 }
 
+impl VersionRecord {
+    pub fn validate(&self) -> Result<(), String> {
+        atrium_api::types::string::Tid::new(self.file_id.clone())
+            .map_err(|error| format!("Invalid version file TID: {error}"))?;
+        atrium_api::types::CidLink::try_from(self.revision.as_str())
+            .map_err(|error| format!("Invalid version revision CID: {error}"))?;
+        chrono::DateTime::parse_from_rfc3339(&self.captured_at)
+            .map_err(|error| format!("Invalid version timestamp: {error}"))?;
+        self.record.validate()
+    }
+}
+
 /// Atomic uniqueness claim for a filename within a parent directory.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, LexiconSchema)]
 #[serde(rename_all = "camelCase")]
 #[serde(tag = "$type", rename = "network.crate.fileName")]
 #[lexicon(nsid = "network.crate.fileName", record, key = "any")]
 pub struct NameClaim {
-    #[lexicon(format = "record-key")]
+    #[lexicon(format = "tid")]
     pub file_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[lexicon(format = "record-key")]
+    #[lexicon(format = "tid")]
     pub parent_id: Option<String>,
     #[lexicon(min_length = 1, max_length = 1024)]
     pub name: String,

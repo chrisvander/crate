@@ -5,6 +5,7 @@ use serde_json::json;
 
 const CID: &str = "bafkreibme22gw2h7y2h7tg2fhqotaqjucnbc24deqo72b6mkl2egezxhvy";
 const DATE: &str = "2026-09-05T12:00:00Z";
+const TID: &str = "3jzfcijpj2z2a";
 
 fn directory() -> FileRecord {
     FileRecord {
@@ -37,7 +38,7 @@ fn serialized_records_match_derived_lexicons() {
     assert!(result.is_valid(), "{result:?}");
 
     let snapshot = VersionRecord {
-        file_id: "3mabcdef12345".into(),
+        file_id: TID.into(),
         revision: CID.into(),
         captured_at: DATE.into(),
         record: directory,
@@ -139,7 +140,58 @@ fn metadata_update_requires_name_and_revision() {
             .is_err()
     );
     let update = UpdateFile::parse_from_json(Some(json!({"revision":CID,"name":"New"}))).unwrap();
-    assert!(update.parent_id.is_none());
+    assert_eq!(update.name, "New");
+    assert!(
+        UpdateFile::parse_from_json(Some(json!({
+            "revision": CID, "name": "New", "parentId": TID
+        })))
+        .is_err()
+    );
+}
+
+#[test]
+fn version_records_validate_every_boundary() {
+    let version = VersionRecord {
+        file_id: TID.into(),
+        revision: CID.into(),
+        captured_at: DATE.into(),
+        record: directory(),
+    };
+    assert!(version.validate().is_ok());
+    assert!(
+        VersionRecord {
+            file_id: "not-a-tid".into(),
+            ..version.clone()
+        }
+        .validate()
+        .is_err()
+    );
+    assert!(
+        VersionRecord {
+            revision: "not-a-cid".into(),
+            ..version.clone()
+        }
+        .validate()
+        .is_err()
+    );
+    assert!(
+        VersionRecord {
+            captured_at: "yesterday".into(),
+            ..version.clone()
+        }
+        .validate()
+        .is_err()
+    );
+    let mut invalid_record = directory();
+    invalid_record.parent_id = Some("valid-record-key-but-not-a-tid".into());
+    assert!(
+        VersionRecord {
+            record: invalid_record,
+            ..version
+        }
+        .validate()
+        .is_err()
+    );
 }
 
 #[test]
