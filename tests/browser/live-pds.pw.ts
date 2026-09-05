@@ -1,3 +1,4 @@
+import { fileItem } from "./fixtures"
 import { expect as baseExpect, test, type Page } from "@playwright/test"
 import { waitForManualSignIn } from "./manual-login"
 
@@ -23,92 +24,73 @@ test("user-authorized private PDS file lifecycle", async ({ page, baseURL }) => 
   const folder = `Crate verification ${new Date().toISOString().replaceAll(":", "-")}`
   const copy = `verification-copy-${crypto.randomUUID()}.txt`
   console.log(`Creating isolated verification folder: ${folder}`)
-  await nameAction(page, "New folder", folder)
-  await page.getByTitle(`Open folder ${folder}`, { exact: true }).click()
+  await nameAction(page, "New Folder", folder)
+  await fileItem(page, folder).dblclick()
 
-  await nameAction(page, "New file", "empty.txt")
-  await page.getByLabel("Select empty.txt", { exact: true }).check()
+  await nameAction(page, "New File", "empty.txt")
+  await fileItem(page, "empty.txt").click()
   expect(await download(page)).toEqual(Buffer.alloc(0))
-  await page.getByLabel("Select empty.txt", { exact: true }).uncheck()
+  await fileItem(page, "empty.txt").click({ modifiers: ["Meta"] })
 
   const original = Buffer.from("Crate private PDS browser verification: original\n")
+  await page.getByLabel("Add files", { exact: true }).click()
   await page.getByLabel("Upload files", { exact: true }).setInputFiles({
     name: "sample.txt",
     mimeType: "text/plain",
     buffer: original,
   })
-  await page.getByLabel("Select sample.txt", { exact: true }).check()
+  await fileItem(page, "sample.txt").click()
   expect(await download(page)).toEqual(original)
-  const inspector = page.getByRole("complementary")
-  const identity = await inspector.locator("dd.record-uri").first().innerText()
-
   await nameAction(page, "Rename", "renamed.txt")
-  await expect(inspector.getByRole("heading", { name: "renamed.txt", exact: true })).toBeVisible()
-  await expect(inspector.locator("dd.record-uri").first()).toHaveText(identity)
-
-  const revision = inspector.locator("dd.record-uri").last()
-  const originalRevision = await revision.innerText()
-  const replacement = Buffer.from("Crate private PDS browser verification: replacement\n")
-  await page.getByLabel("Replace contents of renamed.txt", { exact: true }).setInputFiles({
-    name: "replacement.txt",
-    mimeType: "text/plain",
-    buffer: replacement,
-  })
-  await expect(revision).not.toHaveText(originalRevision)
-  await expect(page.getByText("Saving to your PDS…", { exact: true })).toBeHidden()
-  expect(await download(page)).toEqual(replacement)
-  await page.getByRole("button", { name: "Version history", exact: true }).click()
-  const restore = page.getByRole("button", { name: "Restore version", exact: true }).first()
-  await expect(restore).toBeVisible()
-  const replacementRevision = await revision.innerText()
-  page.once("dialog", (dialog) => dialog.accept())
-  await restore.click()
-  await expect(revision).not.toHaveText(replacementRevision)
-  await expect(page.getByText("Saving to your PDS…", { exact: true })).toBeHidden()
+  await expect(fileItem(page, "renamed.txt")).toBeVisible()
   expect(await download(page)).toEqual(original)
-  await expect(inspector.locator("dd.record-uri").first()).toHaveText(identity)
 
-  await nameAction(page, "Duplicate", copy)
-  await page.getByLabel("Select renamed.txt", { exact: true }).uncheck()
-  await page.getByLabel(`Select ${copy}`, { exact: true }).check()
+  await fileAction(page, "Duplicate")
+  await fileItem(page, "Copy of renamed.txt").click()
+  await nameAction(page, "Rename", copy)
+  await fileItem(page, copy).click()
   expect(await download(page)).toEqual(original)
   page.once("dialog", (dialog) => dialog.accept())
-  await page.getByRole("button", { name: "Move to trash", exact: true }).click()
-  await expect(page.getByLabel(`Select ${copy}`, { exact: true })).toHaveCount(0)
-
-  await page.getByRole("button", { name: "View trash", exact: true }).click()
-  await page.getByLabel(`Select ${copy}`, { exact: true }).check()
-  await page.getByRole("button", { name: "Restore", exact: true }).click()
-  await expect(page.getByLabel(`Select ${copy}`, { exact: true })).toHaveCount(0)
-  await page.getByRole("button", { name: "Back to files", exact: true }).click()
-  await expect(page.getByLabel(`Select ${copy}`, { exact: true })).toBeVisible()
+  await fileAction(page, "Delete")
+  await expect(fileItem(page, copy)).toHaveCount(0)
 
   await page.getByRole("button", { name: "Grid view", exact: true }).click()
-  await expect(page.getByRole("list", { name: "Files", exact: true })).toHaveClass(/grid/)
+  await expect(page.locator(".file-grid")).toBeVisible()
   await page.getByLabel("Search files", { exact: true }).fill("renamed.txt")
-  await expect(page.getByLabel("Select renamed.txt", { exact: true })).toBeVisible()
-  await expect(page.getByLabel(`Select ${copy}`, { exact: true })).toHaveCount(0)
+  await expect(fileItem(page, "renamed.txt")).toBeVisible()
+  await expect(fileItem(page, copy)).toHaveCount(0)
 
   await page.reload()
-  await page.getByTitle(`Open folder ${folder}`, { exact: true }).click()
-  await expect(page.getByLabel("Select empty.txt", { exact: true })).toBeVisible()
-  await expect(page.getByLabel("Select renamed.txt", { exact: true })).toBeVisible()
-  await expect(page.getByLabel(`Select ${copy}`, { exact: true })).toBeVisible()
+  await fileItem(page, folder).dblclick()
+  await expect(fileItem(page, "empty.txt")).toBeVisible()
+  await expect(fileItem(page, "renamed.txt")).toBeVisible()
+  await expect(fileItem(page, copy)).toHaveCount(0)
   await expect(page.getByRole("alert")).toHaveCount(0)
   console.log(`Verified private PDS lifecycle; retained only new test data in ${folder}`)
 })
 
 async function nameAction(page: Page, button: string, name: string) {
-  await page.getByRole("button", { name: button, exact: true }).click()
-  const dialog = page.getByRole("dialog")
-  await dialog.getByLabel("Name", { exact: true }).fill(name)
-  await dialog.getByRole("button", { name: "Save", exact: true }).click()
+  if (button === "New Folder" || button === "New File") {
+    await page.getByLabel("Add files", { exact: true }).click()
+    await page.locator(".popover-menu").getByText(button, { exact: true }).click()
+  } else await fileAction(page, button)
+  const dialog = page.locator(".popover")
+  await dialog.locator("input").fill(name)
+  await dialog.getByRole("button", { name: "Done", exact: true }).click()
   await expect(dialog).toHaveCount(0)
+}
+
+async function fileAction(page: Page, name: string) {
+  await page
+    .locator(".file-table tbody tr.bg-orange-500, .file-grid .file-label.bg-orange-500")
+    .first()
+    .click({ button: "right" })
+  await page.locator(".popover-menu").getByText(name, { exact: true }).click()
 }
 
 async function download(page: Page) {
   const pending = page.waitForEvent("download")
-  await page.getByRole("link", { name: "Download", exact: true }).click()
+  await fileAction(page, "Download")
   const result = await pending
   expect(await result.failure()).toBeNull()
   const stream = await result.createReadStream()

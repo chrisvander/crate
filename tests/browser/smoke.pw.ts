@@ -4,8 +4,8 @@ test("Astro pages hydrate and protect the file browser", async ({ page }) => {
   const errors: string[] = []
   page.on("pageerror", (error) => errors.push(error.message))
   await page.goto("/")
-  await expect(page.getByRole("heading", { name: "Your files. Your account." })).toBeVisible()
-  await page.getByRole("link", { name: "Open your files" }).click()
+  await expect(page.getByRole("heading", { name: "Cloud storage, reimagined." })).toBeVisible()
+  await page.getByRole("link", { name: "Open files", exact: true }).click()
   await expect(page.getByRole("heading", { name: "Log in", exact: true })).toBeVisible()
   await expect(page.getByLabel("ATProto handle")).toBeVisible()
   await expect(page.getByRole("button", { name: "Continue with ATProto" })).toBeDisabled()
