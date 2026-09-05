@@ -3,7 +3,7 @@
   flex-direction: column;
   min-height: 100vh;
 }
-.landing-page > .site-header {
+.landing-page .site-header {
   width: 100%;
 }
 .hero-frame {
