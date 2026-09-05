@@ -3,9 +3,14 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Not found">
-  <section class="panel">
-    <h1>Page not found</h1><p>This page does not exist.</p><a href="/files"
-      >Go to your files</a
-    >
-  </section>
+  <main class="not-found">
+    <h3>That page does not exist.</h3><br />
+    <a class="button" href="/">Home</a>
+  </main>
 </Layout>
+
+<style>
+  .not-found {
+    max-width: 1536px;
+  }
+</style>
