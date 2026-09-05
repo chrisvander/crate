@@ -42,9 +42,9 @@ transaction, relying on its atomic commit and create-if-absent semantics:
 - `network.crate.fileName`: filename uniqueness claim, keyed by lowercase SHA-256
   of the compact UTF-8 JSON array `[parentId-or-null,name]`, without a final newline.
   Unicode is encoded directly, not ASCII-escaped. `name_claim_key` is the Rust
-  reference implementation. A create,
-  rename, move, or restore claims the destination name in the same transaction;
-  a rename, move, or trash releases the old claim in that transaction.
+  reference implementation. A create, rename, or restore claims the destination
+  name in the same transaction; a rename or trash releases the old claim in that
+  transaction.
 
 All interoperable writers must follow these conventions. A raw PDS writer can
 violate them; the PDS validates records and transaction preconditions, not the
@@ -64,9 +64,11 @@ errors, never truncate bytes. Private blob reads go through the space API.
 
 The optional server owns browser OAuth sessions and proxies operations to the
 authenticated personal drive. Native direct-PDS clients do not need that server.
-Metadata replacement uses `PUT /api/v1/files/{id}` with the full new `name`,
-optional `parentId`, and expected `revision`. Omitted parent means root—not
-“leave the existing parent unchanged.” Optional response fields are omitted,
+Renaming uses `PUT /api/v1/files/{id}` with the new `name` and expected `revision`.
+Moving existing entries is deliberately unsupported: the alpha transaction API
+cannot enforce directory-cycle invariants across concurrent moves. Creation and
+duplication can target an existing parent; they create a new stable file ID.
+Optional response fields are omitted,
 never advertised as nullable when the OpenAPI schema cannot guarantee that.
 
 The same Rust contract generates TypeScript via `openapi-typescript` and Swift via

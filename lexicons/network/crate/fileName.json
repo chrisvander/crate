@@ -6,7 +6,7 @@
       "record": {
         "properties": {
           "fileId": {
-            "format": "record-key",
+            "format": "tid",
             "type": "string"
           },
           "name": {
@@ -15,7 +15,7 @@
             "type": "string"
           },
           "parentId": {
-            "format": "record-key",
+            "format": "tid",
             "type": "string"
           }
         },

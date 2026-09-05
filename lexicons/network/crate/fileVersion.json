@@ -10,7 +10,7 @@
             "type": "string"
           },
           "fileId": {
-            "format": "record-key",
+            "format": "tid",
             "type": "string"
           },
           "record": {
