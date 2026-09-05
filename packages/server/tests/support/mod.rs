@@ -1,4 +1,3 @@
-use async_trait::async_trait;
 use crate_protocol::{BlobRef, FileRecord};
 use crate_server::{
     error::{ApiError, Result},
@@ -33,7 +32,6 @@ pub fn file(name: &str, parent: Option<&str>, directory: bool) -> FileRecord {
     }
 }
 
-#[async_trait]
 impl Repository for MemoryRepository {
     async fn get(&self, collection: &str, id: &str) -> Result<Record> {
         self.0

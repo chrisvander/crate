@@ -3,10 +3,10 @@ use crate::{
     error::{ApiError, Result},
     pds::rpc,
 };
-use async_trait::async_trait;
 use crate_protocol::Space;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
+use std::future::Future;
 
 #[derive(Clone, Debug)]
 pub struct Record {
@@ -34,11 +34,10 @@ pub enum Write {
     Delete { collection: String, rkey: String },
 }
 
-#[async_trait]
 pub trait Repository: Sync {
-    async fn get(&self, collection: &str, id: &str) -> Result<Record>;
-    async fn list(&self, collection: &str) -> Result<Vec<Record>>;
-    async fn apply(&self, writes: Vec<Write>) -> Result<()>;
+    fn get(&self, collection: &str, id: &str) -> impl Future<Output = Result<Record>> + Send;
+    fn list(&self, collection: &str) -> impl Future<Output = Result<Vec<Record>>> + Send;
+    fn apply(&self, writes: Vec<Write>) -> impl Future<Output = Result<()>> + Send;
 }
 
 pub struct PdsRepository<'a> {
@@ -64,7 +63,6 @@ struct Listing {
     cursor: Option<String>,
 }
 
-#[async_trait]
 impl Repository for PdsRepository<'_> {
     async fn get(&self, collection: &str, id: &str) -> Result<Record> {
         atrium_api::types::string::RecordKey::new(id.into()).map_err(ApiError::bad)?;
@@ -84,6 +82,7 @@ impl Repository for PdsRepository<'_> {
     async fn list(&self, collection: &str) -> Result<Vec<Record>> {
         let mut records = Vec::new();
         let mut cursor = None::<String>;
+        let mut seen = std::collections::HashSet::new();
         loop {
             let mut params =
                 json!({"space":self.space.uri,"repo":self.did,"collection":collection,"limit":100});
@@ -94,7 +93,10 @@ impl Repository for PdsRepository<'_> {
                 rpc::query::<Listing>(self.session, "com.atproto.space.listRecords", params).await;
             let page = match output {
                 Ok(page) => page,
-                Err(error) if error.code == "RepoNotFound" || error.code == "SpaceNotFound" => {
+                Err(error)
+                    if cursor.is_none()
+                        && (error.code == "RepoNotFound" || error.code == "SpaceNotFound") =>
+                {
                     return Ok(records);
                 }
                 Err(error) => return Err(error.into()),
@@ -104,10 +106,13 @@ impl Repository for PdsRepository<'_> {
                 revision: record.cid,
                 value: record.value,
             }));
+            if records.len() > 10_000 {
+                return Err(ApiError::too_large());
+            }
             if page.cursor.is_none() {
                 return Ok(records);
             }
-            if page.cursor == cursor {
+            if !seen.insert(page.cursor.clone()) {
                 return Err(ApiError::upstream("The PDS repeated a pagination cursor."));
             }
             cursor = page.cursor;
