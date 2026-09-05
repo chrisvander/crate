@@ -13,4 +13,5 @@ USER crate
 ENV CRATE_SERVER_HOST=0.0.0.0 PORT=3030 CRATE_DATA_DIR=/var/lib/crate
 VOLUME ["/var/lib/crate"]
 EXPOSE 3030
+STOPSIGNAL SIGINT
 CMD ["crate-server"]
