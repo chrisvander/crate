@@ -1,13 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Navigation } from "../components/Navigation";
+import { PublicNavigation } from "../components/PublicNavigation";
 import { HeroBackdrop } from "../components/HeroBackdrop";
 import "../styles/landing.css";
 ---
 
 <Layout title="Crate" navigation={false}>
   <div class="landing-page">
-    <Navigation />
+    <PublicNavigation client:load />
     <section class="hero-frame">
       <HeroBackdrop client:load />
       <div class="hero-content">
