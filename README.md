@@ -63,7 +63,9 @@ jj new
 
 Checks are explicit and do not block commits through hooks. `typecheck` invokes
 TypeScript 7 against root `tsconfig.json` and its project references, then checks
-Astro templates. Bun's isolated linker keeps Astro's legacy TypeScript API peer
+Astro templates. References belong to the root solution; package-to-package
+references would require emitted declarations. Packages consume source exports.
+Bun's isolated linker keeps Astro's legacy TypeScript API peer
 separate from the root compiler. Oxfmt handles supported files; Prettier is used
 only for `.astro`, which Oxfmt does not yet support.
 
