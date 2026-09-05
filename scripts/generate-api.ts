@@ -102,6 +102,7 @@ try {
   await run([
     "swift",
     "run",
+    "--force-resolved-versions",
     "--package-path",
     swiftPackage,
     "swift-openapi-generator",
@@ -120,7 +121,7 @@ try {
     )
   }
   if (check) {
-    await run(["swift", "test", "--package-path", swiftPackage])
+    await run(["swift", "test", "--force-resolved-versions", "--package-path", swiftPackage])
   }
   console.log(
     check
