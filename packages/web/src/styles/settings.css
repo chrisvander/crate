@@ -1,0 +1,162 @@
+.settings-main {
+  max-width: 1536px;
+}
+.settings-panel {
+  display: flex;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px #0001;
+  min-height: 410px;
+}
+.settings-sidebar {
+  width: 224px;
+  max-width: 384px;
+  padding: 12px;
+  border-right: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.settings-identity {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  margin-bottom: 20px;
+}
+.settings-identity strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  color: #374151;
+}
+.account-avatar {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e5e5e5;
+}
+.settings-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
+.settings-links a,
+.settings-links button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #374151;
+  text-align: left;
+}
+.settings-links .icon {
+  width: 20px;
+  margin-right: 12px;
+  color: #4b5563;
+}
+.settings-links [aria-current] {
+  background: #e5e7eb;
+}
+.settings-links i {
+  background: #fb923c;
+  width: 2px;
+  height: 20px;
+}
+.settings-links button:hover {
+  background: #f3f4f6;
+}
+.settings-content {
+  padding: 24px;
+  margin-left: 16px;
+  flex: 1;
+  min-width: 0;
+}
+.settings-content h2 {
+  margin-bottom: 16px;
+}
+.profile-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.profile-fields label {
+  display: flex;
+  align-items: center;
+}
+.profile-fields label span {
+  width: 144px;
+  flex-shrink: 0;
+}
+.profile-fields input {
+  min-width: 0;
+}
+.settings-content > p {
+  font-size: 14px;
+  margin-top: 16px;
+}
+@media (min-width: 1024px) {
+  .account-avatar {
+    display: flex;
+  }
+  .settings-identity {
+    gap: 16px;
+  }
+  .settings-sidebar {
+    width: 211px;
+  }
+}
+@media (max-width: 639px) {
+  .settings-sidebar {
+    width: 116px;
+    padding: 8px;
+  }
+  .settings-content {
+    margin-left: 0;
+    padding: 12px;
+  }
+  .profile-fields label {
+    display: block;
+  }
+  .profile-fields label span {
+    display: block;
+    margin-bottom: 4px;
+  }
+  .settings-identity {
+    padding: 4px;
+  }
+  .settings-links .icon {
+    margin-right: 6px;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .settings-panel {
+    background: #292524;
+  }
+  .settings-identity strong {
+    color: #f3f4f6;
+  }
+  .account-avatar,
+  .settings-links [aria-current] {
+    background: #44403c;
+  }
+  .settings-links a,
+  .settings-links button {
+    color: #e7e5e4;
+  }
+  .settings-links .icon {
+    color: #d6d3d1;
+  }
+  .settings-links button:hover {
+    background: #57534e;
+  }
+}
