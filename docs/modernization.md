@@ -67,7 +67,8 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 - [ ] Bun runs top-level `dev:web` and `dev:server` in parallel on `127.0.0.1`.
 - [ ] Bacon rebuilds/restarts the Rust server.
 - [ ] Format, lint, typecheck, Rust checks, unit/contract tests, and production builds pass.
-- [ ] Docker/Kubernetes routing, binding, persistence, and configuration agree.
+- [ ] Local/container routing, binding, persistence, and configuration agree.
+- [x] Kubernetes manifests and configuration are removed; Pulumi is out of scope.
 - [ ] Deployment-specific credentials are not committed; examples remain usable.
 - [ ] Browser verification covers login and meaningful file interactions.
 - [ ] Real PDS sign-in is performed by the user; existing records are not silently migrated or deleted.

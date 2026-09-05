@@ -1,6 +1,5 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["packages/app/**", "packages/k8s/**"],
   "semi": false,
   "singleQuote": false,
   "sortPackageJson": false,
