@@ -1,23 +1,22 @@
-import { errors, expect as baseExpect, test, type Page } from "@playwright/test"
+import { expect as baseExpect, test, type Page } from "@playwright/test"
+import { waitForManualSignIn } from "./manual-login"
 
 const expect = baseExpect.configure({ timeout: 30_000 })
 
 test.use({ trace: "off", screenshot: "off", video: "off" })
 
-test("user-authorized private PDS file lifecycle", async ({ page }) => {
+test("user-authorized private PDS file lifecycle", async ({ page, baseURL }) => {
   test.skip(process.env.CRATE_LIVE_PDS !== "1", "Requires the user's interactive PDS sign-in")
   test.setTimeout(15 * 60_000)
   await page.goto("/login")
   console.log("Please sign in in the browser window; credentials are not recorded.")
-  try {
-    await page.getByRole("heading", { name: "Files", exact: true }).waitFor({
-      state: "visible",
-      timeout: 10 * 60_000,
-    })
-  } catch (error) {
-    if (!(error instanceof errors.TimeoutError)) throw error
-    test.skip(true, "Manual sign-in was not completed; no file operations ran")
-  }
+  const outcome = await waitForManualSignIn(page, new URL(baseURL!).origin, 10 * 60_000)
+  test.skip(
+    outcome.status === "timeout",
+    "Manual sign-in was not completed; no file operations ran",
+  )
+  if (outcome.status === "rejected") throw new Error(outcome.message)
+  await expect(page.getByRole("heading", { name: "Files", exact: true })).toBeVisible()
   await expect(page.getByText("Loading files…", { exact: true })).toBeHidden()
   await expect(page.getByRole("alert")).toHaveCount(0)
 
