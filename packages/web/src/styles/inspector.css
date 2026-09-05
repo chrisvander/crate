@@ -1,0 +1,59 @@
+.inspector {
+  overflow: hidden;
+  background: var(--panel);
+  border-radius: 6px;
+  box-shadow: 0 4px 6px #0002;
+}
+.inspector-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+.inspector h2 {
+  margin: 8px 0 12px 8px;
+  font:
+    700 20px/28px "iA Quattro",
+    sans-serif;
+}
+.inspector-heading button {
+  width: 32px;
+  height: 32px;
+  margin: 8px;
+  padding: 4px;
+  border-radius: 6px;
+}
+.inspector dl {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 2px;
+  margin: 0;
+  padding: 8px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.inspector dt {
+  text-align: right;
+}
+.inspector dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.record-uri {
+  font-family: monospace;
+  font-size: 12px;
+}
+.inspector-actions {
+  padding: 8px;
+  gap: 8px;
+  font-size: 14px;
+}
+.inspector-actions > button {
+  background: var(--subtle);
+}
+.version {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}

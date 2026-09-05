@@ -1,50 +1,35 @@
 // @vitest-environment jsdom
-import { QueryClientProvider } from "@tanstack/preact-query"
 import { cleanup, fireEvent, render, screen } from "@testing-library/preact"
-import { afterEach, expect, it, vi } from "vitest"
-import { createQueryClient } from "../../lib/query"
-import { file, session } from "../../test/fixtures"
-import { Inspector } from "./Inspector"
-
-afterEach(() => {
-  cleanup()
-  vi.unstubAllGlobals()
-  vi.restoreAllMocks()
+import { afterEach, expect, it } from "vitest"
+import { file } from "../../test/fixtures"
+import { FileInspector } from "./FileInspector"
+afterEach(cleanup)
+it("shows original metadata and falls back to the current directory", () => {
+  const { rerender } = render(
+    <FileInspector selection={[file({ name: "report.pdf" })]} path="Documents" close={() => {}} />,
+  )
+  expect(screen.getByText("Documents/report.pdf")).toBeTruthy()
+  expect(screen.getByText("pdf")).toBeTruthy()
+  expect(screen.queryByText("Version history")).toBeNull()
+  rerender(
+    <FileInspector
+      selection={[]}
+      directory={file({ name: "Documents", kind: "directory" })}
+      path="Documents"
+      close={() => {}}
+    />,
+  )
+  expect(screen.queryByText("No files are selected.")).toBeNull()
+  expect(screen.getAllByText("Documents")).toHaveLength(2)
 })
-
-it("shows the snapshot filename and explains full-version restoration", async () => {
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(async () =>
-      Response.json({
-        versions: [
-          {
-            id: "snapshot",
-            fileId: "file-one",
-            capturedAt: "2026-09-03T00:00:00.000Z",
-            file: file({ name: "Previous.txt" }),
-          },
-        ],
-      }),
-    ),
+it("pages through selected files", () => {
+  const { container } = render(
+    <FileInspector
+      selection={[file({ name: "one.txt" }), file({ name: "two.txt" })]}
+      close={() => {}}
+    />,
   )
-  const confirm = vi.spyOn(window, "confirm").mockReturnValue(false)
-  const execute = vi.fn(async () => true)
-  render(
-    <QueryClientProvider client={createQueryClient()}>
-      <Inspector
-        file={file({ name: "Current.txt" })}
-        session={session}
-        pending={false}
-        execute={execute}
-      />
-    </QueryClientProvider>,
-  )
-  fireEvent.click(screen.getByRole("button", { name: "Version history" }))
-  await screen.findByText("Previous.txt")
-  fireEvent.click(screen.getByRole("button", { name: "Restore version" }))
-  expect(confirm).toHaveBeenCalledWith(
-    'Restore "Previous.txt", including its name and contents? The current version will remain in history.',
-  )
-  expect(execute).not.toHaveBeenCalled()
+  fireEvent.click(container.querySelectorAll("button")[2]!)
+  expect(screen.getAllByText("two.txt")).toHaveLength(2)
+  expect(screen.getByText("2 / 2")).toBeTruthy()
 })
