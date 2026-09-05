@@ -5,8 +5,9 @@ export default function DirectoryLoading() {
         style="border-top-color:transparent"
         className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-orange-500"
         role="status"
+        aria-label="Loading files"
       >
-        <span class="hidden">Loading...</span>
+        <span class="hidden">Loading files…</span>
       </div>
     </div>
   )

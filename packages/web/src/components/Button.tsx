@@ -1,4 +1,6 @@
-export default function Button(props) {
+import type { JSX } from "preact"
+
+export default function Button(props: JSX.IntrinsicElements["button"]) {
   const { className, children, ...rest } = props
   return (
     <button

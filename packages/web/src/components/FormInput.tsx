@@ -1,4 +1,6 @@
-export default function FormInput(props) {
+import type { JSX } from "preact"
+
+export default function FormInput(props: JSX.IntrinsicElements["input"]) {
   return (
     <input
       className="
