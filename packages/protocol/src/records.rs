@@ -1,3 +1,8 @@
+#![expect(
+    clippy::needless_update,
+    reason = "Jacquard's generated schema impls emit redundant struct updates"
+)]
+
 pub use atrium_api::types::TypedBlobRef as BlobRef;
 use jacquard_derive::LexiconSchema;
 use serde::{Deserialize, Serialize};
