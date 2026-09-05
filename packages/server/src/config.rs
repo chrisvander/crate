@@ -58,6 +58,10 @@ impl Config {
     }
 }
 
+fn value(name: &str, default: &str) -> String {
+    env::var(name).unwrap_or_else(|_| default.into())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -89,8 +93,4 @@ mod tests {
         config.max_upload_bytes = crate_protocol::MAX_FILE_BYTES + 1;
         assert!(config.validate().is_err());
     }
-}
-
-fn value(name: &str, default: &str) -> String {
-    env::var(name).unwrap_or_else(|_| default.into())
 }

@@ -29,14 +29,13 @@ impl Revocations {
         if let Some(token) = parameters.get("refresh_token") {
             let mut revoked = self.0.lock().expect("revocations");
             revoked.retain(|_, created| created.elapsed() < Duration::from_secs(600));
-            if revoked.len() >= 1024 {
-                if let Some(oldest) = revoked
+            if revoked.len() >= 1024
+                && let Some(oldest) = revoked
                     .iter()
                     .min_by_key(|(_, at)| *at)
                     .map(|(key, _)| *key)
-                {
-                    revoked.remove(&oldest);
-                }
+            {
+                revoked.remove(&oldest);
             }
             revoked.insert(Sha256::digest(token.as_bytes()).into(), Instant::now());
         }

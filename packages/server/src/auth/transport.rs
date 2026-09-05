@@ -15,6 +15,7 @@ impl Transport {
     pub fn new(max_bytes: usize) -> anyhow::Result<Self> {
         Ok(Self {
             client: reqwest::Client::builder()
+                .no_proxy()
                 .redirect(reqwest::redirect::Policy::none())
                 .connect_timeout(Duration::from_secs(10))
                 .timeout(Duration::from_secs(300))
@@ -113,10 +114,15 @@ fn require_public(ip: std::net::IpAddr) -> Result<(), Box<dyn Error + Send + Syn
                 || v.is_documentation()
                 || v.octets()[0] == 0
                 || v.octets()[0] >= 240
+                || (v.octets()[0] == 198 && matches!(v.octets()[1], 18 | 19))
+                || (v.octets()[0] == 192 && v.octets()[1] == 0 && v.octets()[2] == 0)
                 || (v.octets()[0] == 100 && (64..=127).contains(&v.octets()[1]))
         }
         IpAddr::V6(v) => {
-            v.is_loopback()
+            v.segments()[0] & 0xe000 != 0x2000
+                || v.segments()[0] == 0x2002
+                || (v.segments()[0] == 0x2001 && matches!(v.segments()[1], 0 | 2 | 0xdb8))
+                || v.is_loopback()
                 || v.is_unspecified()
                 || v.is_multicast()
                 || (v.segments()[0] & 0xfe00 == 0xfc00)
