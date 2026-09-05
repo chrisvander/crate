@@ -6,6 +6,44 @@ import { file } from "../test/fixtures"
 
 afterEach(() => vi.unstubAllGlobals())
 
+describe("bulk restore transport", () => {
+  const parent = file({
+    id: "parent",
+    name: "Z folder",
+    kind: "directory",
+    trashedAt: "2026-09-05",
+  })
+  const child = file({ id: "child", name: "A child", parentId: parent.id, trashedAt: "2026-09-05" })
+  it("sends parent restore before child restore even when selection is child-first", async () => {
+    const paths: string[] = []
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL) => {
+        const request = input instanceof Request ? input : new Request(input)
+        paths.push(new URL(request.url).pathname)
+        return Response.json(file())
+      }),
+    )
+    await actions.restoreMany([child, parent])(new AbortController().signal)
+    expect(paths).toEqual(["/api/v1/files/parent/restore", "/api/v1/files/child/restore"])
+  })
+  it("preflights all ancestry before writing any selected file", async () => {
+    const methods: string[] = []
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL) => {
+        const request = input instanceof Request ? input : new Request(input)
+        methods.push(request.method)
+        return Response.json({ message: "Missing folder" }, { status: 404 })
+      }),
+    )
+    await expect(
+      actions.restoreMany([file({ id: "unrelated" }), child])(new AbortController().signal),
+    ).rejects.toThrow("ancestor folder is missing")
+    expect(methods).toEqual(["GET"])
+  })
+})
+
 describe("raw PDS file transport", () => {
   it.each(["upload", "replace"] as const)(
     "sends %s bytes with their MIME type and revision context",

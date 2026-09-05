@@ -1,4 +1,5 @@
 import { api, unwrap, type FileEntry, type FileVersion } from "./api"
+import { restoreOrder } from "./restore"
 
 export const actions = {
   create:
@@ -36,6 +37,16 @@ export const actions = {
         signal,
       }),
     ),
+  restoreMany: (files: FileEntry[]) => async (signal: AbortSignal) => {
+    const ordered = await restoreOrder(files, async (id) => {
+      const result = await api.GET("/api/v1/files/{id}", {
+        params: { path: { id } },
+        signal,
+      })
+      return result.response.status === 404 ? undefined : unwrap(result)
+    })
+    for (const file of ordered) await actions.restore(file)(signal)
+  },
   upload: (files: File[], parentId?: string) => async (signal: AbortSignal) => {
     for (const file of files)
       unwrap(
