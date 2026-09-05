@@ -4,7 +4,11 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Object)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-#[oai(rename_all = "camelCase", deny_unknown_fields, skip_serializing_if_is_none)]
+#[oai(
+    rename_all = "camelCase",
+    deny_unknown_fields,
+    skip_serializing_if_is_none
+)]
 pub struct CreateFile {
     #[oai(validator(min_length = "1", max_length = "255"))]
     pub name: String,
@@ -16,7 +20,11 @@ pub struct CreateFile {
 /// Replaces both mutable metadata fields; omission of parentId means the root.
 #[derive(Debug, Clone, Serialize, Deserialize, Object)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-#[oai(rename_all = "camelCase", deny_unknown_fields, skip_serializing_if_is_none)]
+#[oai(
+    rename_all = "camelCase",
+    deny_unknown_fields,
+    skip_serializing_if_is_none
+)]
 pub struct UpdateFile {
     pub revision: String,
     #[oai(validator(min_length = "1", max_length = "255"))]
@@ -27,7 +35,11 @@ pub struct UpdateFile {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Object)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-#[oai(rename_all = "camelCase", deny_unknown_fields, skip_serializing_if_is_none)]
+#[oai(
+    rename_all = "camelCase",
+    deny_unknown_fields,
+    skip_serializing_if_is_none
+)]
 pub struct DuplicateFile {
     pub revision: String,
     #[oai(validator(min_length = "1", max_length = "255"))]
