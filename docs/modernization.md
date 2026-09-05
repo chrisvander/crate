@@ -143,6 +143,10 @@ disables Playwright's separate failure-page snapshot capture; an intentionally
 failing synthetic-provider test verified that neither its page contents nor its
 callback-state marker appeared in the diagnostic artifact.
 
+Approved tooling exception: Astro 7.3.1 retains esbuild 0.28.2 internally.
+The user approved this framework-only dependency on 2026-09-05. Crate has no
+direct esbuild dependency or build scripts using it.
+
 Remaining acceptance boundaries:
 
 - Public declaration discovery, successful OAuth, and live file interoperability
@@ -151,8 +155,6 @@ Remaining acceptance boundaries:
   entries were published. A later authorized setup requires a
   schema-publisher DID and publicly resolvable generated Lexicons before another
   user-driven sign-in attempt can complete.
-- Astro 7.3.1 retains esbuild 0.28.2 internally. Crate has no direct dependency or
-  build scripts using it. Approval of this framework-only exception is still pending.
 
 Astro auto-backgrounds inside detected coding-agent environments. For foreground
 verification here, `env -u CODEX_THREAD_ID bun run dev` disables only that detection;

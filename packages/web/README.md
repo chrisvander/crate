@@ -25,6 +25,9 @@ in-flight requests. Preferences, selection, and breadcrumb state remain local.
 
 ## Tooling exceptions
 
+Astro's internal esbuild dependency is an approved framework-only exception.
+Crate's own packages and build scripts must not depend directly on esbuild.
+
 The repository's TypeScript 7 root-reference check covers TypeScript sources.
 Astro's checker currently needs TypeScript's JavaScript compiler API, which the
 native TypeScript 7 package does not expose. `check:astro` runs standard
