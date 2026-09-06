@@ -2,25 +2,42 @@
 import Layout from "../layouts/Layout.astro";
 import { PublicNavigation } from "../components/PublicNavigation";
 import { HeroBackdrop } from "../components/HeroBackdrop";
-import "../styles/landing.css";
 ---
 
 <Layout title="Crate" navigation={false}>
-  <div class="landing-page">
+  <div class="landing-page flex min-h-screen flex-col [&_.site-header]:w-full">
     <PublicNavigation client:load />
-    <section class="hero-frame">
+    <section
+      class="hero-frame relative z-1 flex min-h-max flex-1 overflow-hidden rounded-[50px] [-webkit-mask-image:-webkit-radial-gradient(white,black)] sm:m-16 2xl:mx-32"
+    >
       <HeroBackdrop client:load />
-      <div class="hero-content">
-        <h1>Cloud storage, <span>reimagined.</span></h1>
-        <p>
-          Store your files in your own personal data server. Access them across
-          clients with your ATProto account. Your PDS controls storage and
-          permissions. Crate requires private Spaces support, so choose a
-          compatible PDS to keep your files private.
+      <div
+        class="hero-content flex w-full flex-col justify-center bg-[#ffedd599] p-8 backdrop-blur-[16px] lg:p-16 dark:bg-[#1c191799]"
+      >
+        <h1
+          class="font-sans text-4xl/10 sm:text-5xl/12 md:text-7xl/18 xl:text-8xl/24"
+        >
+          Cloud storage, <span
+            class="font-black text-[#ea580c] dark:text-[#f97316]"
+            >reimagined.</span
+          >
+        </h1>
+        <p class="sm:max-w-2xl sm:text-2xl/8 lg:max-w-5xl lg:text-4xl/10">
+          Store your files securely, with crypographically-verified guarantees
+          on data accessibility. Access your files on all your devices, from
+          anywhere in the world. Store as much data as you want. Get 1 TB of
+          storage for just
+          <span class="font-bold"> $10/month</span>.
         </p>
-        <div class="hero-actions">
-          <a class="hero-primary" href="/login">Log in</a>
-          <a class="hero-secondary" href="/files">Open files</a>
+        <div class="hero-actions mt-12 flex gap-8">
+          <a
+            class="hero-primary flex h-16 w-40 items-center justify-center rounded-md border border-transparent bg-accent font-medium text-white"
+            href="/login">Log in</a
+          >
+          <a
+            class="hero-secondary flex h-16 w-40 items-center justify-center rounded-md border border-transparent bg-[#78716c] font-medium text-[#f3f4f6]"
+            href="#">Learn more</a
+          >
         </div>
       </div>
     </section>
