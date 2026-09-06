@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/Crate-Network/crate/blob/main/icon/mac-icon.png?raw=true" alt="Crate Logo" width="300"/>
+  <img src="https://github.com/chrisvander/crate/blob/main/icon/exports/Crate-iOS-Default-1024x1024%401x.png" alt="Crate Logo" width="300"/>
   <h1>Crate</h1>
 </div>
 
