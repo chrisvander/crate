@@ -4,7 +4,7 @@ export function Icon({ icon, className = "" }: { icon: typeof faFile; className?
   const [width, height, , , paths] = icon.icon
   return (
     <svg
-      className={`icon ${className}`}
+      className={`icon inline-block h-[1em] fill-current align-[-0.125em] ${className}`}
       width={`${width / height}em`}
       viewBox={`0 0 ${width} ${height}`}
       aria-hidden="true"

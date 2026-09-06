@@ -1,3 +1,5 @@
+@import "tailwindcss" source("../");
+
 @font-face {
   font-family: "iA Quattro";
   src: url("../assets/iAWriterQuattroS-Regular.woff2");
@@ -9,246 +11,112 @@
   font-weight: 700;
   font-display: swap;
 }
-:root {
-  color-scheme: light dark;
-  --page: #ffedd5;
-  --panel: #fff;
-  --ink: #000;
-  --heading: #262626;
-  --subheading: #404040;
-  --muted: #6b7280;
-  --line: #e5e5e5;
-  --accent: #f97316;
-  --accent-hover: #ea580c;
-  --subtle: #f5f5f5;
-  --form: #e7e5e4;
-  --control: #fff;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--ink);
-  background: var(--page);
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: "iA Quattro", sans-serif;
 }
-* {
-  box-sizing: border-box;
+
+@theme inline {
+  --color-page: var(--page);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-heading: var(--heading);
+  --color-subheading: var(--subheading);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-subtle: var(--subtle);
+  --color-form: var(--form);
+  --color-control: var(--control);
 }
-body {
-  margin: 0;
-  background: var(--page);
-}
-button,
-input,
-select {
-  font: inherit;
-  color: inherit;
-}
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-button {
-  cursor: pointer;
-}
-button:disabled {
-  cursor: default;
-  opacity: 0.55;
-}
-a {
-  color: inherit;
-  text-decoration: none;
-}
-button {
-  border: 0;
-  background: none;
-}
-button,
-.button {
-  border-radius: 4px;
-  padding: 6px 12px;
-  transition:
-    background-color 150ms,
-    box-shadow 150ms;
-}
-button.primary,
-.button {
-  background: var(--accent);
-  color: #fff;
-}
-button.primary:hover,
-.button:hover {
-  box-shadow: 0 4px 6px #0002;
-}
-button.primary:disabled {
-  background: #d6d3d1;
-  color: #a3a3a3;
-  box-shadow: none;
-}
-input:not([type="checkbox"]),
-select {
-  display: block;
-  width: 100%;
-  padding: 6px 12px;
-  color: #44403c;
-  background: var(--control);
-  border: 1px solid #d6d3d1;
-  border-radius: 4px;
-  line-height: 24px;
-}
-input::placeholder {
-  color: #a8a29e;
-}
-input:focus {
-  border-color: #2563eb;
-}
-:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
-}
-h1,
-h2,
-h3 {
-  margin: 0;
-  color: var(--heading);
-}
-h1 {
-  margin-bottom: 12px;
-  font:
-    700 36px/40px "iA Quattro",
-    sans-serif;
-}
-h2 {
-  margin: 8px 0 12px;
-  font-size: 30px;
-  line-height: 36px;
-  font-weight: 600;
-  color: var(--subheading);
-}
-h3 {
-  margin-bottom: 4px;
-  font-size: 24px;
-  line-height: 32px;
-  font-weight: 600;
-}
-p {
-  margin: 0 0 12px;
-}
-main {
-  margin: 16px auto 48px;
-  padding: 0 16px;
-}
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-}
-.muted {
-  color: var(--muted);
-}
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.error {
-  color: #b91c1c;
-  background: #fee2e2;
-  padding: 12px;
-  border-radius: 6px;
-  overflow-wrap: anywhere;
-}
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-.skip-link {
-  position: absolute;
-  top: -60px;
-  z-index: 100;
-}
-.skip-link:focus {
-  top: 12px;
-  left: 12px;
-  background: var(--panel);
-  padding: 10px;
-}
-.icon {
-  display: inline-block;
-  height: 1em;
-  fill: currentColor;
-  vertical-align: -0.125em;
-}
-@media (min-width: 640px) {
-  main {
-    margin-top: 32px;
-  }
-}
-@media (min-width: 1024px) {
-  main {
-    margin-top: 64px;
-    padding: 0 32px;
-  }
-  h1 {
-    font-size: 48px;
-    line-height: 48px;
-    margin-bottom: 32px;
-  }
-  h2 {
-    font-size: 36px;
-    line-height: 40px;
-  }
-  h3 {
-    font-size: 30px;
-    line-height: 36px;
-  }
-}
-@media (min-width: 1536px) {
-  main {
-    padding: 0 128px;
-  }
-}
-@media (prefers-color-scheme: dark) {
+
+@layer base {
   :root {
-    --page: #1c1917;
-    --panel: #262626;
-    --ink: #ecfeff;
-    --heading: #f5f5f5;
-    --subheading: #e5e5e5;
-    --muted: #d1d5db;
-    --line: #404040;
-    --subtle: #262626;
-    --form: #44403c;
-    --control: #57534e;
+    color-scheme: light dark;
+    --page: #ffedd5;
+    --panel: #fff;
+    --ink: #000;
+    --heading: #262626;
+    --subheading: #404040;
+    --muted: #6b7280;
+    --line: #e5e5e5;
+    --accent: #f97316;
+    --accent-hover: #ea580c;
+    --subtle: #f5f5f5;
+    --form: #e7e5e4;
+    --control: #fff;
+    @apply bg-page font-sans text-base text-ink;
+  }
+  body {
+    @apply bg-page;
+  }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button {
+    @apply cursor-pointer rounded-sm border-0 bg-transparent px-3 py-1.5 disabled:cursor-default disabled:opacity-55;
+    transition:
+      background-color 150ms,
+      box-shadow 150ms;
   }
   input:not([type="checkbox"]),
   select {
-    color: #fafafa;
-    border-color: #404040;
+    @apply block w-full rounded-sm border border-[#d6d3d1] bg-control px-3 py-1.5 leading-6 text-[#44403c] dark:border-[#404040] dark:text-[#fafafa];
   }
-  button.primary:disabled {
-    background: #262626;
-    color: #525252;
+  input::placeholder {
+    @apply text-[#a8a29e];
+    opacity: 1;
   }
-  .error {
-    color: #fecaca;
-    background: #450a0a;
+  input:focus {
+    @apply border-[#2563eb];
   }
+  :focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply m-0 text-heading;
+  }
+  h1 {
+    @apply mb-3 font-heading text-4xl/10 font-bold lg:mb-8 lg:text-5xl/12;
+  }
+  h2 {
+    @apply mt-2 mb-3 text-3xl/9 font-semibold text-subheading lg:text-4xl/10;
+  }
+  h3 {
+    @apply mb-1 text-2xl/8 font-semibold lg:text-3xl/9;
+  }
+  p {
+    @apply mb-3;
+  }
+  main {
+    @apply mx-auto mt-4 mb-12 px-4 sm:mt-8 lg:mt-16 lg:px-8 2xl:px-32;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #1c1917;
+      --panel: #262626;
+      --ink: #ecfeff;
+      --heading: #f5f5f5;
+      --subheading: #e5e5e5;
+      --muted: #d1d5db;
+      --line: #404040;
+      --subtle: #262626;
+      --form: #44403c;
+      --control: #57534e;
+    }
+  }
+}
+
+@utility primary {
+  @apply bg-accent text-white hover:shadow-[0_4px_6px_#0002] disabled:bg-[#d6d3d1] disabled:text-[#a3a3a3] disabled:shadow-none dark:disabled:bg-[#262626] dark:disabled:text-[#525252];
+}
+
+@utility error {
+  @apply rounded-md bg-[#fee2e2] p-3 text-[#b91c1c] [overflow-wrap:anywhere] dark:bg-[#450a0a] dark:text-[#fecaca];
 }

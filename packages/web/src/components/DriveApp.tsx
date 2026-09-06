@@ -53,7 +53,7 @@ function Account({ mode }: { mode: Mode }) {
     return (
       <>
         <Navigation />
-        <main className="stack">
+        <main className="flex flex-col gap-4">
           <h1>Cannot restore your session</h1>
           <p className="error" role="alert">
             {session.error.message}
