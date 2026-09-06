@@ -1,20 +1,19 @@
 import { useState } from "preact/hooks"
 import { login } from "../lib/api"
-import "../styles/login.css"
 
 export function LoginForm() {
   const [handle, setHandle] = useState("")
   const [pending, setPending] = useState(false)
   const [error, setError] = useState("")
   return (
-    <main className="login-main">
-      <section className="login-box">
-        <h2>Log in</h2>
-        <p>
+    <main className="login-main m-0 flex w-full items-center justify-center p-0">
+      <section className="login-box mx-12 mt-6 mb-12 flex-[0_1_384px] self-center rounded-2xl border-2 border-[#1717171a] bg-form p-12 text-heading shadow-[0_10px_15px_-3px_#0001,0_4px_6px_-4px_#0001] md:mt-24 xl:mt-36">
+        <h2 className="pb-2">Log in</h2>
+        <p className="mt-4 mb-0 text-sm/5 text-[#374151] dark:text-[#d1d5db]">
           Continue with your ATProto account. Your PDS will confirm the permissions Crate needs.
         </p>
         <form
-          className="login-form"
+          className="login-form mt-4 mb-0"
           onSubmit={async (event) => {
             event.preventDefault()
             if (!handle.trim()) return
@@ -29,7 +28,7 @@ export function LoginForm() {
             }
           }}
         >
-          <label for="handle">
+          <label className="block" for="handle">
             <span className="sr-only">ATProto handle</span>
             <input
               id="handle"
@@ -45,11 +44,11 @@ export function LoginForm() {
             />
           </label>
           {error && (
-            <p className="error" role="alert">
+            <p className="error mt-4 text-sm/5 text-[#374151] dark:text-[#d1d5db]" role="alert">
               {error}
             </p>
           )}
-          <button className="primary" disabled={pending || !handle.trim()}>
+          <button className="primary mt-4 w-full" disabled={pending || !handle.trim()}>
             {pending ? "Connecting…" : "Continue with ATProto"}
           </button>
         </form>
