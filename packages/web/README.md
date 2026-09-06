@@ -23,6 +23,31 @@ TanStack Query keys include account DID and Space URI. Mutations invalidate all
 related listings and history, session loss clears account data, and unmount aborts
 in-flight requests. Preferences, selection, and breadcrumb state remain local.
 
+The file page retains the original `Dropdown`, `PopoverMenu`, `RightClickMenu`,
+`GridView`, `ListView`, and `FileInspector` components, adapted to the current API.
+Menus and modal popovers use Preact portals into `document.body`. Keep their
+translucency, positioning, outside-click dismissal, inline rename, 64px grid
+icons, and the inspector's 300ms width/opacity transition when changing internals.
+The inspector retains the original Name, Path, Size, Extension, and CID table,
+including current-directory inspection when selection is empty. Its added
+replace/version-history panel is removed; those backend APIs remain available.
+Creation dialogs retain Done/Cancel and Escape dismissal. The Astro footer uses
+the original copyright, breadcrumbs, and legal links.
+Delete uses the existing backend deletion operation; there is no Trash view.
+
+## Styling
+
+Tailwind CSS 4 runs through the official `@tailwindcss/vite` plugin. Components
+use utilities directly; `src/styles/base.css` contains the CSS-first theme,
+font declarations, native element defaults, and shared primary/error utilities.
+The theme preserves the existing light/dark colors and typography.
+
+There is no PostCSS configuration, Tailwind PostCSS plugin, or Autoprefixer
+dependency. Vite itself still includes PostCSS transitively; it is not configured
+as Crate's styling pipeline. Follow the
+[Tailwind Vite integration](https://tailwindcss.com/docs/installation/using-vite)
+when changing the build setup.
+
 ## Tooling exceptions
 
 Astro's internal esbuild dependency is an approved framework-only exception.

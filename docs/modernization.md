@@ -83,6 +83,23 @@ An unchecked item is incomplete, not waived. Check items only with evidence.
 - [ ] Real PDS sign-in is performed by the user; existing records are not silently migrated or deleted.
 - [x] Final history is linear, single-concept, and all work is integrated into the main checkout.
 
+## Verified on 2026-09-06: Tailwind restoration
+
+Tailwind CSS 4.3.3 and its Vite plugin replace the handwritten component styling.
+Eight page/component stylesheets were removed; the shared CSS-first theme keeps
+the existing palette, typography, and native control defaults. There is no
+PostCSS configuration or Autoprefixer dependency. Vite retains its own transitive
+PostCSS dependency, unrelated to the Tailwind integration.
+
+The full repository check passes: 81 JavaScript, 41 Rust, and four Swift tests,
+plus formatting, lint, root-reference typechecking, file sizes, and contract drift.
+The production web build passes. Eleven browser checks pass in both development
+and production previews, including dark controls and portal popover centering.
+All 24 captured desktop/mobile, light/dark views are pixel-identical to the
+pre-Tailwind revision `3ba1e2e8`; 496 measured elements retain their geometry and
+painted colors. Comparisons use synthetic accounts and do not access a real PDS.
+Live sign-in and namespace setup remain deferred under the boundaries below.
+
 ## Verified on 2026-09-05
 
 `bun install --frozen-lockfile` and `bun run check` pass from the main checkout:
