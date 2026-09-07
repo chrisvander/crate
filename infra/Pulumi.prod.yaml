@@ -1,2 +1,4 @@
+config:
+  did: did:plc:hogkukbuqypodrkdgyvrw2ru
 environment:
   - main

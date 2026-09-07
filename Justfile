@@ -30,9 +30,28 @@ build-server:
 build-web:
     bun run --filter @crate/web build
 
+# Run all generate operations
+generate: generate-lexicons generate-api
+publish: publish-lexicons
+
 # Generate only the ATProto Lexicons from Rust.
 generate-lexicons:
     cargo run --locked --quiet -p crate-protocol --bin export-lexicons -- lexicons
+
+# Publish generated schemas with the signed-in Goat account (use create for first publication).
+publish-lexicons operation="update": generate-lexicons
+    #!/usr/bin/env bash
+    set -euo pipefail
+    case "$1" in create|update) ;; *) echo 'Expected create or update' >&2; exit 1 ;; esac
+    command -v goat >/dev/null
+    command -v jq >/dev/null
+    record=$(mktemp)
+    trap 'rm -f "$record"' EXIT
+    for schema in lexicons/network/crate/*.json; do
+        id=$(jq -er '.id' "$schema")
+        jq '. + {"$type": "com.atproto.lexicon.schema"}' "$schema" > "$record"
+        goat record "$1" --no-validate --rkey "$id" "$record"
+    done
 
 # Generate Lexicons, OpenAPI, and TypeScript/Swift clients.
 generate-api:

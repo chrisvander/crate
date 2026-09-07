@@ -2,4 +2,3 @@ name: crate
 runtime: bun
 config:
   cloudflareZoneId: 1cf8953d2af7de48fa376ee70b36d88b
-  did: did:plc:hogkukbuqypodrkdgyvrw2ru

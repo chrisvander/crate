@@ -34,6 +34,12 @@ just generate-api
 just check-contracts
 ```
 
+Publish the generated schemas with `just publish-lexicons` after signing into
+Goat as the schema publisher. This requires Goat and jq, regenerates the Lexicons,
+and updates their public records. Use `just publish-lexicons create` for first
+publication. It uses Goat's generic record command with `--no-validate` because
+`goat lex publish` does not yet support the alpha Space schema.
+
 Full contract generation/checking requires Swift 6.1 or newer. Generators and their dependencies are pinned. Generated clients are checked in as source, so web builds and root TypeScript checks do not require prebuilding package types. The running Rust server exposes its API documentation at [API docs](http://127.0.0.1:3030/docs).
 
 ## Verification and Jujutsu
