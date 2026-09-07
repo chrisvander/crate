@@ -22,7 +22,7 @@ const ast = await openapiTS(input, {
 const generated = `// Generated from the Rust server's OpenAPI contract. Do not edit.\n${astToString(ast)}`
 if (process.argv.includes("--check")) {
   if ((await readFile(output, "utf8")) !== generated) {
-    throw new Error("TypeScript client contract is stale. Run bun run generate:api.")
+    throw new Error("TypeScript client contract is stale. Run just generate-api.")
   }
 } else {
   await writeFile(output, generated)

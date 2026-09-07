@@ -13,25 +13,8 @@
     "vitest": "4.1.11"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "infra"
   ],
-  "scripts": {
-    "build": "bun run --parallel \"build:*\"",
-    "build:server": "cargo build --release --locked -p crate-server",
-    "build:web": "bun run --filter @crate/web build",
-    "test": "vitest run && cargo test --workspace --locked",
-    "typecheck": "bun node_modules/typescript/bin/tsc -b tsconfig.json && bun run --filter @crate/web check:astro",
-    "dev": "bun run --parallel \"dev:*\"",
-    "dev:server": "bacon --headless server",
-    "dev:web": "bun run --filter @crate/web dev",
-    "generate:api": "bun scripts/generate-api.ts",
-    "check:contracts": "bun scripts/generate-api.ts --check",
-    "check:files": "bun scripts/check-file-sizes.ts",
-    "test:browser": "playwright test",
-    "check": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run check:files && bun run check:contracts",
-    "format": "oxfmt . && cargo fmt --all && bun run --filter @crate/web format:astro",
-    "format:check": "oxfmt --check . && cargo fmt --all --check && bun run --filter @crate/web format:astro:check",
-    "lint": "oxlint . --deny-warnings && cargo clippy --workspace --all-targets --locked -- -D warnings"
-  },
   "version": "0.1.0"
 }

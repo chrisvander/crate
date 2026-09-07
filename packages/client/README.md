@@ -22,10 +22,10 @@ Browsers supply the mutation `Origin` automatically. Non-browser fetch transport
 must send the configured backend's canonical origin as well as their own session;
 the backend rejects mutation requests without an accepted origin.
 
-Run `bun run generate:api` after Rust contract changes, and `bun run check:contracts`
+Run `just generate-api` after Rust contract changes, and `just check-contracts`
 to check drift. This package's pinned TypeScript 6 dependency supplies the AST API
 required by OpenAPI code generation; root workspace checks use TypeScript 7.
-`bun run check` runs those root project-reference checks, generated-client tests,
+`just check` runs those root project-reference checks, generated-client tests,
 and the complete drift/Swift compilation check.
 
 Never edit `openapi.json` or `src/schema.ts` directly. Binary request types are

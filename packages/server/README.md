@@ -4,7 +4,7 @@ The Rust/Poem server is the browser OAuth companion and safe download layer. Fil
 
 ## Setup
 
-Run `bun run dev` from the repository root for the parallel web and Bacon/Rust processes. Defaults are `127.0.0.1:3030` for the API and `127.0.0.1:5173` for the web app. `/health`, `/docs` and `/openapi.json` are public. API cookie guards and response variants generate the OpenAPI document; the schema is not handwritten.
+Run `just dev` from the repository root for the parallel web and Bacon/Rust processes. Defaults are `127.0.0.1:3030` for the API and `127.0.0.1:5173` for the web app. `/health`, `/docs` and `/openapi.json` are public. API cookie guards and response variants generate the OpenAPI document; the schema is not handwritten.
 
 Configuration: `CRATE_SERVER_HOST`, `PORT`, `CRATE_SERVER_URL`, `CRATE_WEB_URL`, `CRATE_DATA_DIR`, and `CRATE_MAX_UPLOAD_BYTES`. URL values must be clean HTTPS origins, except HTTP on `127.0.0.1`. The production reverse proxy must expose `/oauth-client-metadata.json`, `/oauth/*`, and `/api/v1/*` under the configured API origin and preserve the browser Origin header. Mutating requests require the exact web/API Origin; the browser uses same-origin proxying instead of cross-origin CORS.
 

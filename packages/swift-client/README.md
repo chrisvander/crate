@@ -21,6 +21,6 @@ to satisfy the backend's CSRF check. Creating the generated `Client` directly
 requires equivalent middleware; a cookie alone does not authorize mutation requests.
 
 `Sources/CrateClient/GeneratedSources` and its sibling `openapi.json` are generated
-from the Rust server. Run root `bun run generate:api`, then `swift test
+from the Rust server. Run root `just generate-api`, then `swift test
 --package-path packages/swift-client`. The generator/runtime/transport versions
 are pinned and dependency resolution is checked in.

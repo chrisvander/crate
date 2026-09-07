@@ -35,7 +35,7 @@ async function publish(generated: string, destination: string) {
   if (check) {
     const existing = await readFile(destination).catch(() => undefined)
     if (!existing?.equals(data)) {
-      throw new Error(`Generated contract is stale: ${destination}. Run bun run generate:api.`)
+      throw new Error(`Generated contract is stale: ${destination}. Run just generate-api.`)
     }
     return
   }

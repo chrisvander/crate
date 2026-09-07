@@ -6,9 +6,9 @@ The browser never needs a separate Crate profile, password, or storage subscript
 
 Run from the repository root:
 
-- `bun run dev:web` serves Astro at `http://127.0.0.1:5173`.
-- `bun run dev` starts the full web/server stack.
-- `bun run build:web` writes static files to `dist/packages/web`.
+- `just dev-web` serves Astro at `http://127.0.0.1:5173`.
+- `just dev` starts the full web/server stack.
+- `just build-web` writes static files to `dist/packages/web`.
 
 The development proxy and Nginx production gateway forward API and OAuth routes
 to the Rust server. Nginx expects the service name `server`. Authentication uses
