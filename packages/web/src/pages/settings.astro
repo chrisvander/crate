@@ -4,7 +4,5 @@ import DriveApp from "../components/DriveApp";
 ---
 
 <Layout title="Settings" navigation={false}>
-  <DriveApp mode="settings" client:only="preact">
-    <p slot="fallback" role="status">Loading Crate…</p>
-  </DriveApp>
+  <DriveApp mode="settings" client:load />
 </Layout>
